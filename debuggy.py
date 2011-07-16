@@ -7,6 +7,7 @@ import datetime
 
 def debugCon (val):
 	td = datetime.datetime.now()
-	print td.strftime("%Y/%m/%d %H:%M:%S") + ' [debug] :' + str(val) + '.\n'
+	print td.strftime("%Y/%m/%d %H:%M:%S") + ' [debug] :' + str(val) + '.\n',
 
-#debugCon("hoge")
+if __name__ == "__main__":
+	debugCon("hoge")
