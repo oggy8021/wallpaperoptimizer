@@ -14,11 +14,8 @@ from debuggy import debugCon
 fileA = sys.argv[1]
 fileB = sys.argv[2]
 
-imgA = ImgFile.ImgFile()
-imgB = ImgFile.ImgFile()
-
-imgA.readImage(fileA)
-imgB.readImage(fileB)
+imgA = ImgFile.ImgFile(fileA)
+imgB = ImgFile.ImgFile(fileB)
 
 imgA.setGeometry()
 imgB.setGeometry()

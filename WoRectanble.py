@@ -2,7 +2,6 @@
 
 #coding: UTF-8
 
-from PIL import Image
 import math
 from var_dump import var_dump
 
@@ -11,10 +10,6 @@ class ImgObject(Image.Image):
 	class size(object):
 		w = 0
 		h = 0
-
-	def __init__(self,img):
-		self._img=img
-#		print type(self._img)
 
 	def setGeometry(self):
 		self.size.w = self._img.size[0]
