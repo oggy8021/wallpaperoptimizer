@@ -3,20 +3,27 @@
 #coding: UTF-8
 
 import math
-from var_dump import var_dump
 
-class ImgObject(Image.Image):
+from WoBounds import WoBounds 
+#from var_dump import var_dump
 
-	class size(object):
+class WoRectangle(WoBounds):
+
+	class Size(object):
 		w = 0
 		h = 0
 
-	def setGeometry(self):
-		self.size.w = self._img.size[0]
-		self.size.h = self._img.size[1]
+	def __init__(self):
+		WoBounds.__init__(self)
 
-	def getGeometry(self):
-		return self.size
+	def getSize(self):
+		self.Size.w = self.getWidth()
+		self.Size.h = self.getHeight()
+		return self.Size
+
+	def setSize(self, w, h):
+		self.setWidth(w)
+		self.setHeight(h)
 
 	def isSquare(self):
 		widthAs = 4;
@@ -34,8 +41,8 @@ class ImgObject(Image.Image):
 		return self.checkAspectRatio(widthAs, heightAs)
 
 	def checkAspectRatio(self, widthAs, heightAs):
-		quotient_w = math.floor(self.size.w / widthAs)
-		quotient_h = math.floor(self.size.h / heightAs)		
+		quotient_w = math.floor(self.Size.w / widthAs)
+		quotient_h = math.floor(self.Size.h / heightAs)		
 		if (quotient_w == quotient_h):
 			return str(widthAs) + ':' + str(heightAs)
 		else:
@@ -44,18 +51,23 @@ class ImgObject(Image.Image):
 #///////////////////////////////////////////////////////////////////////////////////// main
 
 if __name__ == "__main__":
-	file = '1500x844.jpg'	#16:9
-#	file = '1000x800.jpg'	#No Match
-#	file = '2560x1920.jpg' #4:3
 
-	imgObj = ImgObject(Image.open(file))
+#	Rectangle
+	rect = WoRectangle()
 
-	imgObj.setGeometry()
+	rect.setSize(1024,768)
 
-	print imgObj.getGeometry().w
-	print imgObj.getGeometry().h
+	print rect.getSize().w
+	print rect.getSize().h
 
-	print imgObj.isSquare()
-	print imgObj.isWide()
-	print imgObj.isDual()
+	print rect.isSquare()
+	print rect.isWide()
+	print rect.isDual()
+
+#	Rectangle -> Bounds
+	print rect.getWidth()
+	print rect.getHeight()
+	rect.getCenter()
+	print rect.center.x
+	print rect.center.y
 
