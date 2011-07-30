@@ -34,7 +34,7 @@ def Rectangle_AspectNoMatch_test():
 	eq_(rect.isSquare(), False)
 
 def extends_Bounds_test():
-	rect = WoRectangle()
+	rect = WoRectangle()3200
 	rect.setSize(1024,768)
 #	rect.getSize()
 	eq_(rect.getWidth(), 1024)
