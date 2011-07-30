@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-#coding: UTF-8
+# -*- coding: utf-8 -*-
 
 class WoPoint(object):
 	x = None

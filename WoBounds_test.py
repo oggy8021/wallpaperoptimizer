@@ -1,17 +1,13 @@
+# -*- coding: utf-8 -*-
 
 from nose.tools import ok_, eq_
 
 from WoBounds import WoPoint
 
-def point1_init_test():
-	point1 = WoPoint()
-	eq_(point1.x, 0)
-	eq_(point1.y, 0)
-
-def point2_init_test():
-	point2 = WoPoint()
-	eq_(point2.x, 0)
-	eq_(point2.y, 0)
+def point_init_test():
+	point = WoPoint()
+	eq_(point.x, 0)
+	eq_(point.y, 0)
 
 def point_distance_test():
 	point1 = WoPoint()

@@ -1,11 +1,9 @@
 #!/usr/bin/env python
 
-#coding: UTF-8
+# -*- coding: utf-8 -*-
 
 import math
-
 from WoBounds import WoBounds 
-#from var_dump import var_dump
 
 class WoRectangle(WoBounds):
 
@@ -24,6 +22,8 @@ class WoRectangle(WoBounds):
 	def setSize(self, w, h):
 		self.setWidth(w)
 		self.setHeight(h)
+		self.Size.w = w
+		self.Size.h = h
 
 	def isSquare(self):
 		widthAs = 4;
@@ -44,30 +44,6 @@ class WoRectangle(WoBounds):
 		quotient_w = math.floor(self.Size.w / widthAs)
 		quotient_h = math.floor(self.Size.h / heightAs)		
 		if (quotient_w == quotient_h):
-			return str(widthAs) + ':' + str(heightAs)
+			return True
 		else:
-			return 'No Match: ' + str(quotient_w) + ':' + str(quotient_h)
-
-#///////////////////////////////////////////////////////////////////////////////////// main
-
-if __name__ == "__main__":
-
-#	Rectangle
-	rect = WoRectangle()
-
-	rect.setSize(1024,768)
-
-	print rect.getSize().w
-	print rect.getSize().h
-
-	print rect.isSquare()
-	print rect.isWide()
-	print rect.isDual()
-
-#	Rectangle -> Bounds
-	print rect.getWidth()
-	print rect.getHeight()
-	rect.getCenter()
-	print rect.center.x
-	print rect.center.y
-
+			return False
