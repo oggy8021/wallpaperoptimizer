@@ -49,3 +49,7 @@ class WoBounds(object):
 	def calcCenter(self):
 		self.center.x = self.getWidth() / 2
 		self.center.y = self.getHeight() / 2
+
+	def getCenter(self):
+		return self.center
+	

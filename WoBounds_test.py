@@ -43,3 +43,8 @@ def Bounds_calcCenter_test():
 	area.calcCenter()
 	eq_(area.center.x, 512)
 	eq_(area.center.y, 384)
+	eq_(area.getCenter().x, 512)
+	eq_(area.getCenter().y, 384)
+	eq_(area.center.distanceX(area.end), area.center.x)
+	eq_(area.center.distanceY(area.end), area.center.y)
+
