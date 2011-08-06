@@ -15,7 +15,7 @@ class WoWorkSpace(WoRectangle):
 		retval = commands.getoutput(xdpyinfo + '| grep dimensions')
 
 		import re
-		#"  dimensions:    3200x1080 pixels (856x292 millimeters)"
 		ptn = re.compile('[\s]+|x')
+		#"  dimensions:    3200x1080 pixels (856x292 millimeters)"
 		subStr = ptn.split( retval )
 		self.setSize(int(subStr[2]), int(subStr[3])) # WoRectangle Method

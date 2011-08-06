@@ -6,7 +6,7 @@ from WoRectangle import WoRectangle
 class WoImgFile(WoRectangle, Image.Image):
 
 	def __init__(self,file=''):
-		if (file is ''):
+		if (file == ''):
 			mode = 'RGB'
 			size = (5, 5)
 			self._img = Image.new(mode, size)
