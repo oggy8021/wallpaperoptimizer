@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
 
-from WoBounds import WoBounds
+#from WoBounds import WoBounds
 from WoRectangle import WoRectangle
 
 class WoWorkSpace(WoRectangle):
 
-	Screen1 = WoBounds()
-	Screen2 = WoBounds()
+	lScreen = WoRectangle()
+	rScreen = WoRectangle()
 
 	def __init__(self):
+		WoRectangle.__init__(self)
 		xdpyinfo='/usr/bin/xdpyinfo'
 
 		import commands
@@ -19,3 +20,5 @@ class WoWorkSpace(WoRectangle):
 		#"  dimensions:    3200x1080 pixels (856x292 millimeters)"
 		subStr = ptn.split( retval )
 		self.setSize(int(subStr[2]), int(subStr[3])) # WoRectangle Method
+
+# lScreen1, rScreenには作用していない

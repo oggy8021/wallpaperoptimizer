@@ -14,9 +14,9 @@ class WoRectangle(WoBounds):
 		return self.Size
 
 	def setSize(self, w, h):
+		self.Size = [ self.getWidth(), self.getHeight() ]
 		self.setWidth(w)
 		self.setHeight(h)
-		self.Size = [ self.getWidth(), self.getHeight() ]
 
 	def isSquare(self):
 		widthAs = 4;

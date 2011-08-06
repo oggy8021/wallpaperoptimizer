@@ -6,5 +6,5 @@ from WoWorkSpace import WoWorkSpace
 
 def WoWorkSpace_init_test():
 	ws = WoWorkSpace()
-	eq_(ws.Size.w, 3200)
-	eq_(ws.Size.h, 1080)
+	eq_(ws.Size[0], 3200)
+	eq_(ws.Size[1], 1080)
