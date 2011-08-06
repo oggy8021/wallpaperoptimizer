@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 
 class WoPoint(object):
-	x = None
-	y = None
-
 	def __init__(self):
 		self.x = 0
 		self.y = 0
@@ -24,13 +21,10 @@ class WoPoint(object):
 		pass
 
 class WoBounds(object):
-	start = WoPoint()
-	end = WoPoint()
-	center = WoPoint()
-
-#	def __init__(self):
-#		self.start = WoPoint()
-#		self.end = WoPoint()
+	def __init__(self):
+		self.start = WoPoint()
+		self.end = WoPoint()
+		self.center = WoPoint()
 
 	def getWidth(self):
 		return self.end.distanceX(self.start)
@@ -50,4 +44,4 @@ class WoBounds(object):
 
 	def getCenter(self):
 		return self.center
-	
+
