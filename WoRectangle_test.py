@@ -19,10 +19,18 @@ def Rectangle_square_test():
 	rect.setSize(1024,768)
 	ok_(rect.isSquare())
 
+	rect2 = WoRectangle()
+	rect2.setSize(1280,1024)
+	ok_(rect2.isSquare())
+
 def Rectangle_wide_test():
 	rect = WoRectangle()
 	rect.setSize(1500,844)
 	ok_(rect.isWide())
+
+	rect2 = WoRectangle()
+	rect2.setSize(1920,1080)
+	ok_(rect2.isWide())
 
 def Rectangle_dual_test():
 	rect = WoRectangle()

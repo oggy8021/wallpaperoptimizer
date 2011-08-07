@@ -8,3 +8,18 @@ def WoWorkSpace_init_test():
 	ws = WoWorkSpace()
 	eq_(ws.Size[0], 3200)
 	eq_(ws.Size[1], 1080)
+
+def WoWorkSpace_Inner_Screen_test():
+	ws = WoWorkSpace()
+	ws.lScreen.setSize(1920, 1080)
+	ws.rScreen.setSize(1024, 768)
+
+	eq_(ws.lScreen.getSize()[0], 1920)
+	eq_(ws.lScreen.getSize()[1], 1080)
+	eq_(ws.lScreen.isSquare(), False)
+	eq_(ws.lScreen.isWide(), True)
+
+	eq_(ws.rScreen.getSize()[0], 1024)
+	eq_(ws.rScreen.getSize()[1], 768)
+	eq_(ws.rScreen.isSquare(), True)
+	eq_(ws.rScreen.isWide(), False)
