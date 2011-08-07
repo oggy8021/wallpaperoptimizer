@@ -19,3 +19,7 @@ def WoConfig_leftScreen_test():
 	eq_(wConfig.rScreen.getConfig()['bgcolor'], 'black')
 
 	eq_(wConfig.lScreen is wConfig.rScreen, False)
+
+	wConfig2 = WoConfig()
+	eq_(wConfig2.lScreen.getConfig()['height'], 1080)
+	eq_(wConfig.lScreen is wConfig2.lScreen, False)

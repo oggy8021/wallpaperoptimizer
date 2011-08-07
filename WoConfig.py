@@ -31,10 +31,10 @@ class WoConfig(object):
 			self.depth = d
 			self.bgcolor = c
 
-	lScreen = WoScreenConfig()
-	rScreen = WoScreenConfig()
-
 	def __init__(self):
+		self.lScreen = WoConfig.WoScreenConfig()
+		self.rScreen = WoConfig.WoScreenConfig()
+
 		import sys
 		import os.path
 		import re
