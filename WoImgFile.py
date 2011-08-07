@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from PIL import Image
-from WoBounds import WoPoint
-from WoBounds import WoBounds
 from WoRectangle import WoRectangle
 
 class WoImgFile(WoRectangle, Image.Image):

@@ -21,4 +21,4 @@ class WoWorkSpace(WoRectangle):
 		subStr = ptn.split( retval )
 		self.setSize(int(subStr[2]), int(subStr[3])) # WoRectangle Method
 
-# lScreen1, rScreen$B$K$O:nMQ$7$F$$$J$$(B
+# lScreen1, rScreenには作用していない

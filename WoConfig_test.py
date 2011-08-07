@@ -17,3 +17,5 @@ def WoConfig_leftScreen_test():
 	eq_(wConfig.rScreen.getConfig()['posit'], 'right')
 	eq_(wConfig.rScreen.getConfig()['depth'], 24)
 	eq_(wConfig.rScreen.getConfig()['bgcolor'], 'black')
+
+	eq_(wConfig.lScreen is wConfig.rScreen, False)

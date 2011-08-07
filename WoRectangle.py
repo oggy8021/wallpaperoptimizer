@@ -14,7 +14,7 @@ class WoRectangle(WoBounds):
 		return self.Size
 
 	def setSize(self, w, h):
-		self.Size = [ self.getWidth(), self.getHeight() ]
+		self.Size = [ w, h ]
 		self.setWidth(w)
 		self.setHeight(h)
 
