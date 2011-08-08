@@ -5,8 +5,13 @@ from WoBounds import WoBounds
 
 class WoRectangle(WoBounds):
 
+	class WoSize(object):
+		w = 0
+		h = 0
+
 	def __init__(self):
-		self.Size = [0, 0]
+#		self.Size = [0, 0]
+		self.Size = WoRectangle.WoSize()
 		WoBounds.__init__(self)
 
 	def getSize(self):
@@ -14,7 +19,9 @@ class WoRectangle(WoBounds):
 		return self.Size
 
 	def setSize(self, w, h):
-		self.Size = [ w, h ]
+#		self.Size = [ w, h ]
+		self.Size.w = w
+		self.Size.h = h
 		self.setWidth(w)
 		self.setHeight(h)
 
@@ -44,8 +51,8 @@ class WoRectangle(WoBounds):
 		return self.checkAspectRatio(widthAs, heightAs)
 
 	def checkAspectRatio(self, widthAs, heightAs, debug=False):
-		quotient_w = math.floor(self.Size[0] / widthAs)
-		quotient_h = math.floor(self.Size[1] / heightAs)
+		quotient_w = math.floor(self.Size.w / widthAs)
+		quotient_h = math.floor(self.Size.h / heightAs)
 		if (quotient_w == quotient_h):
 			return True
 		else:
@@ -55,7 +62,9 @@ class WoRectangle(WoBounds):
 				return False
 
 if __name__ == "__main__":
+	rect1 = WoRectangle()
 	rect2 = WoRectangle()
+	rect1.setSize(1920,1080)
 	rect2.setSize(1280,1024)
-	print rect2.checkAspectRatio(4,3, 1)
-
+	print rect1.getSize().w
+	print rect2.getSize().w

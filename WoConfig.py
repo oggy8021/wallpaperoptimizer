@@ -6,7 +6,7 @@
 
 class WoConfig(object):
 
-	class WoScreenConfig(object):
+	class WoDisplay(object):
 		width = 0
 		height = 0
 		posit = None
@@ -32,8 +32,8 @@ class WoConfig(object):
 			self.bgcolor = c
 
 	def __init__(self):
-		self.lScreen = WoConfig.WoScreenConfig()
-		self.rScreen = WoConfig.WoScreenConfig()
+		self.lDisplay = WoConfig.WoDisplay()
+		self.rDisplay = WoConfig.WoDisplay()
 
 		import sys
 		import os.path
@@ -45,7 +45,7 @@ class WoConfig(object):
 		for cfline in cf:
 			subStr = ptn.split( cfline.rstrip() )
 			if subStr[2] == 'left':
-				self.lScreen.setConfig(int(subStr[0]), int(subStr[1]), subStr[2], int(subStr[3]), subStr[4])
+				self.lDisplay.setConfig(int(subStr[0]), int(subStr[1]), subStr[2], int(subStr[3]), subStr[4])
 			else:
-				self.rScreen.setConfig(int(subStr[0]), int(subStr[1]), subStr[2], int(subStr[3]), subStr[4])
+				self.rDisplay.setConfig(int(subStr[0]), int(subStr[1]), subStr[2], int(subStr[3]), subStr[4])
 		cf.close()

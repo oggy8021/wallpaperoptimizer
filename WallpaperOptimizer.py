@@ -7,31 +7,38 @@ def ConfigSetting():
 	from WoWorkSpace import WoWorkSpace
 	ws = WoWorkSpace()
 
-	ws.lScreen.setSize(wConfig.lScreen.getConfig()['width'], wConfig.lScreen.getConfig()['height'])
-	ws.rScreen.setSize(wConfig.rScreen.getConfig()['width'], wConfig.rScreen.getConfig()['height'])
+	ws.lScreen.setSize(wConfig.lDisplay.getConfig()['width'], wConfig.lDisplay.getConfig()['height'])
+	ws.rScreen.setSize(wConfig.rDisplay.getConfig()['width'], wConfig.rDisplay.getConfig()['height'])
 
-	if ( ws.Size[0] < (ws.lScreen.Size[0] + ws.rScreen.Size[0]) ):
+	if ( ws.Size.w < (ws.lScreen.Size.w + ws.rScreen.Size.w) ):
 		# TODO: Errorクラス
-		print 'Error: ワークスペースの幅が左右ディスプレイの幅の合計より小さいです。', ws.Size[0], ws.lScreen.Size[0], ws.rScreen.Size[0]
+		# ほぼ設定ミス
+		print 'Error: ワークスペースの幅が左右ディスプレイの幅の合計より小さいです。', ws.Size.w, ws.lScreen.Size.w, ws.rScreen.Size.w
 		return False
-	if ( ws.Size[1] > ws.lScreen.Size[1] ):
-		print 'Warning: 左ディスプレイの高さがワークスペースに対して低いです。', ws.lScreen.Size[1]
-	elif ( ws.Size[1] > ws.rScreen.Size[1] ):
-		print 'Warning: 右ディスプレイの高さがワークスペースに対して低いです。', ws.rScreen.Size[1]
+	if ( ws.Size.h > ws.lScreen.Size.h ):
+		setattr(ws.lScreen.Size.h, 'islessThanWorkSpace', True)
+	elif ( ws.Size.h > ws.rScreen.Size.h ):
+		setattr(ws.rScreen.Size.h, 'islessThanWorkSpace', True)
 	else:
 		pass
 
 	if ( ws.lScreen.isSquare() ):
-		print 'Square'
-
+		setattr(ws.lScreen, 'displayType', 'square')
 	if ( ws.lScreen.isWide() ):
-		print 'Wide'
+		setattr(ws.lScreen, 'displayType', 'wide')
 
 	if ( ws.rScreen.isSquare() ):
-		print 'Square'
-
+		setattr(ws.rScreen, 'displayType', 'square')
 	if ( ws.rScreen.isWide() ):
-		print 'Wide'
+		setattr(ws.rScreen, 'displayType', 'wide')
+
+	return ws
 
 if __name__ == "__main__":
-	ConfigSetting()
+	ws = ConfigSetting()
+	print ws.lScreen.displayType
+	print ws.rScreen.displayType
+	if (getattr(ws.lScreen.Size.h, islessThanWorkSpace) and ws.lScreen.Size.h.islessThanWorkSpace):
+		print 'Warning: 左ディスプレイの高さがワークスペースに対して低いです。', ws.lScreen.Size.h
+	if (getattr(ws.rScreen.Size.h, islessThanWorkSpace) and ws.rScreen.Size.h.islessThanWorkSpace):
+		print 'Warning: 右ディスプレイの高さがワークスペースに対して低いです。', ws.rScreen.Size.h

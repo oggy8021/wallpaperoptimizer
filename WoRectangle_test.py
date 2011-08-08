@@ -9,10 +9,10 @@ def Rectangle_init_test():
 	rect2 = WoRectangle()
 	rect1.setSize(1024,768)
 	rect2.setSize(1920,1080)
-	eq_(rect1.getSize()[0], 1024)
-	eq_(rect1.getSize()[1], 768)
-	eq_(rect2.getSize()[0], 1920)
-	eq_(rect2.getSize()[1], 1080)
+	eq_(rect1.getSize().w, 1024)
+	eq_(rect1.getSize().h, 768)
+	eq_(rect2.getSize().w, 1920)
+	eq_(rect2.getSize().h, 1080)
 
 def Rectangle_square_test():
 	rect = WoRectangle()
