@@ -61,6 +61,13 @@ class WoRectangle(WoBounds):
 			else:
 				return False
 
+
+	def contains(self, other):
+		if ( self.Size.w >= other.Size.w and self.Size.h >= other.Size.w):
+			return True
+		else:
+			return False
+
 if __name__ == "__main__":
 	rect1 = WoRectangle()
 	rect2 = WoRectangle()

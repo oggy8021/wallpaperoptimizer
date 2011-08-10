@@ -60,3 +60,14 @@ def extends_Bounds_test():
 	rect2.calcCenter()
 	eq_(rect2.center.x, 960)
 	eq_(rect2.center.y, 540)
+
+def Rectangle_contains_test():
+	rect1 = WoRectangle()
+	rect2 = WoRectangle()
+
+	rect1.setSize(1024,768)
+	rect2.setSize(1920,1080)
+
+	ok_( rect2.contains(rect1) )
+	ok_( not rect1.contains(rect2) )
+
