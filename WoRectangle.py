@@ -50,17 +50,13 @@ class WoRectangle(WoBounds):
 		heightAs = 2.7;
 		return self.checkAspectRatio(widthAs, heightAs)
 
-	def checkAspectRatio(self, widthAs, heightAs, debug=False):
+	def checkAspectRatio(self, widthAs, heightAs):
 		quotient_w = math.floor(self.Size.w / widthAs)
 		quotient_h = math.floor(self.Size.h / heightAs)
 		if (quotient_w == quotient_h):
 			return True
 		else:
-			if (debug == True):
-				return quotient_h, quotient_w
-			else:
-				return False
-
+			return False
 
 	def contains(self, other):
 		if ( self.Size.w >= other.Size.w and self.Size.h >= other.Size.w):

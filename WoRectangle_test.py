@@ -70,4 +70,3 @@ def Rectangle_contains_test():
 
 	ok_( rect2.contains(rect1) )
 	ok_( not rect1.contains(rect2) )
-

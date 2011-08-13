@@ -46,3 +46,10 @@ def WoImgFile_load_no_match_test():
 	ok_( Img.isSquare() )
 	ok_( not Img.isWide() )
 	ok_( not Img.isDual() )
+
+def WoImgFile_reSize_test():
+	file = '../1000x800.jpg'	#No Match
+	Img = WoImgFile(file)
+	Img.reSize( 500,400 )
+	eq_(Img.getSize().w, 500)
+	eq_(Img.getSize().h, 400)
