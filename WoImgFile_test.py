@@ -66,5 +66,5 @@ def WoImgFile_paste_test():
 	box2 = (Img3.start.x, Img3.start.y, Img3.end.x, Img3.end.y)
 	Img1.paste(Img3, box1)
 	Img2.paste(Img3, box2)
-#	Img1.show()
-#	Img2.show()
+#	Img1.save('walltest1.jpg')
+#	Img2.save('walltest2.jpg')

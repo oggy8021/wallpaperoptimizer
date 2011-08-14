@@ -25,3 +25,6 @@ class WoImgFile(WoRectangle, Image.Image):
 
 	def paste(self, image, box):
 		self._img.paste(image._img, box)
+
+	def save(self, path):
+		self._img.save(path)

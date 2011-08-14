@@ -121,10 +121,10 @@ def allocateInit():
 
 	dgLine(ws.lScreen.center.x, 'ws.lScreen.center.x')
 	dgLine(ws.lScreen.center.y, 'ws.lScreen.center.y')
-	dgLine(ws.rScreen.center.x, 'ws.rScreen.center.x')
-	dgLine(ws.rScreen.center.y, 'ws.rScreen.center.y')
 	dgLine(Img1.center.x, 'Img1.center.x')
 	dgLine(Img1.center.y, 'Img1.center.y')
+	dgLine(ws.rScreen.center.x, 'ws.rScreen.center.x')
+	dgLine(ws.rScreen.center.y, 'ws.rScreen.center.y')
 	dgLine(Img2.center.x, 'Img2.center.x')
 	dgLine(Img2.center.y, 'Img2.center.y')
 
@@ -138,19 +138,23 @@ def allocateImg(Img):
 	tmpDistance = (abs( Img.center.distanceX(tmpScreen.center) ) , abs( Img.center.distanceY(tmpScreen.center) ) )
 	if ( Img.center.x != tmpScreen.center.x):
 		Img.start.x += tmpDistance[0]
-		Img.end.x += tmpDistance[1]
+		Img.end.x += tmpDistance[0]
 	if ( Img.center.y != tmpScreen.center.y):
-		Img.start.y += tmpDistance[0]
-		Img.end.x += tmpDistance[1]
-	dgLine(Img.center.x, 'Img.center.x')
-	dgLine(Img.center.y, 'Img.center.y')
+		Img.start.y += tmpDistance[1]
+		Img.end.y += tmpDistance[1]
 
 	dgLine(Img.start.x, 'Img.start.x')
 	dgLine(Img.start.y, 'Img.start.y')
+	dgLine(Img.end.x, 'Img.end.x')
+	dgLine(Img.end.y, 'Img.end.y')
 
 
 def mergeWallpaper(bkImg, Img):
-	pass
+	if (Img.posit == 'right'):
+		Img.start.x += ws.lScreen.Size.w
+		Img.end.x += ws.lScreen.Size.w
+		# center.x
+	bkImg.paste( Img, (Img.start.x, Img.start.y, Img.end.x, Img.end.y) )
 
 
 if __name__ == "__main__":
@@ -188,3 +192,5 @@ if __name__ == "__main__":
 	bkImg = WoImgFile('', ws.Size.w, ws.Size.h, wConfig.lDisplay.getConfig()['bgcolor'])
 	mergeWallpaper(bkImg, Img1)
 	mergeWallpaper(bkImg, Img2)
+
+	bkImg.save(sys.argv[3])
