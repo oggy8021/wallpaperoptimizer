@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import math
-from WoBounds import WoBounds 
+from WoBounds import WoBounds
 
 class WoRectangle(WoBounds):
 
@@ -10,16 +10,13 @@ class WoRectangle(WoBounds):
 		h = 0
 
 	def __init__(self):
-#		self.Size = [0, 0]
 		self.Size = WoRectangle.WoSize()
 		WoBounds.__init__(self)
 
 	def getSize(self):
-#		self.Size = [ self.getWidth(), self.getHeight() ]
 		return self.Size
 
 	def setSize(self, w, h):
-#		self.Size = [ w, h ]
 		self.Size.w = w
 		self.Size.h = h
 		self.setWidth(w)
@@ -59,15 +56,7 @@ class WoRectangle(WoBounds):
 			return False
 
 	def contains(self, other):
-		if ( self.Size.w >= other.Size.w and self.Size.h >= other.Size.w):
+		if ( self.Size.w >= other.Size.w and self.Size.h >= other.Size.w ):
 			return True
 		else:
 			return False
-
-if __name__ == "__main__":
-	rect1 = WoRectangle()
-	rect2 = WoRectangle()
-	rect1.setSize(1920,1080)
-	rect2.setSize(1280,1024)
-	print rect1.getSize().w
-	print rect2.getSize().w

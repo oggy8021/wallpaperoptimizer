@@ -5,12 +5,12 @@ from WoRectangle import WoRectangle
 
 class WoImgFile(WoRectangle, Image.Image):
 
-	def __init__(self,file=''):
+	def __init__(self,file='', w=5, h=5, color='black'):
 		WoRectangle.__init__(self)
 		if (file == ''):
 			mode = 'RGB'
-			size = (5, 5)
-			self._img = Image.new(mode, size)
+			size = (w, h)
+			self._img = Image.new(mode, size, color)
 		else:
 			self._img = Image.open(file)
 		self.setSize(self._img.size[0], self._img.size[1])
@@ -23,5 +23,5 @@ class WoImgFile(WoRectangle, Image.Image):
 		self._img = self._img.resize(size)
 		self.setSize(self._img.size[0], self._img.size[1])
 
-if __name__ == "__main__":
-	pass
+	def paste(self, image, box):
+		self._img.paste(image._img, box)

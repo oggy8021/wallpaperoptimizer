@@ -53,3 +53,18 @@ def WoImgFile_reSize_test():
 	Img.reSize( 500,400 )
 	eq_(Img.getSize().w, 500)
 	eq_(Img.getSize().h, 400)
+
+def WoImgFile_paste_test():
+	Img1 = WoImgFile('', 1000, 800, 'black')
+	Img2 = WoImgFile('', 1000, 800, 'black')
+	Img3 = WoImgFile('', 500, 400, 'white')
+	Img3.start.x = 20
+	Img3.start.y = 16
+	Img3.end.x += Img3.start.x
+	Img3.end.y += Img3.start.y
+	box1 = (Img3.start.x, Img3.start.y)
+	box2 = (Img3.start.x, Img3.start.y, Img3.end.x, Img3.end.y)
+	Img1.paste(Img3, box1)
+	Img2.paste(Img3, box2)
+#	Img1.show()
+#	Img2.show()

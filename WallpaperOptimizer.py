@@ -96,18 +96,21 @@ def checkContain(Img):
 			return False
 
 
-def resizeImg(Img):
-	AspectRatio = 0.0
-
+def downsizeImg(Img):
 	if ( Img.posit == 'left' ):
 		tmpScreen = ws.lScreen
 	if ( Img.posit == 'right' ):
 		tmpScreen = ws.rScreen
 
-	AspectRatio = float(ws.lScreen.Size.h) / float(ws.lScreen.Size.w)
-	Img.reSize( tmpScreen.Size.w, int(float(Img.getSize().w) * AspectRatio) )
-	dgLine(Img.getSize().w , 'Img.getSize().w resize later')
-	dgLine(Img.getSize().h , 'Img.getSize().h resize later')
+	if ( Img.getSize().w > tmpScreen.getSize().w ):
+		Img.setSize( tmpScreen.getSize().w, int(max( Img.getSize().h * tmpScreen.getSize().w / Img.getSize().w, 1 )) )
+	if ( Img.getSize().h > tmpScreen.getSize().h ):
+		Img.setSize( int(max( Img.getSize().w * tmpScreen.getSize().h / Img.getSize().h , 1 )), tmpScreen.getSize().h )
+
+	Img.reSize( Img.getSize().w, Img.getSize().h )
+	dgLine(Img.getSize().w , 'Img.getSize().w downSize later')
+	dgLine(Img.getSize().h , 'Img.getSize().h downSize later')
+	dgLine(Img.isSquare() , 'Img.isSquare()')
 
 
 def allocateInit():
@@ -120,10 +123,10 @@ def allocateInit():
 	dgLine(ws.lScreen.center.y, 'ws.lScreen.center.y')
 	dgLine(ws.rScreen.center.x, 'ws.rScreen.center.x')
 	dgLine(ws.rScreen.center.y, 'ws.rScreen.center.y')
-	dgLine(Img1.center.x, 'Img.center.x')
-	dgLine(Img1.center.y, 'Img.center.y')
-	dgLine(Img2.center.x, 'Img.center.x')
-	dgLine(Img2.center.y, 'Img.center.y')
+	dgLine(Img1.center.x, 'Img1.center.x')
+	dgLine(Img1.center.y, 'Img1.center.y')
+	dgLine(Img2.center.x, 'Img2.center.x')
+	dgLine(Img2.center.y, 'Img2.center.y')
 
 
 def allocateImg(Img):
@@ -132,20 +135,21 @@ def allocateImg(Img):
 	else:
 		tmpScreen = ws.rScreen
 
+	tmpDistance = (abs( Img.center.distanceX(tmpScreen.center) ) , abs( Img.center.distanceY(tmpScreen.center) ) )
 	if ( Img.center.x != tmpScreen.center.x):
-		Img.start.x += abs( Img.center.x.distanceX(tmpScreen.center.x) )
+		Img.start.x += tmpDistance[0]
+		Img.end.x += tmpDistance[1]
 	if ( Img.center.y != tmpScreen.center.y):
-		Img.start.y += abs( Img.center.y.distanceX(tmpScreen.center.y) )
+		Img.start.y += tmpDistance[0]
+		Img.end.x += tmpDistance[1]
+	dgLine(Img.center.x, 'Img.center.x')
+	dgLine(Img.center.y, 'Img.center.y')
+
 	dgLine(Img.start.x, 'Img.start.x')
 	dgLine(Img.start.y, 'Img.start.y')
 
-#	1.左画像の配置
-#		Screen1.center は　Img1.center に同じ
-#		Img1の貼り付け開始位置は、Img1.centerから、0,0までのdistance分移動した箇所
-#		（ぴったりなら、Screen1.start.x = 0,0）
 
-
-def mergeWallpaper(Img):
+def mergeWallpaper(bkImg, Img):
 	pass
 
 
@@ -173,13 +177,14 @@ if __name__ == "__main__":
 	bindingImgToScreen()
 
 	if (not checkContain(Img1) ):
-		resizeImg(Img1)
+		downsizeImg(Img1)
 	if (not checkContain(Img2) ):
-		resizeImg(Img2)
+		downsizeImg(Img2)
 
 	allocateInit()
 	allocateImg(Img1)
 	allocateImg(Img2)
 
-	mergeWallpaper(Img1)
-	mergeWallpaper(Img2)
+	bkImg = WoImgFile('', ws.Size.w, ws.Size.h, wConfig.lDisplay.getConfig()['bgcolor'])
+	mergeWallpaper(bkImg, Img1)
+	mergeWallpaper(bkImg, Img2)
