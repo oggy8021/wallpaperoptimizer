@@ -163,9 +163,11 @@ if __name__ == "__main__":
 	import sys
 	from WoImgFile import WoImgFile
 
+	#new
 	wConfig = WoConfig()
 	ws = WoWorkSpace()
 
+	#function
 	ws = ConfigSetting()
 
 	if len(sys.argv) > 1:
@@ -176,20 +178,27 @@ if __name__ == "__main__":
 		dgLine( Img2.getSize().w , 'Img2 width')
 		dgLine( Img2.getSize().h , 'Img2 height')
 
+	#function
 	checkImgType()
 
+	#function
 	bindingImgToScreen()
 
 	if (not checkContain(Img1) ):
+		#function
 		downsizeImg(Img1)
 	if (not checkContain(Img2) ):
+		#function
 		downsizeImg(Img2)
 
+	#function
 	allocateInit()
 	allocateImg(Img1)
 	allocateImg(Img2)
 
+	#new
 	bkImg = WoImgFile('', ws.Size.w, ws.Size.h, wConfig.lDisplay.getConfig()['bgcolor'])
+	#function
 	mergeWallpaper(bkImg, Img1)
 	mergeWallpaper(bkImg, Img2)
 
