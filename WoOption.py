@@ -1,79 +1,52 @@
 # -*- coding: utf-8 -*-
 
-from getopt import getopt, GetoptError
-import sys
+from optparse import Option, OptionParser
 
 class WoOption(object):
 
-	def __init__(self):
-		self.align1 = "center"
-		self.valign1 = "middle"
-		self.align2 = "center"
-		self.valign2 = "middle"
-		self.mergin = "0"
-		self.fixed = "no"
+	class MultiavgOption(Option):
+		ACTIONS = Option.ACTIONS + ("multiavg", )
+		STORE_ACTIONS = Option.STORE_ACTIONS + ("multiavg", )
+		TYPED_ACTIONS = Option.TYPED_ACTIONS + ("multiavg", )
+		ALWAYS_TYPED_ACTIONS = Option.ALWAYS_TYPED_ACTIONS + ("multiavg", )
+		
+		def take_action(self, action, dest, opt, value, values, parser):
+			if action == "multiavg":
+				lvalue = value.split(",")
+				setattr(values, dest, lvalue)
+#				values.ensure_value(dest, []).extend(lvalue)
+			else:
+				Option.take_action(self, action, dest, opt, value, values, parser)
 
-		try:
-			opts, args = getopt(sys.argv[1:], 'a:v:m:fs:p:d:b:h', ['align1=', 'valign1=', 'align2=', 'valign2=', 'mergin=', 'fixed', 'size=', 'pos=', 'depth=', 'bgcolor=', 'help'])
-			print opts, args
-		except GetoptError, e:
-			print "オプションがちがいます"
-			sys.exit(2)
+	parser = OptionParser(usage="%prog [options] imgfile1 imgfile2"
+				, version="%prog 0.2.0"
+				, option_class=MultiavgOption)
+	parser.set_defaults(align=["center","center"], valign=["middle","middle"], mergin=0, fixed=True)
+	parser.add_option("-a", "--align", dest="align", action="multiavg"
+#				, choices=('left', 'center', 'right')
+				, help="horizontal alignment (left, center, right)")
+	parser.add_option("-v", "--valign", dest="valign", action="multiavg"
+#				, choices=('top', 'middle', 'bottom')
+				, help="vertical alignment (top, middle, bottom)")
+	parser.add_option("-m", "--mergin", dest="mergin"
+				, help="left/right mergin (pixel)", type="int")
+	parser.add_option("-f", "--fixed", dest="fixed", action="store_true"
+				, help="fixed imgfile allocation (nothing: change)")
+	parser.add_option("-s", "--size", dest="size"
+				, help="left/right Monitor size (pixel)")
+	parser.add_option("-d", "--depth", dest="depth"
+				, choices=('8', '16', '24', '32')
+				, help="left/right Moniter color depth (8, 16, 24, 32)")
+#TODO: moji->int
+	parser.add_option("-b", "--bgcolor", dest="bgcolor"
+				, help="left/right Wallpaper base color (black)")
 
-		for o, a in opts:
-			if o in ("-a", "--align1"):
-				if a in ("left", "center", "right"):
-					self.align1 = a
-			if o in ("-v", "--valign1"):
-				if a in ("top", "middle", "bottom"):
-					self.valign1 = a
-			if o in ("-a", "--align2"):
-				if a in ("left", "center", "right"):
-					self.align2 = a
-			if o in ("-v", "--valign1"):
-				if a in ("top", "middle", "bottom"):
-					self.valign2 = a
-			if o in ("-m", "--mergin"):
-				self.mergin = a
-			if o in ("-f", "--fixed"):
-				self.fixed = "yes"
-			if o in ("-h", "--help"):
-				usage()
-				sys.exit()
-
-def usage():
-	usage_text = """
-WallPaperOptimizer: Wallpaper arranges the Optimal for MultiMoniter
-Version x.x.x Copyright (C) 2011 Katsuhiro Ogikubo
-See http://oggy.no-ip.info/blog/
-
-Usage: WallpaperOptimizer [options] imgfile1 imgfile2
-  [imgfile1 option]
-	-a	--align1		horizontal alignment (left, center, right)
-	-v	--valign1	vertical alignment (top, middle, bottom)
-
-  [imgfile2 option]
-	-a	--align2		horizontal alignment (left, center, right)
-	-v	--valign2	vertical alignment (top, middle, bottom)
-
-  [allocate option]
-	-m	--mergin	left/right mergin (pixel)
-	-f	--fixed		fixed imgfile allocation (nothing: change)
-
-  [Monitor option] or ~/.wallpapositrc
-	-s	--size		left/right Monitor size (pixel)
-	-d	--depth		left/right Moniter color depth (8, 16, 24, 32)
-	-b	--bgcolor	left/right Wallpaper base color (black)
-	-h	--help
-"""
-	print usage_text
+	(opts, args) = parser.parse_args()
+#	if (len(args) < 1):
+#		parser.error("Please set imgfile parameter.")
+	print '\n' , opts, args
 
 if __name__ == "__main__":
 	wOptions = WoOption()
-	print wOptions.align1
-	print wOptions.valign1
-	print wOptions.align2
-	print wOptions.valign2
-	print wOptions.mergin
-	print wOptions.fixed
 
+#	print wOptions.opts.align
