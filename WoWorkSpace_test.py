@@ -8,6 +8,7 @@ def WoWorkSpace_init_test():
 	ws = WoWorkSpace()
 	eq_(ws.Size.w, 3200)
 	eq_(ws.Size.h, 1080)
+	eq_(ws.depth, 24)
 
 def WoWorkSpace_Inner_Screen_test():
 	ws = WoWorkSpace()
