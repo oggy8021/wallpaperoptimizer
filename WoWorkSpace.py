@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-#from WoBounds import WoBounds
 from WoRectangle import WoRectangle
 
 class WoWorkSpace(WoRectangle):
