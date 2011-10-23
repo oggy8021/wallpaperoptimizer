@@ -54,6 +54,8 @@ class WoOption(object):
 					, fixed=False
 					, size=[None, None]
 					, bgcolor="black"
+					, save=None
+					, wall=False
 					, verbose=False)
 
 		parser.add_option("-a", "--align", dest="align", action="multistore"
@@ -67,12 +69,17 @@ class WoOption(object):
 					, help="left/right/top/bottom mergin for WorkSpace")
 		parser.add_option("-f", "--fixed", dest="fixed", action="store_true"
 					, help="fixed imgfile allocation (nothing: Optimize)")
-		parser.add_option("-s", "--size", dest="size", action="doublestore"
+		parser.add_option("-d", "--display", dest="size", action="doublestore"
 					, metavar="pixel x pixel"
-					, help="left/right Monitor size")
+					, help="left/right Display size")
 		parser.add_option("-b", "--bgcolor", dest="bgcolor", action="store", type="string"
 					, metavar="color, 0xRRGGBB"
 					, help="left/right Wallpaper base color (default: black)")
+		parser.add_option("-s", "--save", dest="save", action="store"
+					, metavar="PATH"
+					, help="Save Wallpaper to PATH")
+		parser.add_option("-w", "--wall", dest="wall", action="store_true"
+					, help="Created wallpaper set to current WorkSpace")
 		parser.add_option("-V", "--verbose", action="store_true"
 					, help="verbose")
 
@@ -138,14 +145,17 @@ class WoOption(object):
 	def getVerbose(self):
 		return self.opts.verbose
 
+	def getSavePath(self):
+		return self.opts.save
+
+	def getSetWall(self):
+		return self.opts.wall
+
 	def getLArg(self):
 		return self.args[0]
 
 	def getRArg(self):
 		return self.args[1]
-
-	def getSaveArg(self):
-		return self.args[2]
 
 if __name__ == "__main__":
 	wOption = WoOption()

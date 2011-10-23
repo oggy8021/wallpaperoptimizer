@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#python WallpaperOptimizer.py ../2560x1920.jpg ../1500x844.jpg ../WallPosit_test.jpg
+#python WallpaperOptimizer.py ../2560x1920.jpg ../1500x844.jpg -s ../WallPosit_test.jpg
 
 from debuggy import dgLine
 from var_dump import var_dump
@@ -270,4 +270,16 @@ if __name__ == "__main__":
 	mergeWallpaper(bkImg, Img1)
 	mergeWallpaper(bkImg, Img2)
 
-	bkImg.save(Option.getSaveArg())
+	tmpPath = Option.getSavePath()
+	if (tmpPath <> None):
+		bkImg.save(tmpPath)
+
+	if (Option.getSetWall()):
+		if (tmpPath == None):
+			tmpPath = '/tmp/WallPosit.jpg'
+		bkImg.save(tmpPath)
+		gconftool="/usr/bin/gconftool-2 --type string --set '/desktop/gnome/background/picture_filename' %s" % tmpPath
+		import commands
+		output = commands.getoutput(gconftool)
+		sys.exit(output)
+
