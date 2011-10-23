@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from WoRectangle import WoRectangle
+from WallpaperOptimizer.Imaging.WoRectangle import WoRectangle
 
 class WoWorkSpace(WoRectangle):
 

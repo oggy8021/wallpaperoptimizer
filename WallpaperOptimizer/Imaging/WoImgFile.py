@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from PIL import Image
-from WoRectangle import WoRectangle
+from WallpaperOptimizer.Imaging.WoRectangle import WoRectangle
 
 class WoImgFile(WoRectangle, Image.Image):
 

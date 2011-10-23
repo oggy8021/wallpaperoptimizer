@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import math
-from WoBounds import WoBounds
+from WallpaperOptimizer.Imaging.WoBounds import WoBounds
 
 class WoRectangle(WoBounds):
 
