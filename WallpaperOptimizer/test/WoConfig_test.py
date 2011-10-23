@@ -2,7 +2,7 @@
 
 from nose.tools import ok_, eq_
 
-from WoConfig import WoConfig
+from WallpaperOptimizer.WoConfig import WoConfig
 
 def WoConfig_settigFile_test():
 	wConfig = WoConfig('~/.wallpositrc')

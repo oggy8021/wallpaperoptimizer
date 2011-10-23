@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-#python WallpaperOptimizer.py ../2560x1920.jpg ../1500x844.jpg -s ../WallPosit_test.jpg
+#python WallpaperOptimizer ../2560x1920.jpg ../1500x844.jpg -s ../WallPosit_test.jpg
 
-from debuggy import dgLine
 import sys
 import os.path
+from WallpaperOptimizer.debuggy import dgLine
 
 def ConfigSettingToWorkSpace():
 	Ws.lScreen.setSize(Config.lDisplay.getConfig()['width'], Config.lDisplay.getConfig()['height'])
@@ -207,10 +207,10 @@ def mergeWallpaper(bkImg, Img):
 
 
 if __name__ == "__main__":
-	from WoOption import WoOption
-	from WoConfig import WoConfig
-	from WoWorkSpace import WoWorkSpace
-	from WoImgFile import WoImgFile
+	from WallpaperOptimizer.WoOption import WoOption
+	from WallpaperOptimizer.WoConfig import WoConfig
+	from WallpaperOptimizer.Imaging.WoWorkSpace import WoWorkSpace
+	from WallpaperOptimizer.Imaging.WoImgFile import WoImgFile
 
 	#new
 	Option = WoOption()

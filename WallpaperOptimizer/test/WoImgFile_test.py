@@ -2,7 +2,7 @@
 
 from nose.tools import ok_, eq_
 
-from WoImgFile import WoImgFile
+from WallpaperOptimizer.Imaging.WoImgFile import WoImgFile
 
 def WoImgFile_init_no_param_test():
 	Img = WoImgFile()

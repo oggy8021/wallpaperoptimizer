@@ -2,7 +2,7 @@
 
 from nose.tools import ok_, eq_
 
-from WoBounds import WoPoint
+from WallpaperOptimizer.Imaging.WoBounds import WoPoint
 
 def point_init_test():
 	point1 = WoPoint()

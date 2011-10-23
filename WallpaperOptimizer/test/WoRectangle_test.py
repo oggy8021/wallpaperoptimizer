@@ -2,7 +2,7 @@
 
 from nose.tools import ok_, eq_
 
-from WoRectangle import WoRectangle
+from WallpaperOptimizer.Imaging.WoRectangle import WoRectangle
 
 def Rectangle_init_test():
 	rect1 = WoRectangle()

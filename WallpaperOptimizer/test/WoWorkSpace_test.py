@@ -2,7 +2,7 @@
 
 from nose.tools import ok_, eq_
 
-from WoWorkSpace import WoWorkSpace
+from WallpaperOptimizer.Imaging.WoWorkSpace import WoWorkSpace
 
 def WoWorkSpace_init_test():
 	ws = WoWorkSpace()
