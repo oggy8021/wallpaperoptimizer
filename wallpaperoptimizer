@@ -3,7 +3,6 @@
 #python WallpaperOptimizer.py ../2560x1920.jpg ../1500x844.jpg -s ../WallPosit_test.jpg
 
 from debuggy import dgLine
-from var_dump import var_dump
 import sys
 import os.path
 
