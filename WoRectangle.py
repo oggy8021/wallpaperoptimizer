@@ -56,7 +56,15 @@ class WoRectangle(WoBounds):
 			return False
 
 	def contains(self, other):
-		if ( self.Size.w >= other.Size.w and self.Size.h >= other.Size.w ):
+		if ( self.Size.w >= other.Size.w and self.Size.h >= other.Size.h ):
 			return True
 		else:
 			return False
+
+	def containsPlusMergin(self, other, mergin):
+		if ( self.Size.w >= (other.Size.w + mergin[0] + mergin[1])
+			 and self.Size.h >= (other.Size.h  + mergin[2] + mergin[3])):
+			return True
+		else:
+			return False
+

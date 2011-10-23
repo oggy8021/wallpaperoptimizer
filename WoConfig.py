@@ -40,10 +40,12 @@ class WoConfig(object):
 			cf = open(os.path.expanduser(configfile), 'r')
 			for cfline in cf:
 				subStr = ptn.split( cfline.rstrip() )
+				if (bgcolor == None):
+					bgcolor = subStr[3]
 				if subStr[2] == 'left':
-					self.lDisplay.setConfig(int(subStr[0]), int(subStr[1]), subStr[2], subStr[3])
+					self.lDisplay.setConfig(int(subStr[0]), int(subStr[1]), subStr[2], bgcolor)
 				else:
-					self.rDisplay.setConfig(int(subStr[0]), int(subStr[1]), subStr[2], subStr[3])
+					self.rDisplay.setConfig(int(subStr[0]), int(subStr[1]), subStr[2], bgcolor)
 			cf.close()
 		else:
 			subStr = ptn.split( lsize )

@@ -70,3 +70,13 @@ def Rectangle_contains_test():
 
 	ok_( rect2.contains(rect1) )
 	ok_( not rect1.contains(rect2) )
+
+def Rectangle_containsPlusMergin_test():
+	rect1 = WoRectangle()
+	rect2 = WoRectangle()
+
+	rect1.setSize(1910,1070)
+	rect2.setSize(1920,1080)
+
+	ok_( rect2.containsPlusMergin(rect1, [5,5,5,5]) )
+	ok_( not rect1.containsPlusMergin(rect2, [10,10,0,0]) )

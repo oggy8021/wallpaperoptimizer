@@ -6,15 +6,25 @@ class WoOption(object):
 
 	def __init__(self):
 		class MultiargOption(Option):
-			ACTIONS = Option.ACTIONS + ("multistore", "doublestore", )
-			STORE_ACTIONS = Option.STORE_ACTIONS + ("multistore", "doublestore", )
-			TYPED_ACTIONS = Option.TYPED_ACTIONS + ("multistore", "doublestore", )
-			ALWAYS_TYPED_ACTIONS = Option.ALWAYS_TYPED_ACTIONS + ("multistore", "doublestore", )
+			ACTIONS = Option.ACTIONS + ("multistore", "quatrostore", "doublestore", )
+			STORE_ACTIONS = Option.STORE_ACTIONS + ("multistore", "quatrostore", "doublestore", )
+			TYPED_ACTIONS = Option.TYPED_ACTIONS + ("multistore", "quatrostore", "doublestore", )
+			ALWAYS_TYPED_ACTIONS = Option.ALWAYS_TYPED_ACTIONS + ("multistore", "quatrostore", "doublestore", )
 			
 			def take_action(self, action, dest, opt, value, values, parser):
 				if action == "multistore":
 					lvalue = value.split(",")
 					if (len(lvalue) > 1 and len(lvalue) <= 2):
+						for idx,m in enumerate(lvalue):
+							if (m <> ""):
+								vals = getattr(values, dest)
+								vals[idx] = lvalue[idx]
+								setattr(values, dest, vals)
+					else:
+						raise OptionValueError("option: %s to 2 values." % dest)
+				elif action == "quatrostore":
+					lvalue = value.split(",")
+					if (len(lvalue) > 1 and len(lvalue) <= 4):
 						for idx,m in enumerate(lvalue):
 							if (m <> ""):
 								vals = getattr(values, dest)
@@ -41,7 +51,7 @@ class WoOption(object):
 		parser.set_defaults(align=["center","center"]
 					, valign=["middle","middle"]
 					, mergin=[0,0,0,0]
-					, fixed=True
+					, fixed=False
 					, size=[None, None]
 					, bgcolor="black"
 					, verbose=False)
@@ -52,17 +62,17 @@ class WoOption(object):
 		parser.add_option("-v", "--valign", dest="valign", action="multistore"
 					, metavar="top,middle,bottom"
 					, help="vertical alignment (top, middle, bottom)")
-		parser.add_option("-m", "--mergin", dest="mergin", action="multistore"
-					, metavar="pixel"
-					, help="left/right mergin (pixel, pixel)")
+		parser.add_option("-m", "--mergin", dest="mergin", action="quatrostore"
+					, metavar="pixel,pixel,pixel,pixel"
+					, help="left/right/top/bottom mergin for WorkSpace")
 		parser.add_option("-f", "--fixed", dest="fixed", action="store_true"
-					, help="fixed imgfile allocation (nothing: change)")
+					, help="fixed imgfile allocation (nothing: Optimize)")
 		parser.add_option("-s", "--size", dest="size", action="doublestore"
-					, metavar="pixel"
-					, help="left/right Monitor size (pixel x pixel)")
-		parser.add_option("-b", "--bgcolor", dest="bgcolor", action="store"
-					, metavar="color, #hex color"
-					, help="left/right Wallpaper base color (black)")
+					, metavar="pixel x pixel"
+					, help="left/right Monitor size")
+		parser.add_option("-b", "--bgcolor", dest="bgcolor", action="store", type="string"
+					, metavar="color, 0xRRGGBB"
+					, help="left/right Wallpaper base color (default: black)")
 		parser.add_option("-V", "--verbose", action="store_true"
 					, help="verbose")
 
@@ -79,6 +89,12 @@ class WoOption(object):
 			if m_valign in ("top", "middle", "bottom"):
 				break
 			raise OptionValueError("option: valign invalid")
+
+		import re
+		ptn = re.compile('^0x(.+)$')
+		if (ptn.match(self.opts.bgcolor)):
+			subStr = ptn.split(self.opts.bgcolor)
+			self.opts.bgcolor = '#%s' % subStr[1]
 
 	def getArgs(self):
 		return self.args
@@ -133,8 +149,9 @@ class WoOption(object):
 
 if __name__ == "__main__":
 	wOption = WoOption()
-	print wOption.getLAlign()
-	print wOption.getRAlign()
-	print wOption.getLSize()
-	print wOption.getRSize()
-	print wOption.getVerbose()
+#	print wOption.getLAlign()
+#	print wOption.getRAlign()
+#	print wOption.getLSize()
+#	print wOption.getRSize()
+	print wOption.getBgcolor()
+#	print wOption.getVerbose()
