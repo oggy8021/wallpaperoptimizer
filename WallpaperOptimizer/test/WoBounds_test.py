@@ -19,7 +19,7 @@ def point_distance_test():
 	eq_(point1.distanceY(point2), 0)
 
 
-from WoBounds import WoBounds
+from WallpaperOptimizer.Imaging.WoBounds import WoBounds
 
 def Bounds_init_test():
 	area1 = WoBounds()

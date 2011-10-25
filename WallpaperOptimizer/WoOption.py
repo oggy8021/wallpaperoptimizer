@@ -10,36 +10,31 @@ class WoOption(object):
 			STORE_ACTIONS = Option.STORE_ACTIONS + ("multistore", "quatrostore", "doublestore", )
 			TYPED_ACTIONS = Option.TYPED_ACTIONS + ("multistore", "quatrostore", "doublestore", )
 			ALWAYS_TYPED_ACTIONS = Option.ALWAYS_TYPED_ACTIONS + ("multistore", "quatrostore", "doublestore", )
-			
+
 			def take_action(self, action, dest, opt, value, values, parser):
+				def exchangeValue(lvalue, dest, values):
+					for idx,m in enumerate(lvalue):
+						if (m <> ""):
+							vals = getattr(values, dest)
+							vals[idx] = lvalue[idx]
+							setattr(values, dest, vals)
+
 				if action == "multistore":
 					lvalue = value.split(",")
 					if (len(lvalue) > 1 and len(lvalue) <= 2):
-						for idx,m in enumerate(lvalue):
-							if (m <> ""):
-								vals = getattr(values, dest)
-								vals[idx] = lvalue[idx]
-								setattr(values, dest, vals)
+						exchangeValue(lvalue, dest, values)
 					else:
 						raise OptionValueError("option: %s to 2 values." % dest)
 				elif action == "quatrostore":
 					lvalue = value.split(",")
 					if (len(lvalue) > 1 and len(lvalue) <= 4):
-						for idx,m in enumerate(lvalue):
-							if (m <> ""):
-								vals = getattr(values, dest)
-								vals[idx] = lvalue[idx]
-								setattr(values, dest, vals)
+						exchangeValue(lvalue, dest, values)
 					else:
 						raise OptionValueError("option: %s to 2 values." % dest)
 				elif action == "doublestore":
 					lvalue = value.split(",")
 					if (len(lvalue) > 1 and len(lvalue) <= 2 and lvalue[0] <> "" and lvalue[1] <> ""):
-						for idx,m in enumerate(lvalue):
-							if (m <> ""):
-								vals = getattr(values, dest)
-								vals[idx] = lvalue[idx]
-								setattr(values, dest, vals)
+						exchangeValue(lvalue, dest, values)
 					else:
 						raise OptionValueError("option: %s necessary 2 values." % dest)
 				else:

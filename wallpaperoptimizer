@@ -63,6 +63,11 @@ def checkImgType():
 	if ( Img2.isWide() ):
 		setattr(Img2, 'imgType', 'wide')
 
+	if (not hasattr(Img1, 'imgType') ):
+		setattr(Img1, 'imgType', 'other')
+	if (not hasattr(Img2, 'imgType') ):
+		setattr(Img2, 'imgType', 'other')
+
 	if (Verbose):
 		dgLine( Img1.imgType , 'Img1.imgType' )
 		dgLine( Img2.imgType , 'Img2.imgType' )
@@ -90,12 +95,18 @@ def bindingImgToScreen():
 #				print 4
 
 		# 割り当てを上書きしている可能性があるので、補間する
-		if ( not getattr(Img1, 'posit', False) ):
+		if ( not getattr(Img1, 'posit', False) and Img2.posit <> 'left'):
 			setattr(Img1, 'posit', 'left')
 #			print 5
-		if ( not getattr(Img2, 'posit', False) ):
-			setattr(Img2, 'posit', 'right')
+		elif ( not getattr(Img1, 'posit', False) and Img2.posit == 'left'):
+			setattr(Img1, 'posit', 'right')
 #			print 6
+		if ( not getattr(Img2, 'posit', False) and Img1.posit <> 'right'):
+			setattr(Img2, 'posit', 'right')
+#			print 7
+		elif ( not getattr(Img2, 'posit', False) and Img1.posit == 'right'):
+			setattr(Img2, 'posit', 'left')
+#			print 8
 
 	if (Verbose):
 		dgLine ( Img1.posit , 'Img1.posit')
@@ -137,7 +148,6 @@ def downsizeImg(Img, tmpMergin):
 	if (Verbose):
 		dgLine(Img.getSize().w , 'Img.getSize(%s).w downSize later' % Img.posit)
 		dgLine(Img.getSize().h , 'Img.getSize(%s).h downSize later' % Img.posit)
-		dgLine(Img.isSquare() , 'Img.isSquare()')
 
 
 def allocateInit():
@@ -191,8 +201,8 @@ def allocateImg(Img):
 			Img.end.y += rightcornerDistance[1]
 
 	if (Verbose):
-#		dgLine(tmpAlign, 'tmpAlign')
-#		dgLine(tmpValign, 'tmpValign')
+		dgLine(tmpAlign, 'Align')
+		dgLine(tmpValign, 'Valign')
 		dgLine(Img.start.x, 'Img.start.x')
 		dgLine(Img.start.y, 'Img.start.y')
 		dgLine(Img.end.x, 'Img.end.x')
@@ -273,11 +283,14 @@ if __name__ == "__main__":
 	tmpPath = Option.getSavePath()
 	if (tmpPath <> None):
 		bkImg.save(tmpPath)
+		# (, )だけと、ちょっと間抜け
+		tmpPath = tmpPath.replace('(','\\(')
+		tmpPath = tmpPath.replace(')','\\)')
 
 	if (Option.getSetWall()):
 		if (tmpPath == None):
 			tmpPath = '/tmp/WallPosit.jpg'
-		bkImg.save(tmpPath)
+			bkImg.save(tmpPath)
 		gconftool="/usr/bin/gconftool-2 --type string --set '/desktop/gnome/background/picture_filename' %s" % tmpPath
 		import commands
 		output = commands.getoutput(gconftool)
