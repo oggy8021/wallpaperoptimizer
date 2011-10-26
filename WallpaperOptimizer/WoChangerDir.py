@@ -18,7 +18,8 @@ class WoChangerDir(object):
 	def __init__(self, srcdir='.'):
 		self.fp = 0
 
-		Ext = re.compile("\.(gif|jpe?g|bmp|png)$", re.IGNORECASE)
+		#http://www.python.jp/Zope/articles/tips/regex_howto/regex_howto_3 (sec 3.2)
+		Ext = re.compile(r"\.(gif|jpe?g|bmp|png)$", re.IGNORECASE)
 		files = os.listdir(srcdir)
 		self.imgfiles = []
 		for file in files:

@@ -49,6 +49,7 @@ class WoOption(object):
 					, fixed=False
 					, size=[None, None]
 					, bgcolor="black"
+					, srcdir=['.','.']
 					, save=None
 					, wall=False
 					, verbose=False)
@@ -70,6 +71,9 @@ class WoOption(object):
 		parser.add_option("-b", "--bgcolor", dest="bgcolor", action="store", type="string"
 					, metavar="color, 0xRRGGBB"
 					, help="left/right Wallpaper base color (default: black)")
+		parser.add_option("-S", "--srcdir", dest="srcdir", action="doublestore", type="string"
+					, metavar="PATH"
+					, help="wallpaper src dir")
 		parser.add_option("-s", "--save", dest="save", action="store"
 					, metavar="PATH"
 					, help="Save Wallpaper to PATH")
@@ -137,6 +141,12 @@ class WoOption(object):
 	def getBgcolor(self):
 		return self.opts.bgcolor
 
+	def getLSrcdir(self):
+		return self.opts.srcdir[0]
+
+	def getRSrcdir(self):
+		return self.opts.srcdir[1]
+
 	def getVerbose(self):
 		return self.opts.verbose
 
@@ -158,5 +168,7 @@ if __name__ == "__main__":
 #	print wOption.getRAlign()
 #	print wOption.getLSize()
 #	print wOption.getRSize()
-	print wOption.getBgcolor()
+#	print wOption.getBgcolor()
+	print wOption.getLSrcdir()
+	print wOption.getRSrcdir()
 #	print wOption.getVerbose()
