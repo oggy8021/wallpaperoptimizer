@@ -52,7 +52,9 @@ class WoOption(object):
 					, srcdir=['.','.']
 					, save=None
 					, wall=False
-					, verbose=False)
+					, verbose=False
+					, daemonize=False
+					, interval=60)
 
 		parser.add_option("-a", "--align", dest="align", action="multistore"
 					, metavar="left,center,right"
@@ -72,18 +74,23 @@ class WoOption(object):
 					, metavar="color, 0xRRGGBB"
 					, help="left/right Wallpaper base color (default: black)")
 		parser.add_option("-S", "--srcdir", dest="srcdir", action="doublestore", type="string"
-					, metavar="PATH"
+					, metavar="PATH,PATH"
 					, help="wallpaper src dir")
 		parser.add_option("-s", "--save", dest="save", action="store"
 					, metavar="PATH"
 					, help="Save Wallpaper to PATH")
 		parser.add_option("-w", "--wall", dest="wall", action="store_true"
 					, help="Created wallpaper set to current WorkSpace")
-		parser.add_option("-V", "--verbose", action="store_true"
+		parser.add_option("-V", "--verbose", dest="verbose", action="store_true"
 					, help="verbose")
+		parser.add_option("-D", "--daemon", dest="daemonize", action="store_true"
+					, help="daemonize (default: False)")
+		parser.add_option("-i", "--interval", dest="interval", action="store", type="int"
+					, metavar="sec"
+					, help="change wallpaper interval (default: 60sec)")
 
 		(self.opts, self.args) = parser.parse_args()
-		if (len(self.args) < 1):
+		if (len(self.args) < 1 and self.opts.daemonize == False):
 			parser.error("Please set imgfile parameter.")
 
 		for m_align in self.opts.align:
@@ -101,9 +108,6 @@ class WoOption(object):
 		if (ptn.match(self.opts.bgcolor)):
 			subStr = ptn.split(self.opts.bgcolor)
 			self.opts.bgcolor = '#%s' % subStr[1]
-
-	def getArgs(self):
-		return self.args
 
 	def getLAlign(self):
 		return self.opts.align[0]
@@ -156,11 +160,20 @@ class WoOption(object):
 	def getSetWall(self):
 		return self.opts.wall
 
+	def getDaemonize(self):
+		return self.opts.daemonize
+
+	def getInterval(self):
+		return self.opts.interval
+
 	def getLArg(self):
 		return self.args[0]
 
 	def getRArg(self):
 		return self.args[1]
+
+	def getArgs(self):
+		return self.args
 
 if __name__ == "__main__":
 	wOption = WoOption()

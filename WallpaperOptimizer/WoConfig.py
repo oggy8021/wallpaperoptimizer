@@ -30,11 +30,11 @@ class WoConfig(object):
 			self.srcdir = s
 
 	def __init__(self
-			, configfile='~/.wallpositrc'
-			, lsize=None
-			, rsize=None
-			, bgcolor=None
-			, srcdir='.'):
+						, configfile='~/.wallpositrc'
+						, lsize=None
+						, rsize=None
+						, bgcolor=None
+						, srcdir='.'):
 		self.lDisplay = WoConfig.WoDisplay()
 		self.rDisplay = WoConfig.WoDisplay()
 

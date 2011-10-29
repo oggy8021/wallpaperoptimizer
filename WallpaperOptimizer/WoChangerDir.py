@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import random
-import os, os.path, re
+import sys, os, os.path, re
 
 class WoChangerDir(object):
 
@@ -20,13 +20,18 @@ class WoChangerDir(object):
 
 		#http://www.python.jp/Zope/articles/tips/regex_howto/regex_howto_3 (sec 3.2)
 		Ext = re.compile(r"\.(gif|jpe?g|bmp|png)$", re.IGNORECASE)
+		srcdir = os.path.expanduser(srcdir)
 		files = os.listdir(srcdir)
 		self.imgfiles = []
 		for file in files:
-			file
 			if (os.path.isfile(srcdir + file) and Ext.search(file)):
 				self.imgfiles.append(os.path.abspath(srcdir + file))
 		self.maxlen = len(self.imgfiles)
+
+		if (self.maxlen < 1):
+			print 'Warning: %s に画像ファイルがありません' % srcdir
+			sys.exit(2)
+
 
 if __name__ == "__main__":
 	import sys
