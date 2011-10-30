@@ -8,7 +8,7 @@ import os.path
 import time
 import commands
 import logging
-import gconf
+import subprocess
 #from WallpaperOptimizer.debuggy import dgLine
 
 def ConfigSettingToWorkSpace():
@@ -254,22 +254,18 @@ def optimizeWallpaper(Img1, Img2):
 	return bkImg
 
 
-def setWall(bkImg, tmpPath=None):
+def setWall(bkImg, tmpPath=None, flg=0):
 	if (tmpPath == None):
-		tmpPath = '/tmp/wallposit.jpg'
+		tmpPath = '/tmp/wallposit' + str(flg) + '.jpg'
 		bkImg.save(tmpPath)
 		logging.debug('Save optimized wallpaper [%s].' % tmpPath)
 	else:
-		# (, )だけと、ちょっと間抜け
+		# (, )だけだと、ちょっと間抜け
 		tmpPath = tmpPath.replace('(','\\(')
 		tmpPath = tmpPath.replace(')','\\)')
 
-#	gclient = gconf.client_get_default()
-#	Gval = gconf.Value(gconf.VALUE_STRING)
-#	Gval.set_string(tmpPath)
-#	gclient.set('/desktop/gnome/background/picture_filename', Gval)
-	gconftool="/usr/bin/gconftool-2 --type string --set '/desktop/gnome/background/picture_filename' %s" % os.path.abspath(tmpPath)
-	os.system(gconftool)
+	tmpPath = os.path.abspath(tmpPath)
+	ret = subprocess.call(["gconftool-2","--type","string","--set","/desktop/gnome/background/picture_filename",tmpPath])
 	logging.debug('Change wallpaper to current Workspace [%s].' % tmpPath)
 
 
@@ -277,16 +273,23 @@ def daemonize():
 	LChangerDir = WoChangerDir(Config.lDisplay.getConfig()['srcdir'])
 	RChangerDir = WoChangerDir(Config.rDisplay.getConfig()['srcdir'])
 
-	for c in range(1,10):
-		limg = LChangerDir.getImgfileRnd()
-		rimg = RChangerDir.getImgfileRnd()
-		Img1 = WoImgFile(limg)
-		Img2 = WoImgFile(rimg)
+	try:
+		i = 1
+		while(1):
+			if (i > 2):
+				i = 1
+			limg = LChangerDir.getImgfileRnd()
+			rimg = RChangerDir.getImgfileRnd()
+			Img1 = WoImgFile(limg)
+			Img2 = WoImgFile(rimg)
 
-		bkImg = optimizeWallpaper(Img1, Img2)
-		setWall(bkImg)
-		interval = Option.getInterval()
-		time.sleep(interval)
+			bkImg = optimizeWallpaper(Img1, Img2)
+			setWall(bkImg, None, i)
+			interval = Option.getInterval()
+			time.sleep(interval)
+			i += 1
+	except KeyboardInterrupt:
+		sys.exit(0)
 
 
 def singlerun():
@@ -317,26 +320,8 @@ if __name__ == "__main__":
 	from WallpaperOptimizer.Imaging.WoWorkSpace import WoWorkSpace
 	from WallpaperOptimizer.Imaging.WoImgFile import WoImgFile
 
-	dbusAddr = commands.getoutput('dbus-launch --sh-syntax | grep unix:abstract')
-	dbusPid = commands.getoutput('dbus-launch --sh-syntax | grep DBUS_SESSION_BUS_PID')
-	dbusAddr = dbusAddr.rstrip(";")
-	dbusPid = dbusPid.rstrip("';")
-#	print 'launch syntax', dbusAddr
-#	print 'launch syntax', dbusPid
-#	output = commands.getoutput('export ' + dbusAddr)
-#	print output
-#	output = commands.getoutput('export ' + dbusPid)
-#	print output
-#	print 'echo', commands.getoutput('echo $DBUS_SESSION_BUS_ADDRESS')
-#	print 'echo', commands.getoutput('echo $DBUS_SESSION_BUS_PID')
-#	print '変更前', os.environ['DBUS_SESSION_BUS_ADDRESS']
-#	print '変更前', os.environ['DBUS_SESSION_BUS_PID']
-	dbusAddr = dbusAddr.rstrip("'").split('=')
-	dbusPid = dbusPid.split('=')
-	os.environ['DBUS_SESSION_BUS_ADDRESS'] = dbusAddr[1].lstrip("'") + '=' + dbusAddr[2] + '=' + dbusAddr[3]
-	os.environ['DBUS_SESSION_BUS_PID'] = dbusPid[1]
-#	print '変更後', os.environ['DBUS_SESSION_BUS_ADDRESS']
-#	print '変更後', os.environ['DBUS_SESSION_BUS_PID']
+# 分かってないで書いている
+#	dummybus = dbus.SystemBus()
 
 # analize commandline option
 	Option = WoOption()
@@ -350,8 +335,16 @@ if __name__ == "__main__":
 	logging.basicConfig(level=loglevel
 						, format='%(asctime)s %(levelname)5s %(message)s'
 						, filename='/tmp/wallposit.log'
-						, filemode='a')
+						, filemode='w')
 	logging.info('Starting ... wallpaperoptimizer.')
+
+	if (Verbose):
+		console = logging.StreamHandler()
+		console.setLevel(logging.DEBUG)
+		formatter = logging.Formatter('%(name)-12s: %(levelname)-8s %(message)s')
+		console.setFormatter(formatter)
+		logging.getLogger('').addHandler(console)
+
 
 	logging.debug('Command line option as.')
 	logging.debug('%20s [%s,%s].'
