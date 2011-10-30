@@ -8,7 +8,8 @@ import os.path
 import time
 import commands
 import logging
-from WallpaperOptimizer.debuggy import dgLine
+import gconf
+#from WallpaperOptimizer.debuggy import dgLine
 
 def ConfigSettingToWorkSpace():
 	logging.debug('Config Setting To WorkSpace().')
@@ -92,42 +93,30 @@ def bindingImgToScreen(Img1, Img2):
 
 	if ( Option.getFixed() ):
 		setattr(Img1, 'posit', 'left')
+		logging.debug('%20s [%s]' % ( 'Img1 fixed binding', Img1.posit) )
 		setattr(Img2, 'posit', 'right')
+		logging.debug('%20s [%s]' % ( 'Img2 fixed binding', Img2.posit) )
 	else:
 		# アスペクト比見て、ディスプレイのタイプに応じて優先的に割り当てる
 		if ( Img1.imgType == Ws.lScreen.displayType ):
 			setattr(Img1, 'posit', 'left')
-#			print 1
-			if ( Img2.imgType == Ws.rScreen.displayType ):
-				setattr(Img2, 'posit', 'right')
-#				print 2
-		elif ( Img2.imgType == Ws.lScreen.displayType ):
-			setattr(Img2, 'posit', 'left')
-#			print 3
-			if ( Img1.imgType == Ws.rScreen.displayType ):
-				setattr(Img1, 'posit', 'right')
-#				print 4
-
-		# 割り当てを上書きしている可能性があるので、補間する
-		if ( hasattr(Img1, 'posit') == False and Img2.posit <> 'left'):
-			setattr(Img1, 'posit', 'left')
-#			print 5
-		elif ( hasattr(Img1, 'posit') == False and Img2.posit == 'left'):
-			setattr(Img1, 'posit', 'right')
-#			print 6
-		if ( hasattr(Img2, 'posit') == False and Img1.posit <> 'right'):
+			logging.debug('%20s [%s]' % ( 'Img1 binding', Img1.posit) )
 			setattr(Img2, 'posit', 'right')
-#			print 7
-		elif ( hasattr(Img2, 'posit') == False and Img1.posit == 'right'):
+			logging.debug('%20s [%s]' % ( 'Img2 binding', Img2.posit) )
+		elif ( Img1.imgType == Ws.rScreen.displayType ):
+			setattr(Img1, 'posit', 'right')
+			logging.debug('%20s [%s]' % ( 'Img1 binding', Img1.posit) )
 			setattr(Img2, 'posit', 'left')
-#			print 8
-
-	logging.debug('%20s [%s]' % ( 'position as Img1', Img1.posit) )
-	logging.debug('%20s [%s]' % ( 'position as Img2', Img2.posit) )
+			logging.debug('%20s [%s]' % ( 'Img2 binding', Img2.posit) )
+		else:
+			setattr(Img1, 'posit', 'left')
+			logging.debug('%20s [%s]' % ( 'Img1 binding', Img1.posit) )
+			setattr(Img2, 'posit', 'right')
+			logging.debug('%20s [%s]' % ( 'Img2 binding', Img2.posit) )
 
 
 def checkContain(Img, tmpMergin):
-	logging.debug('Check Imgfile contain Screen. [%s]' % Img.posit)
+	logging.debug('Check Imgfile contain %s Screen.' % Img.posit)
 
 	if ( Img.posit == 'left' ):
 		# lScreenに、Imgがおさまる
@@ -148,7 +137,7 @@ def downsizeImg(Img, tmpMergin):
 		tmpScreen = Ws.lScreen
 	if ( Img.posit == 'right' ):
 		tmpScreen = Ws.rScreen
-	logging.debug('Convert Imgfile with Screen. [%s]' % Img.posit)
+	logging.debug('Convert Imgfile with %s Screen.' % Img.posit)
 
 	tmpMerginW = tmpMergin[0] + tmpMergin[1]
 	logging.debug('%20s [%s]' % ( 'width mergin', tmpMerginW) )
@@ -195,7 +184,7 @@ def allocateImg(Img):
 		tmpScreen = Ws.rScreen
 		tmpAlign = Option.getRAlign()
 		tmpValign = Option.getRValign()
-	logging.debug('Allocate Imgfile to Screen. [%s]' % Img.posit)
+	logging.debug('Allocate Imgfile to %s Screen.' % Img.posit)
 
 	# 画面中央と画像中央との距離をタプルで得る
 	centerDistance = (abs( Img.center.distanceX(tmpScreen.center) ) , abs( Img.center.distanceY(tmpScreen.center) ) )
@@ -225,6 +214,8 @@ def allocateImg(Img):
 
 
 def mergeWallpaper(bkImg, Img):
+	logging.debug('Merge Imgfile to %s Screen.' % Img.posit)
+
 	if (Img.posit == 'right'):
 		Img.start.x += Ws.lScreen.Size.w
 		Img.end.x += Ws.lScreen.Size.w
@@ -233,6 +224,7 @@ def mergeWallpaper(bkImg, Img):
 
 
 def optimizeWallpaper(Img1, Img2):
+	logging.debug('Optimizing ... wallpapaer.')
 	checkImgType(Img1, Img2)
 
 	bindingImgToScreen(Img1, Img2)
@@ -272,10 +264,13 @@ def setWall(bkImg, tmpPath=None):
 		tmpPath = tmpPath.replace('(','\\(')
 		tmpPath = tmpPath.replace(')','\\)')
 
-	gconftool="/usr/bin/gconftool-2 --type string --set '/desktop/gnome/background/picture_filename' %s" % tmpPath
+#	gclient = gconf.client_get_default()
+#	Gval = gconf.Value(gconf.VALUE_STRING)
+#	Gval.set_string(tmpPath)
+#	gclient.set('/desktop/gnome/background/picture_filename', Gval)
+	gconftool="/usr/bin/gconftool-2 --type string --set '/desktop/gnome/background/picture_filename' %s" % os.path.abspath(tmpPath)
+	os.system(gconftool)
 	logging.debug('Change wallpaper to current Workspace [%s].' % tmpPath)
-	output = commands.getoutput(gconftool)
-
 
 
 def daemonize():
@@ -321,6 +316,27 @@ if __name__ == "__main__":
 	from WallpaperOptimizer.WoChangerDir import WoChangerDir
 	from WallpaperOptimizer.Imaging.WoWorkSpace import WoWorkSpace
 	from WallpaperOptimizer.Imaging.WoImgFile import WoImgFile
+
+	dbusAddr = commands.getoutput('dbus-launch --sh-syntax | grep unix:abstract')
+	dbusPid = commands.getoutput('dbus-launch --sh-syntax | grep DBUS_SESSION_BUS_PID')
+	dbusAddr = dbusAddr.rstrip(";")
+	dbusPid = dbusPid.rstrip("';")
+#	print 'launch syntax', dbusAddr
+#	print 'launch syntax', dbusPid
+#	output = commands.getoutput('export ' + dbusAddr)
+#	print output
+#	output = commands.getoutput('export ' + dbusPid)
+#	print output
+#	print 'echo', commands.getoutput('echo $DBUS_SESSION_BUS_ADDRESS')
+#	print 'echo', commands.getoutput('echo $DBUS_SESSION_BUS_PID')
+#	print '変更前', os.environ['DBUS_SESSION_BUS_ADDRESS']
+#	print '変更前', os.environ['DBUS_SESSION_BUS_PID']
+	dbusAddr = dbusAddr.rstrip("'").split('=')
+	dbusPid = dbusPid.split('=')
+	os.environ['DBUS_SESSION_BUS_ADDRESS'] = dbusAddr[1].lstrip("'") + '=' + dbusAddr[2] + '=' + dbusAddr[3]
+	os.environ['DBUS_SESSION_BUS_PID'] = dbusPid[1]
+#	print '変更後', os.environ['DBUS_SESSION_BUS_ADDRESS']
+#	print '変更後', os.environ['DBUS_SESSION_BUS_PID']
 
 # analize commandline option
 	Option = WoOption()
@@ -373,6 +389,7 @@ if __name__ == "__main__":
 
 
 # initialize config
+	# 条件弱い？
 	if (Option.getLSize() == None):
 		# config set from configfile
 		configfile = '~/.wallpositrc'

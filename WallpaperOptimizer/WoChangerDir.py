@@ -29,8 +29,9 @@ class WoChangerDir(object):
 		self.maxlen = len(self.imgfiles)
 
 		if (self.maxlen < 1):
-			print 'Warning: %s に画像ファイルがありません' % srcdir
-			sys.exit(2)
+#			print 'Warning: %s に画像ファイルがありません' % srcdir
+#			sys.exit(2)
+			return False
 
 
 if __name__ == "__main__":
