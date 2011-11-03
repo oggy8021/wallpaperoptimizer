@@ -13,8 +13,10 @@ import subprocess
 def ConfigSettingToWorkSpace():
 	logging.debug('Config Setting To WorkSpace().')
 
-	Ws.lScreen.setSize(Config.lDisplay.getConfig()['width'], Config.lDisplay.getConfig()['height'])
-	Ws.rScreen.setSize(Config.rDisplay.getConfig()['width'], Config.rDisplay.getConfig()['height'])
+	Ws.lScreen.setSize(Config.lDisplay.getConfig()['width']
+		, Config.lDisplay.getConfig()['height'])
+	Ws.rScreen.setSize(Config.rDisplay.getConfig()['width']
+		, Config.rDisplay.getConfig()['height'])
 
 	if ( Ws.Size.w < (Ws.lScreen.Size.w + Ws.rScreen.Size.w) ):
 		# TODO: Errorクラス
@@ -60,7 +62,6 @@ def ConfigSettingToWorkSpace():
 if __name__ == "__main__":
 	from WallpaperOptimizer.WoOption import WoOption
 	from WallpaperOptimizer.WoConfig import WoConfig
-	from WallpaperOptimizer.WoChangerDir import WoChangerDir
 	from WallpaperOptimizer.WoCore import WoCore
 	from WallpaperOptimizer.Imaging.WoWorkSpace import WoWorkSpace
 
@@ -94,7 +95,8 @@ if __name__ == "__main__":
 		 % ( 'valign', Option.getLValign(), Option.getRValign() ))
 	logging.debug('%20s [%d,%d,%d,%d]'
 		 % ( 'mergin'
-		 , Option.getLMergin(), Option.getRMergin(), Option.getTopMergin(), Option.getBtmMergin() ))
+		 , Option.getLMergin(), Option.getRMergin()
+		 , Option.getTopMergin(), Option.getBtmMergin() ))
 	logging.debug('%20s [%s]'
 		 % ( 'fixed', Option.getFixed() ))
 	logging.debug('%20s [%s,%s]'
@@ -162,6 +164,7 @@ if __name__ == "__main__":
 
 	Ws = ConfigSettingToWorkSpace()
 
+# initialize core
 	Core = WoCore(logging)
 
 	if (Option.getDaemonize()):

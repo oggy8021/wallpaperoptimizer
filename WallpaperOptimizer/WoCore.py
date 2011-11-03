@@ -9,17 +9,11 @@ import time
 import logging
 import subprocess
 
-from WallpaperOptimizer.WoOption import WoOption
-from WallpaperOptimizer.WoConfig import WoConfig
 from WallpaperOptimizer.WoChangerDir import WoChangerDir
-from WallpaperOptimizer.Imaging.WoWorkSpace import WoWorkSpace
 from WallpaperOptimizer.Imaging.WoImgFile import WoImgFile
 
 
 class WoCore(object):
-
-	def __init__(self, logger):
-		self.logging = logger
 
 	def checkImgType(self, Ws, Img1, Img2):
 		self.logging.debug('Checking imgType as Imgfile.')
@@ -287,3 +281,7 @@ class WoCore(object):
 
 		if (Option.getSetWall()):
 			self.setWall(bkImg)
+
+
+	def __init__(self, logger):
+		self.logging = logger
