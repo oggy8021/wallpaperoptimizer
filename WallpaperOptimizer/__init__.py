@@ -1,4 +1,4 @@
 # -*- coding: utf-8 -*-
 
 # module WallpaperOptimizer __init__.py
-__all__=["WoConfig","WoOption","debuggy"]
+__all__=["WoCore","WoChangerDir","WoConfig","WoOption","debuggy"]
