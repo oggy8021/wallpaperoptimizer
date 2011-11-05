@@ -10,7 +10,7 @@ import commands
 import logging
 import subprocess
 
-def ConfigSettingToWorkSpace():
+def ConfigSetToWorkSpace():
 	logging.debug('Config Setting To WorkSpace().')
 
 	Ws.lScreen.setSize(Config.lDisplay.getConfig()['width']
@@ -162,7 +162,7 @@ if __name__ == "__main__":
 			 , Config.rDisplay.getConfig()['srcdir'] ))
 
 
-	Ws = ConfigSettingToWorkSpace()
+	Ws = ConfigSetToWorkSpace()
 
 # initialize core
 	Core = WoCore(logging)

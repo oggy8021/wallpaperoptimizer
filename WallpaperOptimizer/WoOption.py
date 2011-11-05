@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from optparse import Option, OptionParser, OptionValueError
+from optparse import Option, OptionGroup, OptionParser, OptionValueError
 
 class WoOption(object):
 
@@ -56,38 +56,43 @@ class WoOption(object):
 					, daemonize=False
 					, interval=60)
 
-		parser.add_option("-a", "--align", dest="align", action="multistore"
+		viewgroup = OptionGroup(parser, 'View Options')
+		actiongroup = OptionGroup(parser, 'Action Options')
+
+		viewgroup.add_option("-a", "--align", dest="align", action="multistore"
 					, metavar="left,center,right"
 					, help="horizontal alignment (left, center, right)")
-		parser.add_option("-v", "--valign", dest="valign", action="multistore"
+		viewgroup.add_option("-v", "--valign", dest="valign", action="multistore"
 					, metavar="top,middle,bottom"
 					, help="vertical alignment (top, middle, bottom)")
-		parser.add_option("-m", "--mergin", dest="mergin", action="quatrostore"
+		viewgroup.add_option("-m", "--mergin", dest="mergin", action="quatrostore"
 					, metavar="pixel,pixel,pixel,pixel"
 					, help="left/right/top/bottom mergin for WorkSpace")
-		parser.add_option("-f", "--fixed", dest="fixed", action="store_true"
+		viewgroup.add_option("-f", "--fixed", dest="fixed", action="store_true"
 					, help="fixed imgfile allocation (nothing: Optimize)")
-		parser.add_option("-d", "--display", dest="size", action="doublestore"
+		viewgroup.add_option("-d", "--display", dest="size", action="doublestore"
 					, metavar="pixel x pixel"
 					, help="left/right Display size")
-		parser.add_option("-b", "--bgcolor", dest="bgcolor", action="store", type="string"
+		viewgroup.add_option("-b", "--bgcolor", dest="bgcolor", action="store", type="string"
 					, metavar="color, 0xRRGGBB"
 					, help="left/right Wallpaper base color (default: black)")
-		parser.add_option("-S", "--srcdir", dest="srcdir", action="doublestore", type="string"
+		viewgroup.add_option("-s", "--srcdir", dest="srcdir", action="doublestore", type="string"
 					, metavar="PATH,PATH"
 					, help="wallpaper src dir")
-		parser.add_option("-s", "--save", dest="save", action="store"
+		actiongroup.add_option("-S", "--save", dest="save", action="store"
 					, metavar="PATH"
 					, help="Save Wallpaper to PATH")
-		parser.add_option("-w", "--wall", dest="wall", action="store_true"
+		actiongroup.add_option("-W", "--wall", dest="wall", action="store_true"
 					, help="Created wallpaper set to current WorkSpace")
-		parser.add_option("-V", "--verbose", dest="verbose", action="store_true"
+		actiongroup.add_option("-V", "--verbose", dest="verbose", action="store_true"
 					, help="verbose")
-		parser.add_option("-D", "--daemon", dest="daemonize", action="store_true"
+		actiongroup.add_option("-D", "--daemon", dest="daemonize", action="store_true"
 					, help="daemonize (default: False)")
-		parser.add_option("-i", "--interval", dest="interval", action="store", type="int"
+		actiongroup.add_option("-i", "--interval", dest="interval", action="store", type="int"
 					, metavar="sec"
 					, help="change wallpaper interval (default: 60sec)")
+		parser.add_option_group(viewgroup)
+		parser.add_option_group(actiongroup)
 
 		(self.opts, self.args) = parser.parse_args()
 		if (len(self.args) < 1 and self.opts.daemonize == False):
@@ -175,13 +180,13 @@ class WoOption(object):
 	def getArgs(self):
 		return self.args
 
-if __name__ == "__main__":
-	wOption = WoOption()
+#if __name__ == "__main__":
+#	wOption = WoOption()
 #	print wOption.getLAlign()
 #	print wOption.getRAlign()
 #	print wOption.getLSize()
 #	print wOption.getRSize()
 #	print wOption.getBgcolor()
-	print wOption.getLSrcdir()
-	print wOption.getRSrcdir()
+#	print wOption.getLSrcdir()
+#	print wOption.getRSrcdir()
 #	print wOption.getVerbose()
