@@ -10,6 +10,11 @@ import commands
 import logging
 import subprocess
 
+import pygtk
+pygtk.require("2.0")
+import gtk
+import gtk.glade
+
 def ConfigSetToWorkSpace():
 	logging.debug('Config Setting To WorkSpace().')
 
@@ -57,6 +62,63 @@ def ConfigSetToWorkSpace():
 		 	 % ( 'display type' , Ws.lScreen.displayType, Ws.rScreen.displayType ))
 
 	return Ws
+
+
+class wallpaperoptimizer(object):
+
+	mapdic = dict()
+	mapdic['tglUpperL'] = 'tglLowerL'
+	mapdic['tglPushLeftL'] = 'tglPushRightL'
+	mapdic['tglLowerL'] = 'tglUpperL'
+	mapdic['tglPushRightL'] = 'tglPushLeftL'
+	mapdic['tglUpperR'] = 'tglLowerR'
+	mapdic['tglPushLeftR'] = 'tglPushRightR'
+	mapdic['tglLowerR'] = 'tglUpperR'
+	mapdic['tglPushRightR'] = 'tglPushLeftR'
+
+	def __init__(self):
+		self.gladefile = os.path.abspath("./WallpaperOptimizer/glade/wallpositapplet.glade")
+		self.wTree = gtk.glade.XML(self.gladefile)
+		self.window = self.wTree.get_widget("WallPosit_MainWindow")
+
+		dic = {
+			#ハンドラもまとめられる？
+			"on_tglUpperL_pressed" : self.tglBtn_pressed,
+			"on_tglUpperL_toggled" : self.tglBtn_toggled,
+			"on_tglLowerL_pressed" : self.tglBtn_pressed,
+			"on_tglLowerL_toggled" : self.tglBtn_toggled,
+			"on_tglPushLeftL_pressed" : self.tglBtn_pressed,
+			"on_tglPushLeftL_toggled" : self.tglBtn_toggled,
+			"on_tglPushRightL_pressed" : self.tglBtn_pressed,
+			"on_tglPushRightL_toggled" : self.tglBtn_toggled,
+			"on_tglUpperR_pressed" : self.tglBtn_pressed,
+			"on_tglUpperR_toggled" : self.tglBtn_toggled,
+			"on_tglLowerR_pressed" : self.tglBtn_pressed,
+			"on_tglLowerR_toggled" : self.tglBtn_toggled,
+			"on_tglPushLeftR_pressed" : self.tglBtn_pressed,
+			"on_tglPushLeftR_toggled" : self.tglBtn_toggled,
+			"on_tglPushRightR_pressed" : self.tglBtn_pressed,
+			"on_tglPushRightR_toggled" : self.tglBtn_toggled,
+			"on_WallPosit_MainWindow_destroy" : gtk.main_quit,
+			"on_btnQuit_clicked" : gtk.main_quit
+			}
+		self.wTree.signal_autoconnect(dic)
+
+	def tglBtn_pressed(self, widget):
+		vsName = wallpaperoptimizer.mapdic[widget.get_name()]
+		if (self.wTree.get_widget(vsName).get_active()):
+			self.wTree.get_widget(vsName).set_active(False)
+
+	def tglBtn_toggled(self, widget):
+		if (widget.get_active()):
+			print "%s Enable" % widget.get_name()
+		else:
+			print "%s Disable" % widget.get_name()
+
+
+def goApplet():
+	wallpaperoptimizer()
+	gtk.main()
 
 
 if __name__ == "__main__":
@@ -167,7 +229,12 @@ if __name__ == "__main__":
 # initialize core
 	Core = WoCore(logging)
 
-	if (Option.getDaemonize()):
+	if (Option.getSetWall() == False
+		 and Option.getSavePath() == None
+		 and Option.getDaemonize() == False):
+		logging.debug('Running ... applet mode.')
+		goApplet()
+	elif (Option.getDaemonize()):
 		logging.debug('Running ... daemonize mode.')
 		Core.daemonize(Option, Config, Ws)
 	else:

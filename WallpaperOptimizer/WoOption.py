@@ -50,15 +50,13 @@ class WoOption(object):
 					, size=[None, None]
 					, bgcolor="black"
 					, srcdir=['.','.']
+					, verbose=False
 					, save=None
 					, wall=False
-					, verbose=False
 					, daemonize=False
 					, interval=60)
 
 		viewgroup = OptionGroup(parser, 'View Options')
-		actiongroup = OptionGroup(parser, 'Action Options')
-
 		viewgroup.add_option("-a", "--align", dest="align", action="multistore"
 					, metavar="left,center,right"
 					, help="horizontal alignment (left, center, right)")
@@ -79,23 +77,27 @@ class WoOption(object):
 		viewgroup.add_option("-s", "--srcdir", dest="srcdir", action="doublestore", type="string"
 					, metavar="PATH,PATH"
 					, help="wallpaper src dir")
+
+		actiongroup = OptionGroup(parser, 'Action Options')
+		actiongroup.add_option("-V", "--verbose", dest="verbose", action="store_true"
+					, help="verbose")
 		actiongroup.add_option("-S", "--save", dest="save", action="store"
 					, metavar="PATH"
 					, help="Save Wallpaper to PATH")
 		actiongroup.add_option("-W", "--wall", dest="wall", action="store_true"
 					, help="Created wallpaper set to current WorkSpace")
-		actiongroup.add_option("-V", "--verbose", dest="verbose", action="store_true"
-					, help="verbose")
 		actiongroup.add_option("-D", "--daemon", dest="daemonize", action="store_true"
 					, help="daemonize (default: False)")
 		actiongroup.add_option("-i", "--interval", dest="interval", action="store", type="int"
 					, metavar="sec"
 					, help="change wallpaper interval (default: 60sec)")
+
 		parser.add_option_group(viewgroup)
 		parser.add_option_group(actiongroup)
 
 		(self.opts, self.args) = parser.parse_args()
-		if (len(self.args) < 1 and self.opts.daemonize == False):
+		if (len(self.args) < 1 and
+				 self.opts.save != None or self.opts.wall == True):
 			parser.error("Please set imgfile parameter.")
 
 		for m_align in self.opts.align:
