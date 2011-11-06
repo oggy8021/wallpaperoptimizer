@@ -1,7 +1,4 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
-# ./wallpaperoptimizer  ../2560x1920.jpg ../1500x844.jpg -w
 
 import sys
 import os.path

@@ -279,10 +279,9 @@
 			  <property name="focus_on_click">True</property>
 			  <property name="active">False</property>
 			  <property name="inconsistent">False</property>
-			  <signal name="clicked" handler="on_tglUpperL_clicked" last_modification_time="Sat, 05 Nov 2011 13:57:39 GMT"/>
-			  <signal name="toggled" handler="on_tglUpperL_toggled" last_modification_time="Sat, 05 Nov 2011 14:16:03 GMT"/>
-			  <signal name="pressed" handler="on_tglUpperL_pressed" last_modification_time="Sat, 05 Nov 2011 15:49:14 GMT"/>
-			  <signal name="activate" handler="on_tglUpperL_activate" last_modification_time="Sat, 05 Nov 2011 15:49:37 GMT"/>
+			  <signal name="toggled" handler="on_tglBtn_toggled" last_modification_time="Sat, 05 Nov 2011 16:27:32 GMT"/>
+			  <signal name="pressed" handler="on_tglBtn_pressed" last_modification_time="Sat, 05 Nov 2011 16:31:17 GMT"/>
+			  <signal name="released" handler="on_tglBtn_released" last_modification_time="Sun, 06 Nov 2011 00:46:03 GMT"/>
 			</widget>
 			<packing>
 			  <property name="padding">0</property>
@@ -301,8 +300,9 @@
 			  <property name="focus_on_click">True</property>
 			  <property name="active">False</property>
 			  <property name="inconsistent">False</property>
-			  <signal name="toggled" handler="on_tglUpperR_toggled" last_modification_time="Sat, 05 Nov 2011 16:02:53 GMT"/>
-			  <signal name="pressed" handler="on_tglUpperR_pressed" last_modification_time="Sat, 05 Nov 2011 16:02:58 GMT"/>
+			  <signal name="toggled" handler="on_tglBtn_toggled" last_modification_time="Sat, 05 Nov 2011 16:32:50 GMT"/>
+			  <signal name="pressed" handler="on_tglBtn_pressed" last_modification_time="Sat, 05 Nov 2011 16:32:43 GMT"/>
+			  <signal name="released" handler="on_tglBtn_released" last_modification_time="Sun, 06 Nov 2011 00:58:05 GMT"/>
 			</widget>
 			<packing>
 			  <property name="padding">0</property>
@@ -340,8 +340,9 @@
 			      <property name="focus_on_click">True</property>
 			      <property name="active">False</property>
 			      <property name="inconsistent">False</property>
-			      <signal name="pressed" handler="on_tglPushLeftL_pressed" last_modification_time="Sat, 05 Nov 2011 16:01:41 GMT"/>
-			      <signal name="toggled" handler="on_tglPushLeftL_toggled" last_modification_time="Sat, 05 Nov 2011 16:02:21 GMT"/>
+			      <signal name="pressed" handler="on_tglBtn_pressed" last_modification_time="Sat, 05 Nov 2011 16:31:28 GMT"/>
+			      <signal name="toggled" handler="on_tglBtn_toggled" last_modification_time="Sat, 05 Nov 2011 16:31:39 GMT"/>
+			      <signal name="released" handler="on_tglBtn_released" last_modification_time="Sun, 06 Nov 2011 00:57:22 GMT"/>
 			    </widget>
 			    <packing>
 			      <property name="padding">0</property>
@@ -376,8 +377,9 @@
 			      <property name="focus_on_click">True</property>
 			      <property name="active">False</property>
 			      <property name="inconsistent">False</property>
-			      <signal name="pressed" handler="on_tglPushRightL_pressed" last_modification_time="Sat, 05 Nov 2011 16:01:49 GMT"/>
-			      <signal name="toggled" handler="on_tglPushRightL_toggled" last_modification_time="Sat, 05 Nov 2011 16:02:30 GMT"/>
+			      <signal name="pressed" handler="on_tglBtn_pressed" last_modification_time="Sat, 05 Nov 2011 16:31:50 GMT"/>
+			      <signal name="toggled" handler="on_tglBtn_toggled" last_modification_time="Sat, 05 Nov 2011 16:32:00 GMT"/>
+			      <signal name="released" handler="on_tglBtn_released" last_modification_time="Sun, 06 Nov 2011 00:57:36 GMT"/>
 			    </widget>
 			    <packing>
 			      <property name="padding">0</property>
@@ -409,8 +411,9 @@
 			      <property name="focus_on_click">True</property>
 			      <property name="active">False</property>
 			      <property name="inconsistent">False</property>
-			      <signal name="pressed" handler="on_tglPushLeftR_pressed" last_modification_time="Sat, 05 Nov 2011 16:02:08 GMT"/>
-			      <signal name="toggled" handler="on_tglPushLeftR_toggled" last_modification_time="Sat, 05 Nov 2011 16:02:43 GMT"/>
+			      <signal name="pressed" handler="on_tglBtn_pressed" last_modification_time="Sat, 05 Nov 2011 16:32:17 GMT"/>
+			      <signal name="toggled" handler="on_tglBtn_toggled" last_modification_time="Sat, 05 Nov 2011 16:32:26 GMT"/>
+			      <signal name="released" handler="on_tglBtn_released" last_modification_time="Sun, 06 Nov 2011 00:57:51 GMT"/>
 			    </widget>
 			    <packing>
 			      <property name="padding">0</property>
@@ -445,8 +448,9 @@
 			      <property name="focus_on_click">True</property>
 			      <property name="active">False</property>
 			      <property name="inconsistent">False</property>
-			      <signal name="toggled" handler="on_tglPushRightR_toggled" last_modification_time="Sat, 05 Nov 2011 16:03:07 GMT"/>
-			      <signal name="pressed" handler="on_tglPushRightR_pressed" last_modification_time="Sat, 05 Nov 2011 16:03:13 GMT"/>
+			      <signal name="toggled" handler="on_tglBtn_toggled" last_modification_time="Sat, 05 Nov 2011 16:33:03 GMT"/>
+			      <signal name="pressed" handler="on_tglBtn_pressed" last_modification_time="Sat, 05 Nov 2011 16:33:14 GMT"/>
+			      <signal name="released" handler="on_tglBtn_released" last_modification_time="Sun, 06 Nov 2011 00:58:22 GMT"/>
 			    </widget>
 			    <packing>
 			      <property name="padding">0</property>
@@ -485,9 +489,9 @@
 			  <property name="focus_on_click">True</property>
 			  <property name="active">False</property>
 			  <property name="inconsistent">False</property>
-			  <signal name="toggled" handler="on_tglLowerL_toggled" last_modification_time="Sat, 05 Nov 2011 15:13:20 GMT"/>
-			  <signal name="clicked" handler="on_tglLowerL_clicked" last_modification_time="Sat, 05 Nov 2011 15:13:26 GMT"/>
-			  <signal name="pressed" handler="on_tglLowerL_pressed" last_modification_time="Sat, 05 Nov 2011 15:49:49 GMT"/>
+			  <signal name="toggled" handler="on_tglBtn_toggled" last_modification_time="Sat, 05 Nov 2011 16:28:10 GMT"/>
+			  <signal name="pressed" handler="on_tglBtn_pressed" last_modification_time="Sat, 05 Nov 2011 16:30:59 GMT"/>
+			  <signal name="released" handler="on_tglBtn_released" last_modification_time="Sun, 06 Nov 2011 00:46:17 GMT"/>
 			</widget>
 			<packing>
 			  <property name="padding">0</property>
@@ -506,8 +510,9 @@
 			  <property name="focus_on_click">True</property>
 			  <property name="active">False</property>
 			  <property name="inconsistent">False</property>
-			  <signal name="toggled" handler="on_tglLowerR_toggled" last_modification_time="Sat, 05 Nov 2011 16:03:21 GMT"/>
-			  <signal name="pressed" handler="on_tglLowerR_pressed" last_modification_time="Sat, 05 Nov 2011 16:03:25 GMT"/>
+			  <signal name="toggled" handler="on_tglBtn_toggled" last_modification_time="Sat, 05 Nov 2011 16:33:25 GMT"/>
+			  <signal name="pressed" handler="on_tglBtn_pressed" last_modification_time="Sat, 05 Nov 2011 16:33:33 GMT"/>
+			  <signal name="released" handler="on_tglBtn_released" last_modification_time="Sun, 06 Nov 2011 00:58:37 GMT"/>
 			</widget>
 			<packing>
 			  <property name="padding">0</property>
