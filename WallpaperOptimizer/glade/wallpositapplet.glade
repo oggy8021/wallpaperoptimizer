@@ -86,14 +86,16 @@
 	    <widget class="GtkEntry" id="entTopMergin">
 	      <property name="width_request">50</property>
 	      <property name="visible">True</property>
+	      <property name="can_default">True</property>
 	      <property name="can_focus">True</property>
 	      <property name="editable">True</property>
 	      <property name="visibility">True</property>
 	      <property name="max_length">3</property>
-	      <property name="text" translatable="yes"></property>
+	      <property name="text" translatable="yes">0</property>
 	      <property name="has_frame">True</property>
 	      <property name="invisible_char">•</property>
 	      <property name="activates_default">False</property>
+	      <signal name="activate" handler="on_entMergin_activate" last_modification_time="Sun, 06 Nov 2011 02:40:52 GMT"/>
 	    </widget>
 	    <packing>
 	      <property name="padding">0</property>
@@ -176,14 +178,16 @@
 		<widget class="GtkEntry" id="entLMergin">
 		  <property name="width_request">50</property>
 		  <property name="visible">True</property>
+		  <property name="can_default">True</property>
 		  <property name="can_focus">True</property>
 		  <property name="editable">True</property>
 		  <property name="visibility">True</property>
 		  <property name="max_length">3</property>
-		  <property name="text" translatable="yes"></property>
+		  <property name="text" translatable="yes">0</property>
 		  <property name="has_frame">True</property>
 		  <property name="invisible_char">•</property>
 		  <property name="activates_default">False</property>
+		  <signal name="activate" handler="on_entMergin_activate" last_modification_time="Sun, 06 Nov 2011 02:58:15 GMT"/>
 		</widget>
 		<packing>
 		  <property name="padding">0</property>
@@ -658,6 +662,7 @@
 			  <property name="active">False</property>
 			  <property name="inconsistent">False</property>
 			  <property name="draw_indicator">True</property>
+			  <signal name="toggled" handler="on_radFixed_toggled" last_modification_time="Sun, 06 Nov 2011 03:09:18 GMT"/>
 			</widget>
 			<packing>
 			  <property name="padding">0</property>
@@ -678,6 +683,7 @@
 			  <property name="inconsistent">False</property>
 			  <property name="draw_indicator">True</property>
 			  <property name="group">radFixed</property>
+			  <signal name="toggled" handler="on_radFixed_toggled" last_modification_time="Sun, 06 Nov 2011 03:10:01 GMT"/>
 			</widget>
 			<packing>
 			  <property name="padding">0</property>
@@ -736,14 +742,16 @@
 		    <widget class="GtkEntry" id="entRMergin">
 		      <property name="width_request">50</property>
 		      <property name="visible">True</property>
+		      <property name="can_default">True</property>
 		      <property name="can_focus">True</property>
 		      <property name="editable">True</property>
 		      <property name="visibility">True</property>
 		      <property name="max_length">3</property>
-		      <property name="text" translatable="yes"></property>
+		      <property name="text" translatable="yes">0</property>
 		      <property name="has_frame">True</property>
 		      <property name="invisible_char">•</property>
 		      <property name="activates_default">False</property>
+		      <signal name="activate" handler="on_entMergin_activate" last_modification_time="Sun, 06 Nov 2011 02:57:45 GMT"/>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
@@ -833,14 +841,16 @@
 	    <widget class="GtkEntry" id="entBtmMergin">
 	      <property name="width_request">50</property>
 	      <property name="visible">True</property>
+	      <property name="can_default">True</property>
 	      <property name="can_focus">True</property>
 	      <property name="editable">True</property>
 	      <property name="visibility">True</property>
 	      <property name="max_length">3</property>
-	      <property name="text" translatable="yes"></property>
+	      <property name="text" translatable="yes">0</property>
 	      <property name="has_frame">True</property>
 	      <property name="invisible_char">•</property>
 	      <property name="activates_default">False</property>
+	      <signal name="activate" handler="on_entMergin_activate" last_modification_time="Sun, 06 Nov 2011 02:58:03 GMT"/>
 	    </widget>
 	    <packing>
 	      <property name="padding">0</property>
@@ -915,6 +925,7 @@
 	      <property name="use_stock">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
 	      <property name="focus_on_click">True</property>
+	      <signal name="clicked" handler="on_btnSetColor_clicked" last_modification_time="Sun, 06 Nov 2011 03:51:34 GMT"/>
 	    </widget>
 	    <packing>
 	      <property name="padding">0</property>
@@ -959,14 +970,16 @@
 	    <widget class="GtkEntry" id="entInterval">
 	      <property name="width_request">50</property>
 	      <property name="visible">True</property>
+	      <property name="can_default">True</property>
 	      <property name="can_focus">True</property>
 	      <property name="editable">True</property>
 	      <property name="visibility">True</property>
 	      <property name="max_length">3</property>
-	      <property name="text" translatable="yes"></property>
+	      <property name="text" translatable="yes">60</property>
 	      <property name="has_frame">True</property>
 	      <property name="invisible_char">•</property>
 	      <property name="activates_default">False</property>
+	      <signal name="activate" handler="on_entInterval_activate" last_modification_time="Sun, 06 Nov 2011 03:01:27 GMT"/>
 	    </widget>
 	    <packing>
 	      <property name="padding">0</property>
@@ -1084,6 +1097,74 @@
 	</packing>
       </child>
     </widget>
+  </child>
+</widget>
+
+<widget class="GtkColorSelectionDialog" id="ColorSelectionDialog">
+  <property name="border_width">5</property>
+  <property name="visible">True</property>
+  <property name="can_default">True</property>
+  <property name="title" translatable="yes">色の選択</property>
+  <property name="type">GTK_WINDOW_POPUP</property>
+  <property name="window_position">GTK_WIN_POS_CENTER</property>
+  <property name="modal">False</property>
+  <property name="resizable">False</property>
+  <property name="destroy_with_parent">False</property>
+  <property name="decorated">True</property>
+  <property name="skip_taskbar_hint">False</property>
+  <property name="skip_pager_hint">False</property>
+  <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
+  <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
+  <property name="focus_on_map">True</property>
+  <property name="urgency_hint">False</property>
+  <signal name="destroy" handler="on_ColorSelectionDialog_destroy" last_modification_time="Sun, 06 Nov 2011 04:12:10 GMT"/>
+
+  <child internal-child="cancel_button">
+    <widget class="GtkButton" id="btnCancelColor">
+      <property name="visible">True</property>
+      <property name="can_default">True</property>
+      <property name="can_focus">True</property>
+      <property name="relief">GTK_RELIEF_NORMAL</property>
+      <property name="focus_on_click">True</property>
+      <signal name="clicked" handler="on_btnCancelColor_clicked" last_modification_time="Sun, 06 Nov 2011 04:12:49 GMT"/>
+    </widget>
+  </child>
+
+  <child internal-child="ok_button">
+    <widget class="GtkButton" id="btnOkColor">
+      <property name="visible">True</property>
+      <property name="can_default">True</property>
+      <property name="can_focus">True</property>
+      <property name="relief">GTK_RELIEF_NORMAL</property>
+      <property name="focus_on_click">True</property>
+      <signal name="clicked" handler="on_btnOkColor_clicked" last_modification_time="Sun, 06 Nov 2011 04:12:38 GMT"/>
+    </widget>
+  </child>
+
+  <child internal-child="help_button">
+    <widget class="GtkButton" id="btnHelpColor">
+      <property name="visible">True</property>
+      <property name="can_default">True</property>
+      <property name="can_focus">True</property>
+      <property name="relief">GTK_RELIEF_NORMAL</property>
+      <property name="focus_on_click">True</property>
+    </widget>
+  </child>
+
+  <child internal-child="color_selection">
+    <widget class="GtkColorSelection" id="color_selection">
+      <property name="border_width">5</property>
+      <property name="visible">True</property>
+      <property name="can_default">True</property>
+      <property name="has_opacity_control">False</property>
+      <property name="has_palette">True</property>
+      <signal name="color_changed" handler="on_color_selection_color_changed" last_modification_time="Sun, 06 Nov 2011 04:42:59 GMT"/>
+    </widget>
+    <packing>
+      <property name="padding">0</property>
+      <property name="expand">True</property>
+      <property name="fill">True</property>
+    </packing>
   </child>
 </widget>
 
