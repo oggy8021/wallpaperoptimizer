@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 # ~/wallpositrc
-#1920x1080,left,black
-#1280x1024,right,black
+#1920x1080,left,srcdir
+#1280x1024,right,srcdir
 
 import sys
 import os.path
