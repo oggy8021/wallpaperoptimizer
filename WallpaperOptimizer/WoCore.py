@@ -207,7 +207,7 @@ class WoCore(object):
 		self.allocateImg(Option, Ws, Img1)
 		self.allocateImg(Option, Ws, Img2)
 
-		bkImg = WoImgFile('', Ws.Size.w, Ws.Size.h, Config.lDisplay.getConfig()['bgcolor'])
+		bkImg = WoImgFile('', Ws.Size.w, Ws.Size.h, Option.getBgcolor())
 
 		self.mergeWallpaper(Ws, bkImg, Img1)
 		self.mergeWallpaper(Ws, bkImg, Img2)

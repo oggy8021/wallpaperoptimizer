@@ -127,12 +127,12 @@ if __name__ == "__main__":
 
 # initialize config
 	# 条件弱い？
-	if (Option.getLSize() == None):
+	if (Option.getLSize() == None and Option.getRSize() == None):
 		# config set from configfile
 		configfile = '~/.wallpositrc'
 		configfile = os.path.expanduser(configfile)
 		if (os.path.exists(configfile)):
-			Config = WoConfig(configfile, None, None, Option.getBgcolor())
+			Config = WoConfig(configfile, None, None)
 			logging.debug('Load configfile [%s].' % configfile)
 		else:
 			logging.error('** Not exists configfile [%s]. ' % configfile)
@@ -140,7 +140,10 @@ if __name__ == "__main__":
 		logging.debug('Config set from configfile.')
 	else:
 		# config set from commandline option
-		Config = WoConfig(None, Option.getLSize(), Option.getRSize(), Option.getBgcolor(), [Option.getLSrcdir(), Option.getRSrcdir()])
+		Config = WoConfig(None
+				, Option.getLSize()
+				, Option.getRSize()
+				, [Option.getLSrcdir(), Option.getRSrcdir()])
 		logging.debug('Config set from commandline option.')
 
 	logging.debug('%20s [%s,%s]'
@@ -152,9 +155,6 @@ if __name__ == "__main__":
 	logging.debug('%20s [%s,%s]'
 			 % ( 'position'
 			 , Config.lDisplay.getConfig()['posit'], Config.rDisplay.getConfig()['posit'] ))
-	logging.debug('%20s [%s,%s]'
-			 % ( 'bgcolor'
-			 , Config.lDisplay.getConfig()['bgcolor'], Config.rDisplay.getConfig()['bgcolor'] ))
 	logging.debug('%20s [%s]'
 			 % ( 'srcdir to left'
 			 , Config.lDisplay.getConfig()['srcdir'] ))

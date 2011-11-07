@@ -73,7 +73,7 @@ class WoOption(object):
 					, help="left/right Display size")
 		viewgroup.add_option("-b", "--bgcolor", dest="bgcolor", action="store", type="string"
 					, metavar="color, 0xRRGGBB"
-					, help="left/right Wallpaper base color (default: black)")
+					, help="Wallpaper base color (default: black)")
 		viewgroup.add_option("-s", "--srcdir", dest="srcdir", action="doublestore", type="string"
 					, metavar="PATH,PATH"
 					, help="wallpaper src dir")
