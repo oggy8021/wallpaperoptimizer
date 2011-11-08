@@ -347,13 +347,14 @@
 			  </child>
 
 			  <child>
-			    <widget class="GtkButton" id="btnImgL">
+			    <widget class="GtkButton" id="btnGetImgL">
 			      <property name="visible">True</property>
 			      <property name="can_focus">True</property>
 			      <property name="label">gtk-open</property>
 			      <property name="use_stock">True</property>
 			      <property name="relief">GTK_RELIEF_NORMAL</property>
 			      <property name="focus_on_click">True</property>
+			      <signal name="clicked" handler="on_btnGetImg_clicked" last_modification_time="Tue, 08 Nov 2011 16:02:11 GMT"/>
 			    </widget>
 			    <packing>
 			      <property name="padding">0</property>
@@ -418,13 +419,14 @@
 			  </child>
 
 			  <child>
-			    <widget class="GtkButton" id="btnImgR">
+			    <widget class="GtkButton" id="btnGetImgR">
 			      <property name="visible">True</property>
 			      <property name="can_focus">True</property>
 			      <property name="label">gtk-open</property>
 			      <property name="use_stock">True</property>
 			      <property name="relief">GTK_RELIEF_NORMAL</property>
 			      <property name="focus_on_click">True</property>
+			      <signal name="clicked" handler="on_btnGetImg_clicked" last_modification_time="Tue, 08 Nov 2011 16:01:58 GMT"/>
 			    </widget>
 			    <packing>
 			      <property name="padding">0</property>
@@ -555,7 +557,7 @@
 		      </child>
 
 		      <child>
-			<widget class="GtkLabel" id="lblLPath">
+			<widget class="GtkLabel" id="lblPathL">
 			  <property name="visible">True</property>
 			  <property name="label" translatable="yes"></property>
 			  <property name="use_underline">False</property>
@@ -605,7 +607,7 @@
 		      </child>
 
 		      <child>
-			<widget class="GtkLabel" id="lblRPath">
+			<widget class="GtkLabel" id="lblPathR">
 			  <property name="visible">True</property>
 			  <property name="label" translatable="yes"></property>
 			  <property name="use_underline">False</property>
@@ -1164,7 +1166,7 @@
   </child>
 </widget>
 
-<widget class="GtkFileChooserDialog" id="SrcDirDialogL">
+<widget class="GtkFileChooserDialog" id="SrcDirDialog">
   <property name="visible">True</property>
   <property name="action">GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER</property>
   <property name="local_only">True</property>
@@ -1184,6 +1186,7 @@
   <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
   <property name="focus_on_map">True</property>
   <property name="urgency_hint">False</property>
+  <signal name="destroy" handler="on_SrcdirDialog_destroy" last_modification_time="Tue, 08 Nov 2011 15:17:10 GMT"/>
 
   <child internal-child="vbox">
     <widget class="GtkVBox" id="dialog-vbox1">
@@ -1206,11 +1209,12 @@
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
 	      <property name="focus_on_click">True</property>
 	      <property name="response_id">-6</property>
+	      <signal name="clicked" handler="on_btnCancel_clicked" last_modification_time="Tue, 08 Nov 2011 14:35:50 GMT"/>
 	    </widget>
 	  </child>
 
 	  <child>
-	    <widget class="GtkButton" id="tbnOpenSrcDirL">
+	    <widget class="GtkButton" id="tbnOpenSrcDir">
 	      <property name="visible">True</property>
 	      <property name="can_default">True</property>
 	      <property name="has_default">True</property>
@@ -1220,76 +1224,7 @@
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
 	      <property name="focus_on_click">True</property>
 	      <property name="response_id">-5</property>
-	    </widget>
-	  </child>
-	</widget>
-	<packing>
-	  <property name="padding">0</property>
-	  <property name="expand">False</property>
-	  <property name="fill">True</property>
-	  <property name="pack_type">GTK_PACK_END</property>
-	</packing>
-      </child>
-    </widget>
-  </child>
-</widget>
-
-<widget class="GtkFileChooserDialog" id="SrcDirDialogR">
-  <property name="visible">True</property>
-  <property name="action">GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER</property>
-  <property name="local_only">True</property>
-  <property name="select_multiple">False</property>
-  <property name="show_hidden">True</property>
-  <property name="do_overwrite_confirmation">False</property>
-  <property name="title" translatable="yes">画像ソース(R)</property>
-  <property name="type">GTK_WINDOW_TOPLEVEL</property>
-  <property name="window_position">GTK_WIN_POS_CENTER_ON_PARENT</property>
-  <property name="modal">False</property>
-  <property name="resizable">True</property>
-  <property name="destroy_with_parent">False</property>
-  <property name="decorated">True</property>
-  <property name="skip_taskbar_hint">False</property>
-  <property name="skip_pager_hint">False</property>
-  <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
-  <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
-  <property name="focus_on_map">True</property>
-  <property name="urgency_hint">False</property>
-
-  <child internal-child="vbox">
-    <widget class="GtkVBox" id="vbox6">
-      <property name="visible">True</property>
-      <property name="homogeneous">False</property>
-      <property name="spacing">24</property>
-
-      <child internal-child="action_area">
-	<widget class="GtkHButtonBox" id="hbuttonbox1">
-	  <property name="visible">True</property>
-	  <property name="layout_style">GTK_BUTTONBOX_END</property>
-
-	  <child>
-	    <widget class="GtkButton" id="btnCancelSrcDirR">
-	      <property name="visible">True</property>
-	      <property name="can_default">True</property>
-	      <property name="can_focus">True</property>
-	      <property name="label">gtk-cancel</property>
-	      <property name="use_stock">True</property>
-	      <property name="relief">GTK_RELIEF_NORMAL</property>
-	      <property name="focus_on_click">True</property>
-	      <property name="response_id">-6</property>
-	    </widget>
-	  </child>
-
-	  <child>
-	    <widget class="GtkButton" id="btnOkSrcDirR">
-	      <property name="visible">True</property>
-	      <property name="can_default">True</property>
-	      <property name="has_default">True</property>
-	      <property name="can_focus">True</property>
-	      <property name="label">gtk-open</property>
-	      <property name="use_stock">True</property>
-	      <property name="relief">GTK_RELIEF_NORMAL</property>
-	      <property name="focus_on_click">True</property>
-	      <property name="response_id">-5</property>
+	      <signal name="clicked" handler="on_btnOpen_clicked" last_modification_time="Tue, 08 Nov 2011 14:35:39 GMT"/>
 	    </widget>
 	  </child>
 	</widget>
@@ -1815,7 +1750,7 @@
 		      <property name="use_stock">True</property>
 		      <property name="relief">GTK_RELIEF_NORMAL</property>
 		      <property name="focus_on_click">True</property>
-		      <signal name="clicked" handler="on_btnOpenSrcdirL_clicked" last_modification_time="Mon, 07 Nov 2011 14:47:56 GMT"/>
+		      <signal name="clicked" handler="on_btnOpenSrcdir_clicked" last_modification_time="Tue, 08 Nov 2011 14:14:16 GMT"/>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
@@ -1889,7 +1824,7 @@
 		      <property name="use_stock">True</property>
 		      <property name="relief">GTK_RELIEF_NORMAL</property>
 		      <property name="focus_on_click">True</property>
-		      <signal name="clicked" handler="on_btnOpenSrcdirR_clicked" last_modification_time="Mon, 07 Nov 2011 14:48:04 GMT"/>
+		      <signal name="clicked" handler="on_btnOpenSrcdir_clicked" last_modification_time="Tue, 08 Nov 2011 14:14:23 GMT"/>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
@@ -1969,7 +1904,7 @@
   </child>
 </widget>
 
-<widget class="GtkFileChooserDialog" id="ImgOpenDialogL">
+<widget class="GtkFileChooserDialog" id="ImgOpenDialog">
   <property name="visible">True</property>
   <property name="action">GTK_FILE_CHOOSER_ACTION_OPEN</property>
   <property name="local_only">True</property>
@@ -1989,6 +1924,7 @@
   <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
   <property name="focus_on_map">True</property>
   <property name="urgency_hint">False</property>
+  <signal name="destroy" handler="on_ImgOpenDialog_destroy" last_modification_time="Tue, 08 Nov 2011 16:07:38 GMT"/>
 
   <child internal-child="vbox">
     <widget class="GtkVBox" id="vbox10">
@@ -2002,7 +1938,7 @@
 	  <property name="layout_style">GTK_BUTTONBOX_END</property>
 
 	  <child>
-	    <widget class="GtkButton" id="button1">
+	    <widget class="GtkButton" id="btnCancel">
 	      <property name="visible">True</property>
 	      <property name="can_default">True</property>
 	      <property name="can_focus">True</property>
@@ -2011,11 +1947,12 @@
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
 	      <property name="focus_on_click">True</property>
 	      <property name="response_id">-6</property>
+	      <signal name="clicked" handler="on_btnCancel_clicked" last_modification_time="Tue, 08 Nov 2011 16:08:07 GMT"/>
 	    </widget>
 	  </child>
 
 	  <child>
-	    <widget class="GtkButton" id="button2">
+	    <widget class="GtkButton" id="btnOpen">
 	      <property name="visible">True</property>
 	      <property name="can_default">True</property>
 	      <property name="has_default">True</property>
@@ -2025,76 +1962,7 @@
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
 	      <property name="focus_on_click">True</property>
 	      <property name="response_id">-5</property>
-	    </widget>
-	  </child>
-	</widget>
-	<packing>
-	  <property name="padding">0</property>
-	  <property name="expand">False</property>
-	  <property name="fill">True</property>
-	  <property name="pack_type">GTK_PACK_END</property>
-	</packing>
-      </child>
-    </widget>
-  </child>
-</widget>
-
-<widget class="GtkFileChooserDialog" id="ImgOpenDialogR">
-  <property name="visible">True</property>
-  <property name="action">GTK_FILE_CHOOSER_ACTION_OPEN</property>
-  <property name="local_only">True</property>
-  <property name="select_multiple">False</property>
-  <property name="show_hidden">True</property>
-  <property name="do_overwrite_confirmation">False</property>
-  <property name="title" translatable="yes">イメージ選択(右)</property>
-  <property name="type">GTK_WINDOW_TOPLEVEL</property>
-  <property name="window_position">GTK_WIN_POS_CENTER_ON_PARENT</property>
-  <property name="modal">False</property>
-  <property name="resizable">True</property>
-  <property name="destroy_with_parent">False</property>
-  <property name="decorated">True</property>
-  <property name="skip_taskbar_hint">False</property>
-  <property name="skip_pager_hint">False</property>
-  <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
-  <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
-  <property name="focus_on_map">True</property>
-  <property name="urgency_hint">False</property>
-
-  <child internal-child="vbox">
-    <widget class="GtkVBox" id="vbox11">
-      <property name="visible">True</property>
-      <property name="homogeneous">False</property>
-      <property name="spacing">24</property>
-
-      <child internal-child="action_area">
-	<widget class="GtkHButtonBox" id="hbuttonbox4">
-	  <property name="visible">True</property>
-	  <property name="layout_style">GTK_BUTTONBOX_END</property>
-
-	  <child>
-	    <widget class="GtkButton" id="button3">
-	      <property name="visible">True</property>
-	      <property name="can_default">True</property>
-	      <property name="can_focus">True</property>
-	      <property name="label">gtk-cancel</property>
-	      <property name="use_stock">True</property>
-	      <property name="relief">GTK_RELIEF_NORMAL</property>
-	      <property name="focus_on_click">True</property>
-	      <property name="response_id">-6</property>
-	    </widget>
-	  </child>
-
-	  <child>
-	    <widget class="GtkButton" id="button4">
-	      <property name="visible">True</property>
-	      <property name="can_default">True</property>
-	      <property name="has_default">True</property>
-	      <property name="can_focus">True</property>
-	      <property name="label">gtk-open</property>
-	      <property name="use_stock">True</property>
-	      <property name="relief">GTK_RELIEF_NORMAL</property>
-	      <property name="focus_on_click">True</property>
-	      <property name="response_id">-5</property>
+	      <signal name="clicked" handler="on_btnOpen_clicked" last_modification_time="Tue, 08 Nov 2011 16:07:53 GMT"/>
 	    </widget>
 	  </child>
 	</widget>

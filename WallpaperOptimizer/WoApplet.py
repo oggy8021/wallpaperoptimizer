@@ -32,27 +32,100 @@ import gtk.glade
 #		return bgcolor
 
 #	def __init__(self, gladefile, logger):
+#		self.gladefile =　gladefile
 #		self.logging = logger
 #		self.wTree = gtk.glade.XML(gladefile, " Dialog")
 #		self.Dialog = self.wTree.get_widget(" Dialog")
 
 #		dic = {
-#			"on_btnOk_clicked" : self.btnOkColor_clicked,
+#			"on_btnOk_clicked" : self.btnOk_clicked,
 #			"on_btnCancel_clicked" : self.btnCancel_clicked,
 #			"on_ Dialog_destroy" : self.btnCancel_clicked
 #			}
 #		self.wTree.signal_autoconnect(dic)
 
 
+class WoAppletUtil(object):
+	@staticmethod
+	def judgeLeftRight(wName):
+		if (wName.rfind('L') == (len(wName) - 1)):
+			idx = 0
+		elif (wName.rfind('R') == (len(wName) - 1)):
+			idx = 1
+		return idx
+
+
+class WoImgOpenDialog(object):
+
+	def btnOpen_clicked(self, widget):
+		self.Dialog.response(gtk.RESPONSE_OK)
+
+	def btnCancel_clicked(self, widget):
+		self.Dialog.response(gtk.RESPONSE_CANCEL)
+
+	def openDialog(self):
+		self.Dialog.show_all()
+# gtk.filefilter?
+		result = self.Dialog.run()
+		if (result == gtk.RESPONSE_OK):
+			imgfile = self.Dialog.get_filename()
+		self.Dialog.destroy()
+		return imgfile
+
+	def __init__(self, gladefile, logger):
+		self.logging = logger
+		self.wTree = gtk.glade.XML(gladefile, "ImgOpenDialog")
+		self.Dialog = self.wTree.get_widget("ImgOpenDialog")
+
+		dic = {
+			"on_btnOpen_clicked" : self.btnOpen_clicked,
+			"on_btnCancel_clicked" : self.btnCancel_clicked,
+			"on_ImgOpenDialog_destroy" : self.btnCancel_clicked
+			}
+		self.wTree.signal_autoconnect(dic)
+
+
+class WoSrcdirDialog(object):
+
+	def btnOpen_clicked(self, widget):
+		self.Dialog.response(gtk.RESPONSE_OK)
+
+	def btnCancel_clicked(self, widget):
+		self.Dialog.response(gtk.RESPONSE_CANCEL)
+#キャンセルでも設定が残る
+
+	def openDialog(self, srcdir):
+		self.Dialog.show_all()
+		result = self.Dialog.run()
+		if (result == gtk.RESPONSE_OK):
+			srcdir = self.Dialog.get_current_folder()
+		self.Dialog.destroy()
+		return srcdir
+
+	def __init__(self, gladefile, logger):
+		self.logging = logger
+		self.wTree = gtk.glade.XML(gladefile, "SrcDirDialog")
+		self.Dialog = self.wTree.get_widget("SrcDirDialog")
+
+		dic = {
+			"on_btnOpen_clicked" : self.btnOpen_clicked,
+			"on_btnCancel_clicked" : self.btnCancel_clicked,
+			"on_SrcdirDialog_destroy" : self.btnCancel_clicked
+			}
+		self.wTree.signal_autoconnect(dic)
+
+
 class WoSettingDialog(object):
 
-#	def btnOpenSrcdirL_clicked(self, widget):
-#		SrcDirDialogL = WoSrcDirDialogL(self.gladefile, self.logging)
-#		SrcDirDialogL.openDialog(self.srcdir[0])
-
-#	def btnOpenSrcdirR_clicked(self, widget):
-#		SrcDirDialogR = WoSrcDirDialogR(self.gladefile, self.logging)
-#		SrcDirDialogR.openDialog(self.srcdir[1])
+	def btnOpenSrcdir_clicked(self, widget):
+		wName = widget.get_name()
+		lr = WoAppletUtil.judgeLeftRight(wName)
+		SrcDirDialog = WoSrcdirDialog(self.gladefile, self.logging)
+		self.srcdirs[lr] = SrcDirDialog.openDialog(self.srcdirs[lr])
+		if (lr == 0):
+			self.wTree.get_widget('entSrcdirL').set_text(self.srcdirs[lr])
+		else:
+			self.wTree.get_widget('entSrcdirR').set_text(self.srcdirs[lr])
 
 	def btnSaveSetting_clicked(self, widget):
 #dummy
@@ -86,6 +159,8 @@ class WoSettingDialog(object):
 		self.Dialog.response(gtk.RESPONSE_CANCEL)
 
 	def openDialog(self, displays, srcdirs):
+		self.srcdirs = srcdirs
+
 		self.Dialog.show_all()
 		disp = displays[0].split('x')
 		self.wTree.get_widget('entDisplayWL').set_text(disp[0])
@@ -114,13 +189,13 @@ class WoSettingDialog(object):
 		self.Dialog.destroy()
 
 	def __init__(self, gladefile, logger):
+		self.gladefile = gladefile
 		self.logging = logger
 		self.wTree = gtk.glade.XML(gladefile, "SettingDialog")
 		self.Dialog = self.wTree.get_widget("SettingDialog")
 
 		dic = {
-#			"on_btnOpenSrcdirL_clicked" : self.btnOpenSrcdirL_clicked,
-#			"on_btnOpenSrcdirR_clicked" : self.btnOpenSrcdirR_clicked,
+			"on_btnOpenSrcdir_clicked" : self.btnOpenSrcdir_clicked,
 			"on_btnClear_clicked" : self.btnClear_clicked,
 			"on_btnSaveSetting_clicked" : self.btnSaveSetting_clicked,
 			"on_btnOk_clicked" : self.btnOk_clicked,
@@ -196,13 +271,6 @@ class WoApplet(object):
 			attr = 'valign'
 		return attr
 
-	def setConfigIdx(self, btnName):
-		if (btnName.rfind('L') == (len(btnName) - 1)):
-			idx = 0
-		elif (btnName.rfind('R') == (len(btnName) - 1)):
-			idx = 1
-		return idx
-
 	def tglBtn_pressed(self, widget):
 		vsName = WoApplet.mapdic[widget.get_name()]
 		if (self.wTree.get_widget(vsName).get_active()):
@@ -220,8 +288,8 @@ class WoApplet(object):
 				val = 'top'
 			elif (wName.find('Lower') > 0):
 				val = 'bottom'
-			idx = self.setConfigIdx(wName)
-			WoApplet.config[attr][idx] = val
+			lr = WoAppletUtil.judgeLeftRight(wName)
+			WoApplet.config[attr][lr] = val
 
 	def tglBtn_released(self, widget):
 		vsName = WoApplet.mapdic[widget.get_name()]
@@ -232,8 +300,8 @@ class WoApplet(object):
 				val = 'center'
 			elif (attr == 'valign'):
 				val = 'middle'
-			idx = self.setConfigIdx(wName)
-			WoApplet.config[attr][idx] = val
+			lr = WoAppletUtil.judgeLeftRight(wName)
+			WoApplet.config[attr][lr] = val
 
 	def entMergin_activate(self, widget):
 		wName = widget.get_name()
@@ -250,6 +318,16 @@ class WoApplet(object):
 	def radFixed_toggled(self, widget):
 		wName = widget.get_name()
 		WoApplet.config['fixed'] = self.wTree.get_widget(wName).get_active()
+
+	def btnGetImg_clicked(self, widget):
+		wName = widget.get_name()
+		lr = WoAppletUtil.judgeLeftRight(wName)
+		ImgOpenDialog = WoImgOpenDialog(self.gladefile, self.logging)
+		self.images[lr] = ImgOpenDialog.openDialog()
+		if (lr == 0):
+			self.wTree.get_widget('lblPathL').set_text(self.images[lr])
+		else:
+			self.wTree.get_widget('lblPathR').set_text(self.images[lr])
 
 	def btnSetting_clicked(self, widget):
 		SettingDialog = WoSettingDialog(self.gladefile, self.logging)
@@ -272,6 +350,7 @@ class WoApplet(object):
 		self.gladefile = os.path.abspath("./WallpaperOptimizer/glade/wallpositapplet.glade")
 		self.wTree = gtk.glade.XML(self.gladefile, "WallPosit_MainWindow")
 		self.window = self.wTree.get_widget("WallPosit_MainWindow")
+		self.images = ['','']
 
 		#自クラスのconfigに、本体のconfigを放りこむ
 
@@ -281,6 +360,7 @@ class WoApplet(object):
 			"on_tglBtn_released" : self.tglBtn_released,
 			"on_entMergin_activate" : self.entMergin_activate,
 			"on_radFixed_toggled" : self.radFixed_toggled,
+			"on_btnGetImg_clicked" : self.btnGetImg_clicked,
 			"on_btnSetting_clicked" : self.btnSetting_clicked,
 			"on_btnSetColor_clicked" : self.btnSetColor_clicked,
 #			"on_btnSave_clicked" : self.btnSave_clicked,
