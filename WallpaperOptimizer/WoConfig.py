@@ -33,7 +33,7 @@ class WoConfig(object):
 						, configfile='~/.wallpositrc'
 						, lsize=None
 						, rsize=None
-						, srcdir='.'):
+						, srcdir=['.','.']):
 		self.lDisplay = WoConfig.WoDisplay()
 		self.rDisplay = WoConfig.WoDisplay()
 

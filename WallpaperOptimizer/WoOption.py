@@ -52,7 +52,7 @@ class WoOption(object):
 					, srcdir=['.','.']
 					, verbose=False
 					, save=None
-					, wall=False
+					, setWall=False
 					, daemonize=False
 					, interval=60)
 
@@ -84,7 +84,7 @@ class WoOption(object):
 		actiongroup.add_option("-S", "--save", dest="save", action="store"
 					, metavar="PATH"
 					, help="Save Wallpaper to PATH")
-		actiongroup.add_option("-W", "--wall", dest="wall", action="store_true"
+		actiongroup.add_option("-W", "--wall", dest="setWall", action="store_true"
 					, help="Created wallpaper set to current WorkSpace")
 		actiongroup.add_option("-D", "--daemon", dest="daemonize", action="store_true"
 					, help="daemonize (default: False)")
@@ -97,7 +97,7 @@ class WoOption(object):
 
 		(self.opts, self.args) = parser.parse_args()
 		if (len(self.args) < 1 and
-				 self.opts.save != None or self.opts.wall == True):
+				 self.opts.save != None or self.opts.setWall == True):
 			parser.error("Please set imgfile parameter.")
 
 		for m_align in self.opts.align:
@@ -165,7 +165,7 @@ class WoOption(object):
 		return self.opts.save
 
 	def getSetWall(self):
-		return self.opts.wall
+		return self.opts.setWall
 
 	def getDaemonize(self):
 		return self.opts.daemonize

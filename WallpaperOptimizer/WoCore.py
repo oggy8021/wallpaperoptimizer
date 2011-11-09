@@ -255,6 +255,8 @@ class WoCore(object):
 				interval = Option.getInterval()
 				time.sleep(interval)
 				i += 1
+		except CancelDaemonizeException:
+			return 0
 		except KeyboardInterrupt:
 			sys.exit(0)
 

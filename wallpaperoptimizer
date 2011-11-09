@@ -165,19 +165,18 @@ if __name__ == "__main__":
 
 	Ws = ConfigSetToWorkSpace()
 
-# initialize core
-	Core = WoCore(logging)
-
 	if (Option.getSetWall() == False
 		 and Option.getSavePath() == None
 		 and Option.getDaemonize() == False):
 		logging.debug('Running ... applet mode.')
-		Applet = WoApplet(logging)
+		Applet = WoApplet(Option, Config, Ws, logging)
 		Applet.finalize()
 	elif (Option.getDaemonize()):
+		Core = WoCore(logging)
 		logging.debug('Running ... daemonize mode.')
 		Core.daemonize(Option, Config, Ws)
 	else:
+		Core = WoCore(logging)
 		logging.debug('Running ... singlerun mode.')
 		Core.singlerun(Option, Config, Ws)
 
