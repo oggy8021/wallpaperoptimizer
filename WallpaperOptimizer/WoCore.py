@@ -236,7 +236,25 @@ class WoCore(object):
 		self.logging.debug('Change wallpaper to current Workspace [%s].' % tmpPath)
 
 
-	def daemonize(self, Option, Config, Ws):
+	def timerRun(self, Option, Config, Ws, i):
+		LChangerDir = WoChangerDir(Config.lDisplay.getConfig()['srcdir'])
+		RChangerDir = WoChangerDir(Config.rDisplay.getConfig()['srcdir'])
+
+		limg = LChangerDir.getImgfileRnd()
+		rimg = RChangerDir.getImgfileRnd()
+		Img1 = WoImgFile(limg)
+		Img2 = WoImgFile(rimg)
+
+		bkImg = self.optimizeWallpaper(Option, Config, Ws, Img1, Img2)
+		if (i == 1):
+			i = 2
+		else:
+			i = 1
+		self.setWall(bkImg, None, i)
+		return i
+
+
+	def background(self, Option, Config, Ws):
 		LChangerDir = WoChangerDir(Config.lDisplay.getConfig()['srcdir'])
 		RChangerDir = WoChangerDir(Config.rDisplay.getConfig()['srcdir'])
 
@@ -255,8 +273,6 @@ class WoCore(object):
 				interval = Option.getInterval()
 				time.sleep(interval)
 				i += 1
-		except CancelDaemonizeException:
-			return 0
 		except KeyboardInterrupt:
 			sys.exit(0)
 

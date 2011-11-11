@@ -174,7 +174,7 @@ if __name__ == "__main__":
 	elif (Option.getDaemonize()):
 		Core = WoCore(logging)
 		logging.debug('Running ... daemonize mode.')
-		Core.daemonize(Option, Config, Ws)
+		Core.background(Option, Config, Ws)
 	else:
 		Core = WoCore(logging)
 		logging.debug('Running ... singlerun mode.')

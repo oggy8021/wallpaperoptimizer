@@ -10,6 +10,7 @@ import pygtk
 pygtk.require("2.0")
 import gtk
 import gtk.glade
+import gobject
 
 from WallpaperOptimizer.WoCore import WoCore
 
@@ -384,7 +385,8 @@ class WoApplet(object):
 		wName = widget.get_name()
 		WoApplet.option['interval'] = int(self.wTree.get_widget(wName).get_text())
 
-	def btnDaemonize_clicked(self, widget):
+
+	def _runChanger(self):
 		WidthHeight = WoApplet.config['display'][0].split('x')
 		self.Config.lDisplay.setConfig(int(WidthHeight[0]),
 										int(WidthHeight[1]),
@@ -395,12 +397,21 @@ class WoApplet(object):
 										int(WidthHeight[1]),
 										self.Config.rDisplay.getConfig()['posit'],
 										WoApplet.config['srcdir'][1])
-		self.Option.opts.interval = WoApplet.option['interval']
 		Core = WoCore(self.logging)
-		Core.daemonize(self.Option, self.Config, self.Ws)
+		self.seed = Core.timerRun(self.Option, self.Config, self.Ws, self.seed)
 
-#	def btnCancelDaemonize_clicked(self, widget):
-#		raise CancelDaemonizeException
+	def _timeout(self, widget):
+		self._runChanger()
+
+	def btnDaemonize_clicked(self, widget):
+		if (self.timeoutObject == None):
+			self.timeoutObject = gobject.timeout_add(WoApplet.option['interval']*1000, self._timeout, self)
+			self._runChanger()
+			widget.set_sensitive(True)
+
+	def btnCancelDaemonize_clicked(self, widget):
+		gobject.source_remove(self.timeoutObject)
+		self.timeoutObject = None
 
 	def __init__(self, Option, Config, Ws, logger):
 		self.Option = Option
@@ -409,6 +420,8 @@ class WoApplet(object):
 		self.Ws = Ws
 		self.logging = logger
 		self.images = ['','']
+		self.timeoutObject = None
+		self.seed = 1
 
 		WoApplet.config['display'] = [
 			str(self.Config.lDisplay.getConfig()['width']) +
@@ -441,7 +454,7 @@ class WoApplet(object):
 			"on_btnSetWall_clicked" : self.btnSetWall_clicked,
 			"on_entInterval_activate" : self.entInterval_activate,
 			"on_btnDaemonize_clicked" : self.btnDaemonize_clicked,
-#			"on_btnCancelDamonize_clicked" : self.btnCancelDaemonize_clicked,
+			"on_btnCancelDamonize_clicked" : self.btnCancelDaemonize_clicked,
 			"on_btnQuit_clicked" : gtk.main_quit,
 			"on_WallPosit_MainWindow_destroy" : gtk.main_quit
 			}
