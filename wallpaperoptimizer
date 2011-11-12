@@ -1,7 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# ./wallpaperoptimizer  ../2560x1920.jpg ../1500x844.jpg -w
+# singlerun
+#	./wallpaperoptimizer  ../2560x1920.jpg ../1500x844.jpg -w
+# background
+#	./wallpaperoptimizer -D -i 5
+# applet
+#	./wallpaperoptimizer
 
 import sys
 import os.path
@@ -10,64 +15,15 @@ import commands
 import logging
 import subprocess
 
-def ConfigSetToWorkSpace():
-	logging.debug('Config Setting To WorkSpace().')
-
-	Ws.lScreen.setSize(Config.lDisplay.getConfig()['width']
-		, Config.lDisplay.getConfig()['height'])
-	Ws.rScreen.setSize(Config.rDisplay.getConfig()['width']
-		, Config.rDisplay.getConfig()['height'])
-
-	if ( Ws.Size.w < (Ws.lScreen.Size.w + Ws.rScreen.Size.w) ):
-		# TODO: Errorクラス
-		# ほぼ設定ミスのルート
-		logging.error(
-		'** WorkSpace width[%d] < sum(left display size, right display size) [%d, %d].'
-		 % ( Ws.Size.w, Ws.lScreen.Size.w, Ws.rScreen.Size.w ))
-		sys.exit(2)
-	if ( Ws.Size.h > Ws.lScreen.Size.h ):
-		setattr(Ws.lScreen.Size, 'islessThanWorkSpaceHeight', True)
-	elif ( Ws.Size.h > Ws.rScreen.Size.h ):
-		setattr(Ws.rScreen.Size, 'islessThanWorkSpaceHeight', True)
-	else:
-		pass
-
-	if ( Ws.lScreen.isSquare() ):
-		setattr(Ws.lScreen, 'displayType', 'square')
-	if ( Ws.lScreen.isWide() ):
-		setattr(Ws.lScreen, 'displayType', 'wide')
-
-	if ( Ws.rScreen.isSquare() ):
-		setattr(Ws.rScreen, 'displayType', 'square')
-	if ( Ws.rScreen.isWide() ):
-		setattr(Ws.rScreen, 'displayType', 'wide')
-
-	if (hasattr(Ws.lScreen.Size, 'islessThanWorkSpaceHeight')
-	 and Ws.lScreen.Size.islessThanWorkSpaceHeight):
-		logging.warning(
-			'* WorkSpace height [%s] > left display height [%s].'
-			 % (Ws.Size.h, Ws.lScreen.Size.h ))
-	if (hasattr(Ws.rScreen.Size, 'islessThanWorkSpaceHeight')
-	 and Ws.rScreen.Size.islessThanWorkSpaceHeight):
-		logging.warning(
-			'* WorkSpace height [%s] > right display height [%s].'
-			 % (Ws.Size.h, Ws.rScreen.Size.h ))
-
-	logging.debug('%20s [%s,%s]'
-		 	 % ( 'display type' , Ws.lScreen.displayType, Ws.rScreen.displayType ))
-
-	return Ws
-
-
 if __name__ == "__main__":
 	from WallpaperOptimizer.Option import Option
 	from WallpaperOptimizer.Config import Config
 	from WallpaperOptimizer.Core import Core
 	from WallpaperOptimizer.Applet import Applet
-	from WallpaperOptimizer.Imaging.WorkSpace import WorkSpace
+	from WallpaperOptimizer.WorkSpace import WorkSpace
 
 # analize commandline option
-	Option = Option()
+	Option = Options()
 	Verbose = Option.getVerbose()
 
 	if (Verbose):
@@ -116,15 +72,6 @@ if __name__ == "__main__":
 		 % ( 'interval', Option.getInterval() ))
 
 
-# initialize WorkSpace
-	Ws = WorkSpace()
-	logging.debug('Current WorkSpace setting as.')
-	logging.debug('%20s [%d,%d]'
-		 % ( 'WorkSpace Size', Ws.getSize().w, Ws.getSize().h ))
-	logging.debug('%20s [%s]'
-		 % ( 'WorkSpace depth', Ws.depth ))
-
-
 # initialize config
 	# 条件弱い？
 	if (Option.getLSize() == None and Option.getRSize() == None):
@@ -163,7 +110,39 @@ if __name__ == "__main__":
 			 , Config.rDisplay.getConfig()['srcdir'] ))
 
 
-	Ws = ConfigSetToWorkSpace()
+# initialize WorkSpace
+	Ws = WorkSpace()
+	logging.debug('Current WorkSpace setting as.')
+	logging.debug('%20s [%d,%d]'
+		 % ( 'WorkSpace Size', Ws.getSize().w, Ws.getSize().h ))
+	logging.debug('%20s [%s]'
+		 % ( 'WorkSpace depth', Ws.getDepth() ))
+
+	logging.debug('Config Setting To WorkSpace().')
+	Ws.setScreenSize([Config.lDisplay.getConfig()['width'], Config.lDisplay.getConfig()['height']]
+				, [Config.rDisplay.getConfig()['width'], Config.rDisplay.getConfig()['height']])
+
+	if (Ws.compareToScreen()):
+		logging.error(
+		'** WorkSpace width[%d] < sum(left display size, right display size) [%d, %d].'
+		 % ( Ws.Size.w, Ws.lScreen.Size.w, Ws.rScreen.Size.w ))
+		sys.exit(2)
+
+	if (hasattr(Ws.lScreen.Size, 'islessThanWorkSpaceHeight')
+	 and Ws.lScreen.Size.islessThanWorkSpaceHeight):
+		logging.warning(
+			'* WorkSpace height [%s] > left display height [%s].'
+			 % (Ws.Size.h, Ws.lScreen.Size.h ))
+	if (hasattr(Ws.rScreen.Size, 'islessThanWorkSpaceHeight')
+	 and Ws.rScreen.Size.islessThanWorkSpaceHeight):
+		logging.warning(
+			'* WorkSpace height [%s] > right display height [%s].'
+			 % (Ws.Size.h, Ws.rScreen.Size.h ))
+
+	Ws.setScreenType()
+	logging.debug('%20s [%s,%s]'
+		 	 % ( 'display type' , Ws.lScreen.displayType, Ws.rScreen.displayType ))
+
 
 	if (Option.getSetWall() == False
 		 and Option.getSavePath() == None

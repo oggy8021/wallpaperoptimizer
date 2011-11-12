@@ -2,13 +2,14 @@
 
 from nose.tools import ok_, eq_
 
-from WallpaperOptimizer.Imaging.WorkSpace import WorkSpace
+from WallpaperOptimizer.WorkSpace import WorkSpace
 
 def WorkSpace_init_test():
 	ws = WorkSpace()
 	eq_(ws.Size.w, 3200)
 	eq_(ws.Size.h, 1080)
 	eq_(ws.depth, 24)
+	eq_(ws.getDepth(), 24)
 
 def WorkSpace_Inner_Screen_test():
 	ws = WorkSpace()
@@ -24,3 +25,28 @@ def WorkSpace_Inner_Screen_test():
 	eq_(ws.rScreen.getSize().h, 768)
 	eq_(ws.rScreen.isSquare(), True)
 	eq_(ws.rScreen.isWide(), False)
+
+	eq_(ws.getScreenSize(), [[1920,1080], [1024,768]])
+
+def WorkSpace_marugoto_Screen_test():
+	ws = WorkSpace()
+	ws.setScreenSize([1920,1080], [1280,1024])
+	eq_(ws.getScreenSize(), [[1920,1080], [1280,1024]])
+
+def WorkSpace_compareToScreen1_test():
+	ws = WorkSpace()
+	ws.setScreenSize([1920, 1080], [1280,1024])
+	eq_(ws.compareToScreen(), True)
+
+def WorkSpace_compareToScreen2_test():
+	ws = WorkSpace()
+	ws.setScreenSize([1920, 1080], [1920,1080])
+	eq_(ws.compareToScreen(), False)
+
+def WorkSpace_setScreenType_test():
+	ws = WorkSpace()
+	ws.setScreenSize([1920, 1080], [1280,1024])
+	ws.setScreenType()
+	eq_(ws.lScreen.displayType, 'wide')
+	eq_(ws.rScreen.displayType, 'square')
+

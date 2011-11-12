@@ -2,7 +2,7 @@
 
 from optparse import Option, OptionGroup, OptionParser, OptionValueError
 
-class Option(object):
+class Options(object):
 
 	def __init__(self):
 		class MultiargOption(Option):
