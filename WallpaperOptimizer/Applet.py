@@ -24,6 +24,56 @@ class WoAppletUtil(object):
 			idx = 1
 		return idx
 
+	@staticmethod
+	def setAppletConfig(Option, Config, Ws):
+		WoApplet.config['display'] = [
+			str(Config.lDisplay.getConfig()['width']) +
+			 'x' +
+			  str(Config.lDisplay.getConfig()['height']),
+			str(Config.rDisplay.getConfig()['width']) +
+			 'x' +
+			  str(Config.rDisplay.getConfig()['height']),
+			]
+		WoApplet.config['srcdir'] = [
+			Config.lDisplay.getConfig()['srcdir'],
+			Config.rDisplay.getConfig()['srcdir']
+			]
+		WoApplet.config['interval'] = Option.opts.interval
+
+	@staticmethod
+	def getSettingDialog(lr):
+		if (lr == 0):
+			lr = 'L'
+		else:
+			lr = 'R'
+		return [self.wTree.get_widget('entDisplayW' + lr).get_text()
+				 + 'x'
+				 + self.wTree.get_widget('entDisplayH' + lr).get_text()
+				 , 'left'
+				 , self.wTree.get_widget('entSrcdir' + lr).get_text()
+				 ]
+
+	@staticmethod
+	def setCoreArg(Option, Config, Ws):
+		Option.opts.align = WoApplet.config['align']
+		Option.opts.valign = WoApplet.config['valign']
+		Option.opts.mergin = WoApplet.config['mergin']
+		Option.opts.fixed = WoApplet.config['fixed']
+		Option.opts.bgcolor = WoApplet.config['bgcolor']
+		Option.opts.interval = WoApplet.option['interval']
+
+		WidthHeight = WoApplet.config['display'][0].split('x')
+		config.lDisplay.setConfig(int(WidthHeight[0]),
+										int(WidthHeight[1]),
+										config.lDisplay.getConfig()['posit'],
+										WoApplet.config['srcdir'][0])
+		WidthHeight = WoApplet.config['display'][1].split('x')
+		config.rDisplay.setConfig(int(WidthHeight[0]),
+										int(WidthHeight[1]),
+										config.rDisplay.getConfig()['posit'],
+										WoApplet.config['srcdir'][1])
+
+#		Wsセットしていない
 
 class WoImgOpenDialog(object):
 
@@ -81,15 +131,16 @@ class WoSrcdirDialog(object):
 
 	def btnCancel_clicked(self, widget):
 		self.Dialog.response(gtk.RESPONSE_CANCEL)
-#キャンセルでも設定が残る
 
 	def openDialog(self, srcdir):
 		self.Dialog.show_all()
 		result = self.Dialog.run()
 		if (result == gtk.RESPONSE_OK):
 			srcdir = self.Dialog.get_current_folder()
-		self.Dialog.destroy()
-		return srcdir
+			self.Dialog.destroy()
+			return srcdir
+		else:
+			self.Dialog.destroy()
 
 	def __init__(self, gladefile, logger):
 		self.logging = logger
@@ -120,18 +171,8 @@ class WoSettingDialog(object):
 #dummy
 		configfile='~/Develop/WallPosit/trunk/.wallpositrc_gui'
 		cf = csv.writer(file(os.path.expanduser(configfile), 'w'))
-		cf.writerow([self.wTree.get_widget('entDisplayWL').get_text()
-				 + 'x'
-				 + self.wTree.get_widget('entDisplayHL').get_text()
-				 , 'left'
-				 , self.wTree.get_widget('entSrcdirL').get_text()
-				 ])
-		cf.writerow([self.wTree.get_widget('entDisplayWR').get_text()
-				 + 'x'
-				 + self.wTree.get_widget('entDisplayHR').get_text()
-				 , 'right'
-				 ,self.wTree.get_widget('entSrcdirR').get_text()
-				 ])
+		cf.writerow(WoAppletUtil.getSettingDialog(0))
+		cf.writerow(WoAppletUtil.getSettingDialog(1))
 
 	def btnClear_clicked(self, widget):
 		self.wTree.get_widget('entDisplayWL').set_text('')
@@ -212,8 +253,7 @@ class WoColorSelectionDiag(object):
 			gtkColor = self.wTree.get_widget('color_selection').get_current_color()
 			bgcolor = gtk.color_selection_palette_to_string([gtkColor])
 		self.Dialog.destroy()
-#TODO:直接、WoApplet.config書いてしまう手も？
-		return bgcolor
+		WoApplet.config['bgcolor'] = bgcolor
 
 	def __init__(self, gladefile, logger):
 		self.logging = logger
@@ -240,7 +280,8 @@ class WoSaveWallpaperDialog(object):
 		self.Dialog.show_all()
 		result = self.Dialog.run()
 		if (result == gtk.RESPONSE_OK):
-#TODO:ホントは値あるなしなど、チェックがいる
+#TODO:ホントは値あるなし,PATH有効かなど、チェックがいる
+			WoAppletUtil.setCoreArg(Option, Config, Ws)
 			Option.args[0] = images[0]
 			Option.args[1] = images[1]
 			Option.opts.save = self.Dialog.get_filename()
@@ -286,6 +327,7 @@ class WoApplet(object):
 
 	option = dict()
 	option['interval'] = 60
+	images = ['','']
 
 	def setConfigAttr(self, btnName):
 		if (btnName.find('PushLeft') > 0 or btnName.find('PushRight') > 0):
@@ -346,20 +388,20 @@ class WoApplet(object):
 		wName = widget.get_name()
 		lr = WoAppletUtil.judgeLeftRight(wName)
 		ImgOpenDialog = WoImgOpenDialog(self.gladefile, self.logging)
-		self.images[lr] = ImgOpenDialog.openDialog()
+		WoApplet.images[lr] = ImgOpenDialog.openDialog()
 		if (lr == 0):
-			self.wTree.get_widget('entPathL').set_text(self.images[lr])
+			self.wTree.get_widget('entPathL').set_text(WoApplet.images[lr])
 		else:
-			self.wTree.get_widget('entPathR').set_text(self.images[lr])
+			self.wTree.get_widget('entPathR').set_text(WoApplet.images[lr])
 
 	def entImgPath_activate(self, widget):
 		wName = widget.get_name()
 		lr = WoAppletUtil.judgeLeftRight(wName)
-		self.images[lr] = os.path.expanduser(self.wTree.get_widget(wName).get_text())
+		WoApplet.images[lr] = os.path.expanduser(self.wTree.get_widget(wName).get_text())
 		if (lr == 0):
-			self.wTree.get_widget('entPathL').set_text(self.images[lr])
+			self.wTree.get_widget('entPathL').set_text(WoApplet.images[lr])
 		else:
-			self.wTree.get_widget('entPathR').set_text(self.images[lr])
+			self.wTree.get_widget('entPathR').set_text(WoApplet.images[lr])
 #TODO: 拡張子チェック?
 
 	def btnSetting_clicked(self, widget):
@@ -368,73 +410,54 @@ class WoApplet(object):
 
 	def btnSetColor_clicked(self, widget):
 		ColorSelectionDialog = WoColorSelectionDiag(self.gladefile ,self.logging)
-		WoApplet.config['bgcolor'] = ColorSelectionDialog.openDialog(WoApplet.config['bgcolor'])
+		ColorSelectionDialog.openDialog(WoApplet.config['bgcolor'])
 
 	def btnSave_clicked(self, widget):
-		 SaveWallpaperDialog = WoSaveWallpaperDialog(self.gladefile, self.logging)
-		 SaveWallpaperDialog.openDialog(self.Option, self.Config, self.Ws, self.images)
+		SaveWallpaperDialog = WoSaveWallpaperDialog(self.gladefile, self.logging)
+		SaveWallpaperDialog.openDialog(self.Option, self.Config, self.Ws, WoApplet.images)
 
 	def btnSetWall_clicked(self, widget):
-		self.Option.args[0] = self.images[0]
-		self.Option.args[1] = self.images[1]
+		WoAppletUtil.setCoreArg(self.Option, self.Config, self.Ws)
+		self.Option.args[0] = WoApplet.images[0]
+		self.Option.args[1] = WoApplet.images[1]
 		self.Option.opts.setWall = True
 		Core = WoCore(self.logging)
 		Core.singlerun(self.Option, self.Config, self.Ws)
 
 	def entInterval_activate(self, widget):
 		wName = widget.get_name()
-		WoApplet.option['interval'] = int(self.wTree.get_widget(wName).get_text())
-
+		WoApplet.option['interval'] = int(self.wTree.get_widget(wName).get_value())
 
 	def _runChanger(self):
-		WidthHeight = WoApplet.config['display'][0].split('x')
-		self.Config.lDisplay.setConfig(int(WidthHeight[0]),
-										int(WidthHeight[1]),
-										self.Config.lDisplay.getConfig()['posit'],
-										WoApplet.config['srcdir'][0])
-		WidthHeight = WoApplet.config['display'][1].split('x')
-		self.Config.rDisplay.setConfig(int(WidthHeight[0]),
-										int(WidthHeight[1]),
-										self.Config.rDisplay.getConfig()['posit'],
-										WoApplet.config['srcdir'][1])
+		WoAppletUtil.setCoreArg(self.Option, self.Config, self.Ws)
 		Core = WoCore(self.logging)
 		self.seed = Core.timerRun(self.Option, self.Config, self.Ws, self.seed)
 
 	def _timeout(self, widget):
+		print "Timeout"
 		self._runChanger()
+		return True
 
 	def btnDaemonize_clicked(self, widget):
-		if (self.timeoutObject == None):
-			self.timeoutObject = gobject.timeout_add(WoApplet.option['interval']*1000, self._timeout, self)
-			self._runChanger()
-			widget.set_sensitive(True)
+		self._runChanger()
+		self.timeoutObject = gobject.timeout_add(WoApplet.option['interval']*1000, self._timeout, self)
 
 	def btnCancelDaemonize_clicked(self, widget):
+		print "Cancel"
 		gobject.source_remove(self.timeoutObject)
 		self.timeoutObject = None
 
 	def __init__(self, Option, Config, Ws, logger):
 		self.Option = Option
-		self.Option.args = ['','']
 		self.Config = Config
 		self.Ws = Ws
 		self.logging = logger
-		self.images = ['','']
+
+		self.Option.args = ['','']
+		WoAppletUtil.setAppletConfig(self.Option, self.Config, self.Ws)
+
 		self.timeoutObject = None
 		self.seed = 1
-
-		WoApplet.config['display'] = [
-			str(self.Config.lDisplay.getConfig()['width']) +
-			 'x' +
-			  str(self.Config.lDisplay.getConfig()['height']),
-			str(self.Config.rDisplay.getConfig()['width']) +
-			 'x' +
-			  str(self.Config.rDisplay.getConfig()['height']),
-			]
-		WoApplet.config['srcdir'] = [
-			self.Config.lDisplay.getConfig()['srcdir'],
-			self.Config.rDisplay.getConfig()['srcdir']
-			]
 
 		self.gladefile = os.path.abspath("./WallpaperOptimizer/glade/wallpositapplet.glade")
 		self.wTree = gtk.glade.XML(self.gladefile, "WallPosit_MainWindow")
