@@ -2,16 +2,16 @@
 
 from nose.tools import ok_, eq_
 
-from WallpaperOptimizer.Imaging.WoWorkSpace import WoWorkSpace
+from WallpaperOptimizer.Imaging.WorkSpace import WorkSpace
 
-def WoWorkSpace_init_test():
-	ws = WoWorkSpace()
+def WorkSpace_init_test():
+	ws = WorkSpace()
 	eq_(ws.Size.w, 3200)
 	eq_(ws.Size.h, 1080)
 	eq_(ws.depth, 24)
 
-def WoWorkSpace_Inner_Screen_test():
-	ws = WoWorkSpace()
+def WorkSpace_Inner_Screen_test():
+	ws = WorkSpace()
 	ws.lScreen.setSize(1920, 1080)
 	ws.rScreen.setSize(1024, 768)
 

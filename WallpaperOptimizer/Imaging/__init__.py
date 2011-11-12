@@ -1,4 +1,4 @@
 # -*- coding: utf-8 -*-
 
 # module WallpaperOptimizer.Imaging __init__.py
-__all__=["WoBounds","WoImgFile","WoRectangle","WoWorkSpace","WoChangerDir"]
+__all__=["Bounds","ImgFile","Rectangle","rkSpace","ChangerDir"]

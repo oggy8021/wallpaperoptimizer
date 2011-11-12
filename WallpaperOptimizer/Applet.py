@@ -12,10 +12,10 @@ import gtk
 import gtk.glade
 import gobject
 
-from WallpaperOptimizer.WoCore import WoCore
+from WallpaperOptimizer.Core import Core
 
 
-class WoAppletUtil(object):
+class AppletUtil(object):
 	@staticmethod
 	def judgeLeftRight(wName):
 		if (wName.rfind('L') == (len(wName) - 1)):
@@ -26,7 +26,7 @@ class WoAppletUtil(object):
 
 	@staticmethod
 	def setAppletConfig(Option, Config, Ws):
-		WoApplet.config['display'] = [
+		Applet.config['display'] = [
 			str(Config.lDisplay.getConfig()['width']) +
 			 'x' +
 			  str(Config.lDisplay.getConfig()['height']),
@@ -34,11 +34,11 @@ class WoAppletUtil(object):
 			 'x' +
 			  str(Config.rDisplay.getConfig()['height']),
 			]
-		WoApplet.config['srcdir'] = [
+		Applet.config['srcdir'] = [
 			Config.lDisplay.getConfig()['srcdir'],
 			Config.rDisplay.getConfig()['srcdir']
 			]
-		WoApplet.config['interval'] = Option.opts.interval
+		Applet.config['interval'] = Option.opts.interval
 
 	@staticmethod
 	def getSettingDialog(lr):
@@ -55,27 +55,27 @@ class WoAppletUtil(object):
 
 	@staticmethod
 	def setCoreArg(Option, Config, Ws):
-		Option.opts.align = WoApplet.config['align']
-		Option.opts.valign = WoApplet.config['valign']
-		Option.opts.mergin = WoApplet.config['mergin']
-		Option.opts.fixed = WoApplet.config['fixed']
-		Option.opts.bgcolor = WoApplet.config['bgcolor']
-		Option.opts.interval = WoApplet.option['interval']
+		Option.opts.align = Applet.config['align']
+		Option.opts.valign = Applet.config['valign']
+		Option.opts.mergin = Applet.config['mergin']
+		Option.opts.fixed = Applet.config['fixed']
+		Option.opts.bgcolor = Applet.config['bgcolor']
+		Option.opts.interval = Applet.option['interval']
 
-		WidthHeight = WoApplet.config['display'][0].split('x')
+		WidthHeight = Applet.config['display'][0].split('x')
 		config.lDisplay.setConfig(int(WidthHeight[0]),
 										int(WidthHeight[1]),
 										config.lDisplay.getConfig()['posit'],
-										WoApplet.config['srcdir'][0])
-		WidthHeight = WoApplet.config['display'][1].split('x')
+										Applet.config['srcdir'][0])
+		WidthHeight = Applet.config['display'][1].split('x')
 		config.rDisplay.setConfig(int(WidthHeight[0]),
 										int(WidthHeight[1]),
 										config.rDisplay.getConfig()['posit'],
-										WoApplet.config['srcdir'][1])
+										Applet.config['srcdir'][1])
 
 #		Wsセットしていない
 
-class WoImgOpenDialog(object):
+class ImgOpenDialog(object):
 
 	def btnOpen_clicked(self, widget):
 		self.Dialog.response(gtk.RESPONSE_OK)
@@ -100,7 +100,7 @@ class WoImgOpenDialog(object):
 		self.Dialog = self.wTree.get_widget("ImgOpenDialog")
 		imgFilter = gtk.FileFilter()
 		imgFilter.set_name("画像")
-# WoChanger的には、この４つ
+# Changer的には、この４つ
 		imgFilter.add_mime_type("image/png")
 		imgFilter.add_mime_type("image/jpeg")
 		imgFilter.add_mime_type("image/bmp")
@@ -124,7 +124,7 @@ class WoImgOpenDialog(object):
 		self.wTree.signal_autoconnect(dic)
 
 
-class WoSrcdirDialog(object):
+class SrcdirDialog(object):
 
 	def btnOpen_clicked(self, widget):
 		self.Dialog.response(gtk.RESPONSE_OK)
@@ -155,12 +155,12 @@ class WoSrcdirDialog(object):
 		self.wTree.signal_autoconnect(dic)
 
 
-class WoSettingDialog(object):
+class SettingDialog(object):
 
 	def btnOpenSrcdir_clicked(self, widget):
 		wName = widget.get_name()
-		lr = WoAppletUtil.judgeLeftRight(wName)
-		SrcDirDialog = WoSrcdirDialog(self.gladefile, self.logging)
+		lr = AppletUtil.judgeLeftRight(wName)
+		SrcDirDialog = SrcdirDialog(self.gladefile, self.logging)
 		self.srcdirs[lr] = SrcDirDialog.openDialog(self.srcdirs[lr])
 		if (lr == 0):
 			self.wTree.get_widget('entSrcdirL').set_text(self.srcdirs[lr])
@@ -171,8 +171,8 @@ class WoSettingDialog(object):
 #dummy
 		configfile='~/Develop/WallPosit/trunk/.wallpositrc_gui'
 		cf = csv.writer(file(os.path.expanduser(configfile), 'w'))
-		cf.writerow(WoAppletUtil.getSettingDialog(0))
-		cf.writerow(WoAppletUtil.getSettingDialog(1))
+		cf.writerow(AppletUtil.getSettingDialog(0))
+		cf.writerow(AppletUtil.getSettingDialog(1))
 
 	def btnClear_clicked(self, widget):
 		self.wTree.get_widget('entDisplayWL').set_text('')
@@ -202,7 +202,7 @@ class WoSettingDialog(object):
 		self.wTree.get_widget('entSrcdirR').set_text(srcdirs[1])
 		result = self.Dialog.run()
 		if (result == gtk.RESPONSE_OK):
-			WoApplet.config['display'] = [
+			Applet.config['display'] = [
 				self.wTree.get_widget('entDisplayWL').get_text()
 				 + 'x' 
 				 + self.wTree.get_widget('entDisplayHL').get_text()
@@ -211,7 +211,7 @@ class WoSettingDialog(object):
 				 + 'x' 
 				 + self.wTree.get_widget('entDisplayHR').get_text()
 				 ]
-			WoApplet.config['srcdir'] = [
+			Applet.config['srcdir'] = [
 				self.wTree.get_widget('entSrcdirL').get_text()
 				 ,
 				self.wTree.get_widget('entSrcdirR').get_text()
@@ -235,7 +235,7 @@ class WoSettingDialog(object):
 		self.wTree.signal_autoconnect(dic)
 
 
-class WoColorSelectionDiag(object):
+class ColorSelectionDiag(object):
 
 	def btnOk_clicked(self, widget):
 		self.Dialog.response(gtk.RESPONSE_OK)
@@ -253,7 +253,7 @@ class WoColorSelectionDiag(object):
 			gtkColor = self.wTree.get_widget('color_selection').get_current_color()
 			bgcolor = gtk.color_selection_palette_to_string([gtkColor])
 		self.Dialog.destroy()
-		WoApplet.config['bgcolor'] = bgcolor
+		Applet.config['bgcolor'] = bgcolor
 
 	def __init__(self, gladefile, logger):
 		self.logging = logger
@@ -268,7 +268,7 @@ class WoColorSelectionDiag(object):
 		self.wTree.signal_autoconnect(dic)
 
 
-class WoSaveWallpaperDialog(object):
+class SaveWallpaperDialog(object):
 
 	def btnOpen_clicked(self, widget):
 		self.Dialog.response(gtk.RESPONSE_OK)
@@ -281,11 +281,11 @@ class WoSaveWallpaperDialog(object):
 		result = self.Dialog.run()
 		if (result == gtk.RESPONSE_OK):
 #TODO:ホントは値あるなし,PATH有効かなど、チェックがいる
-			WoAppletUtil.setCoreArg(Option, Config, Ws)
+			AppletUtil.setCoreArg(Option, Config, Ws)
 			Option.args[0] = images[0]
 			Option.args[1] = images[1]
 			Option.opts.save = self.Dialog.get_filename()
-			Core = WoCore(WoApplet.logging)
+			Core = Core(Applet.logging)
 			Core.singlerun(Option, Config, Ws)
 		self.Dialog.destroy()
 
@@ -302,7 +302,7 @@ class WoSaveWallpaperDialog(object):
 			}
 		self.wTree.signal_autoconnect(dic)
 
-class WoApplet(object):
+class Applet(object):
 
 	mapdic = dict()
 	mapdic['tglPushLeftL'] = 'tglPushRightL'
@@ -337,7 +337,7 @@ class WoApplet(object):
 		return attr
 
 	def tglBtn_pressed(self, widget):
-		vsName = WoApplet.mapdic[widget.get_name()]
+		vsName = Applet.mapdic[widget.get_name()]
 		if (self.wTree.get_widget(vsName).get_active()):
 			self.wTree.get_widget(vsName).set_active(False)
 
@@ -353,11 +353,11 @@ class WoApplet(object):
 				val = 'top'
 			elif (wName.find('Lower') > 0):
 				val = 'bottom'
-			lr = WoAppletUtil.judgeLeftRight(wName)
-			WoApplet.config[attr][lr] = val
+			lr = AppletUtil.judgeLeftRight(wName)
+			Applet.config[attr][lr] = val
 
 	def tglBtn_released(self, widget):
-		vsName = WoApplet.mapdic[widget.get_name()]
+		vsName = Applet.mapdic[widget.get_name()]
 		if (widget.get_active() == False and self.wTree.get_widget(vsName).get_active() == False):
 			wName = widget.get_name()
 			attr = self.setConfigAttr(wName)
@@ -365,8 +365,8 @@ class WoApplet(object):
 				val = 'center'
 			elif (attr == 'valign'):
 				val = 'middle'
-			lr = WoAppletUtil.judgeLeftRight(wName)
-			WoApplet.config[attr][lr] = val
+			lr = AppletUtil.judgeLeftRight(wName)
+			Applet.config[attr][lr] = val
 
 	def entMergin_activate(self, widget):
 		wName = widget.get_name()
@@ -378,59 +378,59 @@ class WoApplet(object):
 			idx = 2
 		elif (wName.find('BtmMergin')) > 0:
 			idx = 3
-		WoApplet.config['mergin'][idx] = int(self.wTree.get_widget(wName).get_text())
+		Applet.config['mergin'][idx] = int(self.wTree.get_widget(wName).get_text())
 
 	def radFixed_toggled(self, widget):
 		wName = widget.get_name()
-		WoApplet.config['fixed'] = self.wTree.get_widget(wName).get_active()
+		Applet.config['fixed'] = self.wTree.get_widget(wName).get_active()
 
 	def btnGetImg_clicked(self, widget):
 		wName = widget.get_name()
-		lr = WoAppletUtil.judgeLeftRight(wName)
-		ImgOpenDialog = WoImgOpenDialog(self.gladefile, self.logging)
-		WoApplet.images[lr] = ImgOpenDialog.openDialog()
+		lr = AppletUtil.judgeLeftRight(wName)
+		ImgOpenDialog = ImgOpenDialog(self.gladefile, self.logging)
+		Applet.images[lr] = ImgOpenDialog.openDialog()
 		if (lr == 0):
-			self.wTree.get_widget('entPathL').set_text(WoApplet.images[lr])
+			self.wTree.get_widget('entPathL').set_text(Applet.images[lr])
 		else:
-			self.wTree.get_widget('entPathR').set_text(WoApplet.images[lr])
+			self.wTree.get_widget('entPathR').set_text(Applet.images[lr])
 
 	def entImgPath_activate(self, widget):
 		wName = widget.get_name()
-		lr = WoAppletUtil.judgeLeftRight(wName)
-		WoApplet.images[lr] = os.path.expanduser(self.wTree.get_widget(wName).get_text())
+		lr = AppletUtil.judgeLeftRight(wName)
+		Applet.images[lr] = os.path.expanduser(self.wTree.get_widget(wName).get_text())
 		if (lr == 0):
-			self.wTree.get_widget('entPathL').set_text(WoApplet.images[lr])
+			self.wTree.get_widget('entPathL').set_text(Applet.images[lr])
 		else:
-			self.wTree.get_widget('entPathR').set_text(WoApplet.images[lr])
+			self.wTree.get_widget('entPathR').set_text(Applet.images[lr])
 #TODO: 拡張子チェック?
 
 	def btnSetting_clicked(self, widget):
-		SettingDialog = WoSettingDialog(self.gladefile, self.logging)
-		SettingDialog.openDialog(WoApplet.config['display'], WoApplet.config['srcdir'])
+		SettingDialog = SettingDialog(self.gladefile, self.logging)
+		SettingDialog.openDialog(Applet.config['display'], Applet.config['srcdir'])
 
 	def btnSetColor_clicked(self, widget):
-		ColorSelectionDialog = WoColorSelectionDiag(self.gladefile ,self.logging)
-		ColorSelectionDialog.openDialog(WoApplet.config['bgcolor'])
+		ColorSelectionDialog = ColorSelectionDiag(self.gladefile ,self.logging)
+		ColorSelectionDialog.openDialog(Applet.config['bgcolor'])
 
 	def btnSave_clicked(self, widget):
-		SaveWallpaperDialog = WoSaveWallpaperDialog(self.gladefile, self.logging)
-		SaveWallpaperDialog.openDialog(self.Option, self.Config, self.Ws, WoApplet.images)
+		SaveWallpaperDialog = SaveWallpaperDialog(self.gladefile, self.logging)
+		SaveWallpaperDialog.openDialog(self.Option, self.Config, self.Ws, Applet.images)
 
 	def btnSetWall_clicked(self, widget):
-		WoAppletUtil.setCoreArg(self.Option, self.Config, self.Ws)
-		self.Option.args[0] = WoApplet.images[0]
-		self.Option.args[1] = WoApplet.images[1]
+		AppletUtil.setCoreArg(self.Option, self.Config, self.Ws)
+		self.Option.args[0] = Applet.images[0]
+		self.Option.args[1] = Applet.images[1]
 		self.Option.opts.setWall = True
-		Core = WoCore(self.logging)
+		Core = Core(self.logging)
 		Core.singlerun(self.Option, self.Config, self.Ws)
 
 	def entInterval_activate(self, widget):
 		wName = widget.get_name()
-		WoApplet.option['interval'] = int(self.wTree.get_widget(wName).get_value())
+		Applet.option['interval'] = int(self.wTree.get_widget(wName).get_value())
 
 	def _runChanger(self):
-		WoAppletUtil.setCoreArg(self.Option, self.Config, self.Ws)
-		Core = WoCore(self.logging)
+		AppletUtil.setCoreArg(self.Option, self.Config, self.Ws)
+		Core = Core(self.logging)
 		self.seed = Core.timerRun(self.Option, self.Config, self.Ws, self.seed)
 
 	def _timeout(self, widget):
@@ -440,7 +440,7 @@ class WoApplet(object):
 
 	def btnDaemonize_clicked(self, widget):
 		self._runChanger()
-		self.timeoutObject = gobject.timeout_add(WoApplet.option['interval']*1000, self._timeout, self)
+		self.timeoutObject = gobject.timeout_add(Applet.option['interval']*1000, self._timeout, self)
 
 	def btnCancelDaemonize_clicked(self, widget):
 		print "Cancel"
@@ -454,7 +454,7 @@ class WoApplet(object):
 		self.logging = logger
 
 		self.Option.args = ['','']
-		WoAppletUtil.setAppletConfig(self.Option, self.Config, self.Ws)
+		AppletUtil.setAppletConfig(self.Option, self.Config, self.Ws)
 
 		self.timeoutObject = None
 		self.seed = 1

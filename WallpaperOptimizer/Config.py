@@ -7,9 +7,9 @@
 import sys
 import os.path
 
-class WoConfig(object):
+class Config(object):
 
-	class WoDisplay(object):
+	class Display(object):
 		width = 0
 		height = 0
 		posit = None
@@ -34,8 +34,8 @@ class WoConfig(object):
 						, lsize=None
 						, rsize=None
 						, srcdir=['.','.']):
-		self.lDisplay = WoConfig.WoDisplay()
-		self.rDisplay = WoConfig.WoDisplay()
+		self.lDisplay = Config.Display()
+		self.rDisplay = Config.Display()
 
 		import re
 		ptn = re.compile(',|x')

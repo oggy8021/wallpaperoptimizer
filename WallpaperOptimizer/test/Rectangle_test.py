@@ -2,11 +2,11 @@
 
 from nose.tools import ok_, eq_
 
-from WallpaperOptimizer.Imaging.WoRectangle import WoRectangle
+from WallpaperOptimizer.Imaging.Rectangle import Rectangle
 
 def Rectangle_init_test():
-	rect1 = WoRectangle()
-	rect2 = WoRectangle()
+	rect1 = Rectangle()
+	rect2 = Rectangle()
 	rect1.setSize(1024,768)
 	rect2.setSize(1920,1080)
 	eq_(rect1.getSize().w, 1024)
@@ -15,36 +15,36 @@ def Rectangle_init_test():
 	eq_(rect2.getSize().h, 1080)
 
 def Rectangle_square_test():
-	rect = WoRectangle()
+	rect = Rectangle()
 	rect.setSize(1024,768)
 	ok_(rect.isSquare())
 
-	rect2 = WoRectangle()
+	rect2 = Rectangle()
 	rect2.setSize(1280,1024)
 	ok_(rect2.isSquare())
 
 def Rectangle_wide_test():
-	rect = WoRectangle()
+	rect = Rectangle()
 	rect.setSize(1500,844)
 	ok_(rect.isWide())
 
-	rect2 = WoRectangle()
+	rect2 = Rectangle()
 	rect2.setSize(1920,1080)
 	ok_(rect2.isWide())
 
 def Rectangle_dual_test():
-	rect = WoRectangle()
+	rect = Rectangle()
 	rect.setSize(3200,1080)
 	ok_(rect.isDual())
 
 def Rectangle_AspectNoMatch_test():
-	rect = WoRectangle()
+	rect = Rectangle()
 	rect.setSize(1152,768)
 	eq_(rect.isSquare(), False)
 
 def extends_Bounds_test():
-	rect1 = WoRectangle()
-	rect2 = WoRectangle()
+	rect1 = Rectangle()
+	rect2 = Rectangle()
 
 	rect1.setSize(1024,768)
 	rect2.setSize(1920,1080)
@@ -62,8 +62,8 @@ def extends_Bounds_test():
 	eq_(rect2.center.y, 540)
 
 def Rectangle_contains_test():
-	rect1 = WoRectangle()
-	rect2 = WoRectangle()
+	rect1 = Rectangle()
+	rect2 = Rectangle()
 
 	rect1.setSize(1024,768)
 	rect2.setSize(1920,1080)
@@ -72,8 +72,8 @@ def Rectangle_contains_test():
 	ok_( not rect1.contains(rect2) )
 
 def Rectangle_containsPlusMergin_test():
-	rect1 = WoRectangle()
-	rect2 = WoRectangle()
+	rect1 = Rectangle()
+	rect2 = Rectangle()
 
 	rect1.setSize(1910,1070)
 	rect2.setSize(1920,1080)

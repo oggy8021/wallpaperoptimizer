@@ -2,7 +2,7 @@
 
 from optparse import Option, OptionGroup, OptionParser, OptionValueError
 
-class WoOption(object):
+class Option(object):
 
 	def __init__(self):
 		class MultiargOption(Option):
@@ -181,14 +181,3 @@ class WoOption(object):
 
 	def getArgs(self):
 		return self.args
-
-#if __name__ == "__main__":
-#	wOption = WoOption()
-#	print wOption.getLAlign()
-#	print wOption.getRAlign()
-#	print wOption.getLSize()
-#	print wOption.getRSize()
-#	print wOption.getBgcolor()
-#	print wOption.getLSrcdir()
-#	print wOption.getRSrcdir()
-#	print wOption.getVerbose()

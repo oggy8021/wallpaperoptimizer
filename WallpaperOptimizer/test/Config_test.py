@@ -2,10 +2,10 @@
 
 from nose.tools import ok_, eq_
 
-from WallpaperOptimizer.WoConfig import WoConfig
+from WallpaperOptimizer.Config import Config
 
-def WoConfig_settigFile_test():
-	wConfig = WoConfig('~/.wallpositrc')
+def Config_settigFile_test():
+	wConfig = Config('~/.wallpositrc')
 	eq_(wConfig.lDisplay.getConfig()['width'], 1920)
 	eq_(wConfig.lDisplay.getConfig()['height'], 1080)
 	eq_(wConfig.lDisplay.getConfig()['posit'], 'left')
@@ -18,12 +18,12 @@ def WoConfig_settigFile_test():
 
 	eq_(wConfig.lDisplay is wConfig.rDisplay, False)
 
-	wConfig2 = WoConfig()
+	wConfig2 = Config()
 	eq_(wConfig2.lDisplay.getConfig()['height'], 1080)
 	eq_(wConfig.lDisplay is wConfig2.lDisplay, False)
 
-def WoConfig_settingArgs_test():
-	wConfig = WoConfig('~/.wallpositrc', '1920x1080', '1280x1024', ['.','.'])
+def Config_settingArgs_test():
+	wConfig = Config('~/.wallpositrc', '1920x1080', '1280x1024', ['.','.'])
 	eq_(wConfig.lDisplay.getConfig()['width'], 1920)
 	eq_(wConfig.lDisplay.getConfig()['height'], 1080)
 	eq_(wConfig.lDisplay.getConfig()['posit'], 'left')
@@ -36,6 +36,6 @@ def WoConfig_settingArgs_test():
 
 	eq_(wConfig.lDisplay is wConfig.rDisplay, False)
 
-	wConfig2 = WoConfig()
+	wConfig2 = Config()
 	eq_(wConfig2.lDisplay.getConfig()['height'], 1080)
 	eq_(wConfig.lDisplay is wConfig2.lDisplay, False)

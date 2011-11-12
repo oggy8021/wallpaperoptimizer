@@ -6,11 +6,11 @@ import time
 import logging
 import subprocess
 
-from WallpaperOptimizer.WoChangerDir import WoChangerDir
-from WallpaperOptimizer.Imaging.WoImgFile import WoImgFile
+from WallpaperOptimizer.ChangerDir import ChangerDir
+from WallpaperOptimizer.Imaging.ImgFile import ImgFile
 
 
-class WoCore(object):
+class Core(object):
 
 	def checkImgType(self, Ws, Img1, Img2):
 		self.logging.debug('Checking imgType as Imgfile.')
@@ -207,7 +207,7 @@ class WoCore(object):
 		self.allocateImg(Option, Ws, Img1)
 		self.allocateImg(Option, Ws, Img2)
 
-		bkImg = WoImgFile('', Ws.Size.w, Ws.Size.h, Option.getBgcolor())
+		bkImg = ImgFile('', Ws.Size.w, Ws.Size.h, Option.getBgcolor())
 
 		self.mergeWallpaper(Ws, bkImg, Img1)
 		self.mergeWallpaper(Ws, bkImg, Img2)
@@ -237,13 +237,13 @@ class WoCore(object):
 
 
 	def timerRun(self, Option, Config, Ws, i):
-		LChangerDir = WoChangerDir(Config.lDisplay.getConfig()['srcdir'])
-		RChangerDir = WoChangerDir(Config.rDisplay.getConfig()['srcdir'])
+		LChangerDir = ChangerDir(Config.lDisplay.getConfig()['srcdir'])
+		RChangerDir = ChangerDir(Config.rDisplay.getConfig()['srcdir'])
 
 		limg = LChangerDir.getImgfileRnd()
 		rimg = RChangerDir.getImgfileRnd()
-		Img1 = WoImgFile(limg)
-		Img2 = WoImgFile(rimg)
+		Img1 = ImgFile(limg)
+		Img2 = ImgFile(rimg)
 
 		bkImg = self.optimizeWallpaper(Option, Config, Ws, Img1, Img2)
 		if (i == 1):
@@ -255,8 +255,8 @@ class WoCore(object):
 
 
 	def background(self, Option, Config, Ws):
-		LChangerDir = WoChangerDir(Config.lDisplay.getConfig()['srcdir'])
-		RChangerDir = WoChangerDir(Config.rDisplay.getConfig()['srcdir'])
+		LChangerDir = ChangerDir(Config.lDisplay.getConfig()['srcdir'])
+		RChangerDir = ChangerDir(Config.rDisplay.getConfig()['srcdir'])
 
 		try:
 			i = 1
@@ -265,8 +265,8 @@ class WoCore(object):
 					i = 1
 				limg = LChangerDir.getImgfileRnd()
 				rimg = RChangerDir.getImgfileRnd()
-				Img1 = WoImgFile(limg)
-				Img2 = WoImgFile(rimg)
+				Img1 = ImgFile(limg)
+				Img2 = ImgFile(rimg)
 
 				bkImg = self.optimizeWallpaper(Option, Config, Ws, Img1, Img2)
 				self.setWall(bkImg, None, i)
@@ -279,11 +279,11 @@ class WoCore(object):
 
 	def singlerun(self, Option, Config, Ws):
 		if len( Option.getArgs() ) > 1:
-			Img1 = WoImgFile(Option.getLArg())
+			Img1 = ImgFile(Option.getLArg())
 			self.logging.debug('Create Img1 object. [%s]' % Option.getLArg())
 			self.logging.debug('%20s [%d,%d]' % ( 'Img1', Img1.getSize().w, Img1.getSize().h ))
 
-			Img2 = WoImgFile(Option.getRArg())
+			Img2 = ImgFile(Option.getRArg())
 			self.logging.debug('Create Img2 object. [%s]' % Option.getRArg())
 			self.logging.debug('%20s [%s,%s]' % ( 'Img2', Img2.getSize().w, Img2.getSize().h ))
 

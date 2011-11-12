@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
 from PIL import Image
-from WallpaperOptimizer.Imaging.WoRectangle import WoRectangle
+from WallpaperOptimizer.Imaging.Rectangle import Rectangle
 
-class WoImgFile(WoRectangle, Image.Image):
+class ImgFile(Rectangle, Image.Image):
 
 	def __init__(self, file='', w=5, h=5, color='black'):
-		WoRectangle.__init__(self)
+		Rectangle.__init__(self)
 		if (file == ''):
 			mode = 'RGB'
 			size = (w, h)

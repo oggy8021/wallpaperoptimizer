@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
 
 import math
-from WallpaperOptimizer.Imaging.WoBounds import WoBounds
+from WallpaperOptimizer.Imaging.Bounds import Bounds
 
-class WoRectangle(WoBounds):
+class Rectangle(Bounds):
 
-	class WoSize(object):
+	class Size(object):
 		w = 0
 		h = 0
 
 	def __init__(self):
-		self.Size = WoRectangle.WoSize()
-		WoBounds.__init__(self)
+		self.Size = Rectangle.Size()
+		Bounds.__init__(self)
 
 	def getSize(self):
 		return self.Size

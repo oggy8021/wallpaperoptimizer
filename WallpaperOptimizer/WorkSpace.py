@@ -2,7 +2,7 @@
 
 from WallpaperOptimizer.Imaging.WoRectangle import WoRectangle
 
-class WoWorkSpace(WoRectangle):
+class WorkSpace(WoRectangle):
 
 	def __init__(self):
 		self.depth = 24

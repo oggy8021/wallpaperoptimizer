@@ -22,7 +22,7 @@ def ConfigSetToWorkSpace():
 		# TODO: Errorクラス
 		# ほぼ設定ミスのルート
 		logging.error(
-		'** Workspace width[%d] < sum(left display size, right display size) [%d, %d].'
+		'** WorkSpace width[%d] < sum(left display size, right display size) [%d, %d].'
 		 % ( Ws.Size.w, Ws.lScreen.Size.w, Ws.rScreen.Size.w ))
 		sys.exit(2)
 	if ( Ws.Size.h > Ws.lScreen.Size.h ):
@@ -45,12 +45,12 @@ def ConfigSetToWorkSpace():
 	if (hasattr(Ws.lScreen.Size, 'islessThanWorkSpaceHeight')
 	 and Ws.lScreen.Size.islessThanWorkSpaceHeight):
 		logging.warning(
-			'* Workspace height [%s] > left display height [%s].'
+			'* WorkSpace height [%s] > left display height [%s].'
 			 % (Ws.Size.h, Ws.lScreen.Size.h ))
 	if (hasattr(Ws.rScreen.Size, 'islessThanWorkSpaceHeight')
 	 and Ws.rScreen.Size.islessThanWorkSpaceHeight):
 		logging.warning(
-			'* Workspace height [%s] > right display height [%s].'
+			'* WorkSpace height [%s] > right display height [%s].'
 			 % (Ws.Size.h, Ws.rScreen.Size.h ))
 
 	logging.debug('%20s [%s,%s]'
@@ -60,14 +60,14 @@ def ConfigSetToWorkSpace():
 
 
 if __name__ == "__main__":
-	from WallpaperOptimizer.WoOption import WoOption
-	from WallpaperOptimizer.WoConfig import WoConfig
-	from WallpaperOptimizer.WoCore import WoCore
-	from WallpaperOptimizer.WoApplet import WoApplet
-	from WallpaperOptimizer.Imaging.WoWorkSpace import WoWorkSpace
+	from WallpaperOptimizer.Option import Option
+	from WallpaperOptimizer.Config import Config
+	from WallpaperOptimizer.Core import Core
+	from WallpaperOptimizer.Applet import Applet
+	from WallpaperOptimizer.Imaging.WorkSpace import WorkSpace
 
 # analize commandline option
-	Option = WoOption()
+	Option = Option()
 	Verbose = Option.getVerbose()
 
 	if (Verbose):
@@ -116,8 +116,8 @@ if __name__ == "__main__":
 		 % ( 'interval', Option.getInterval() ))
 
 
-# initialize workspace
-	Ws = WoWorkSpace()
+# initialize WorkSpace
+	Ws = WorkSpace()
 	logging.debug('Current WorkSpace setting as.')
 	logging.debug('%20s [%d,%d]'
 		 % ( 'WorkSpace Size', Ws.getSize().w, Ws.getSize().h ))
@@ -132,7 +132,7 @@ if __name__ == "__main__":
 		configfile = '~/.wallpositrc'
 		configfile = os.path.expanduser(configfile)
 		if (os.path.exists(configfile)):
-			Config = WoConfig(configfile, None, None)
+			Config = Config(configfile, None, None)
 			logging.debug('Load configfile [%s].' % configfile)
 		else:
 			logging.error('** Not exists configfile [%s]. ' % configfile)
@@ -140,7 +140,7 @@ if __name__ == "__main__":
 		logging.debug('Config set from configfile.')
 	else:
 		# config set from commandline option
-		Config = WoConfig(None
+		Config = Config(None
 				, Option.getLSize()
 				, Option.getRSize()
 				, [Option.getLSrcdir(), Option.getRSrcdir()])
@@ -169,14 +169,14 @@ if __name__ == "__main__":
 		 and Option.getSavePath() == None
 		 and Option.getDaemonize() == False):
 		logging.debug('Running ... applet mode.')
-		Applet = WoApplet(Option, Config, Ws, logging)
+		Applet = Applet(Option, Config, Ws, logging)
 		Applet.finalize()
 	elif (Option.getDaemonize()):
-		Core = WoCore(logging)
+		Core = Core(logging)
 		logging.debug('Running ... daemonize mode.')
 		Core.background(Option, Config, Ws)
 	else:
-		Core = WoCore(logging)
+		Core = Core(logging)
 		logging.debug('Running ... singlerun mode.')
 		Core.singlerun(Option, Config, Ws)
 

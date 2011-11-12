@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-class WoPoint(object):
+class Point(object):
 	def __init__(self):
 		self.x = 0
 		self.y = 0
@@ -20,11 +20,11 @@ class WoPoint(object):
 	def distance(self, other):
 		pass
 
-class WoBounds(object):
+class Bounds(object):
 	def __init__(self):
-		self.start = WoPoint()
-		self.end = WoPoint()
-		self.center = WoPoint()
+		self.start = Point()
+		self.end = Point()
+		self.center = Point()
 
 	def getWidth(self):
 		return self.end.distanceX(self.start)

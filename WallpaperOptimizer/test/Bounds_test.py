@@ -2,28 +2,28 @@
 
 from nose.tools import ok_, eq_
 
-from WallpaperOptimizer.Imaging.WoBounds import WoPoint
+from WallpaperOptimizer.Imaging.Bounds import Point
 
 def point_init_test():
-	point1 = WoPoint()
-	point2 = WoPoint()
+	point1 = Point()
+	point2 = Point()
 	eq_(point1.x, 0)
 	eq_(point1.y, 0)
 	eq_(point2.x, 0)
 	eq_(point2.y, 0)
 
 def point_distance_test():
-	point1 = WoPoint()
-	point2 = WoPoint()
+	point1 = Point()
+	point2 = Point()
 	eq_(point1.distanceX(point2), 0)
 	eq_(point1.distanceY(point2), 0)
 
 
-from WallpaperOptimizer.Imaging.WoBounds import WoBounds
+from WallpaperOptimizer.Imaging.Bounds import Bounds
 
 def Bounds_init_test():
-	area1 = WoBounds()
-	area2 = WoBounds()
+	area1 = Bounds()
+	area2 = Bounds()
 	eq_(area1.start.x, 0)
 	eq_(area1.start.y, 0)
 	eq_(area1.end.x, 0)
@@ -38,8 +38,8 @@ def Bounds_init_test():
 	eq_(area2.center.y, 0)
 
 def Bounds_set_WidthHeight_test():
-	area1 = WoBounds()
-	area2 = WoBounds()
+	area1 = Bounds()
+	area2 = Bounds()
 
 	area1.setWidth(1024)
 	area1.setHeight(768)
@@ -51,8 +51,8 @@ def Bounds_set_WidthHeight_test():
 	eq_(area2.getHeight(), 1080)
 
 def Bounds_calcCenter_test():
-	area1 = WoBounds()
-	area2 = WoBounds()
+	area1 = Bounds()
+	area2 = Bounds()
 
 	area1.setWidth(1024)
 	area1.setHeight(768)
