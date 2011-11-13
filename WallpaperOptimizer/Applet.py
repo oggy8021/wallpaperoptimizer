@@ -90,8 +90,8 @@ class AppletUtil(object):
 		bar.push(cid, msg)
 
 	@staticmethod
-	def eraceStatusbar(bar, cid, msg):
-		bar.pop(cid, msg)
+	def eraseStatusbar(bar, cid):
+		bar.pop(cid)
 
 	@staticmethod
 	def initWidget(self):
@@ -388,15 +388,15 @@ class SaveWallpaperDialog(object):
 
 class Applet(object):
 
-	mapdic = dict()
-	mapdic['tglPushLeftL'] = 'tglPushRightL'
-	mapdic['tglPushRightL'] = 'tglPushLeftL'
-	mapdic['tglUpperL'] = 'tglLowerL'
-	mapdic['tglLowerL'] = 'tglUpperL'
-	mapdic['tglPushLeftR'] = 'tglPushRightR'
-	mapdic['tglPushRightR'] = 'tglPushLeftR'
-	mapdic['tglUpperR'] = 'tglLowerR'
-	mapdic['tglLowerR'] = 'tglUpperR'
+	tgldic = dict()
+	tgldic['tglPushLeftL'] = 'tglPushRightL'
+	tgldic['tglPushRightL'] = 'tglPushLeftL'
+	tgldic['tglUpperL'] = 'tglLowerL'
+	tgldic['tglLowerL'] = 'tglUpperL'
+	tgldic['tglPushLeftR'] = 'tglPushRightR'
+	tgldic['tglPushRightR'] = 'tglPushLeftR'
+	tgldic['tglUpperR'] = 'tglLowerR'
+	tgldic['tglLowerR'] = 'tglUpperR'
 
 	config = dict()
 	config['align'] = ['center','center']
@@ -421,7 +421,7 @@ class Applet(object):
 		return attr
 
 	def tglBtn_pressed(self, widget):
-		vsName = Applet.mapdic[widget.get_name()]
+		vsName = Applet.tgldic[widget.get_name()]
 		if (self.walkTree.get_widget(vsName).get_active()):
 			self.walkTree.get_widget(vsName).set_active(False)
 
@@ -441,7 +441,7 @@ class Applet(object):
 			Applet.config[attr][lr] = val
 
 	def tglBtn_released(self, widget):
-		vsName = Applet.mapdic[widget.get_name()]
+		vsName = Applet.tgldic[widget.get_name()]
 		if (widget.get_active() == False and 
 				self.walkTree.get_widget(vsName).get_active() == False):
 			wName = widget.get_name()
@@ -509,18 +509,23 @@ class Applet(object):
 		core = Core(self.logging)
 		core.singlerun(self.Option, self.Config, self.Ws)
 
-	def entInterval_activate(self, widget):
-		Applet.option['interval'] = int(self.spnInterval.get_value())
+	def spnInterval_value_changed(self, widget):
+		Applet.option['interval'] = self.spnInterval.get_value_as_int()
+		AppletUtil.eraseStatusbar(self.statbar, self.cid_stat)
+		AppletUtil.writeStatusbar(self.statbar
+				, self.cid_stat
+				, 'Change Interval ... %d sec.' % Applet.option['interval'])
 
 	def _runChanger(self):
-		AppletUtil.setCoreArg(self.Option, self.Config, self.Ws)
 		core = Core(self.logging)
 		self.seed = core.timerRun(self.Option, self.Config, self.Ws, self.seed)
 
 	def _timeout(self, applet):
+		self.logging.debug('%20s at %d sec.' % ('Timeout', Applet.option['interval']))
+		AppletUtil.eraseStatusbar(self.statbar, self.cid_stat)
 		AppletUtil.writeStatusbar(self.statbar
 				, self.cid_stat
-				, 'Timeout raise ... run changer.')
+				, 'Timeout ... run changer.')
 		self._runChanger()
 		if (self.canceled):
 			return False
@@ -531,8 +536,11 @@ class Applet(object):
 		self.canceled = False
 		AppletUtil.switchWidget(self, False)
 		self.btnCancelDaemonize.set_sensitive(True)
+		AppletUtil.setCoreArg(self.Option, self.Config, self.Ws)
+		self.timeoutObject = glibobj.timeout_add(Applet.option['interval']*1000
+				, self._timeout, self)
+		self.logging.debug('%20s' % 'Start Daemonize ... interval [%d].' % Applet.option['interval'])
 		self._runChanger()
-		self.timeoutObject = glibobj.timeout_add(Applet.option['interval']*1000, self._timeout, self)
 
 	def btnCancelDaemonize_clicked(self, widget):
 		self.canceled = True
@@ -541,7 +549,6 @@ class Applet(object):
 		AppletUtil.writeStatusbar(self.statbar, self.cid_stat, 'Cancel ... changer action.')
 		AppletUtil.switchWidget(self, True)
 		self.btnCancelDaemonize.set_sensitive(False)
-		#statusbar破棄？
 
 	def __init__(self, Option, Config, Ws, logger):
 		self.logging = logger
@@ -583,7 +590,7 @@ class Applet(object):
 			"on_btnSetColor_clicked" : self.btnSetColor_clicked,
 			"on_btnSave_clicked" : self.btnSave_clicked,
 			"on_btnSetWall_clicked" : self.btnSetWall_clicked,
-			"on_entInterval_activate" : self.entInterval_activate,
+			"on_spnInterval_value_changed" : self.spnInterval_value_changed,
 			"on_btnDaemonize_clicked" : self.btnDaemonize_clicked,
 			"on_btnCancelDaemonize_clicked" : self.btnCancelDaemonize_clicked,
 			"on_btnQuit_clicked" : gtk.main_quit,

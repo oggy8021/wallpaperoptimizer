@@ -1012,7 +1012,7 @@
 	      <property name="snap_to_ticks">False</property>
 	      <property name="wrap">False</property>
 	      <property name="adjustment">60 1 999 1 10 10</property>
-	      <signal name="activate" handler="on_entInterval_activate" last_modification_time="Fri, 11 Nov 2011 19:35:37 GMT"/>
+	      <signal name="value_changed" handler="on_spnInterval_value_changed" last_modification_time="Sun, 13 Nov 2011 15:06:51 GMT"/>
 	    </widget>
 	    <packing>
 	      <property name="padding">0</property>
