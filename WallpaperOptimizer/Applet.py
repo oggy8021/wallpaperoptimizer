@@ -109,10 +109,10 @@ class AppletUtil(object):
 		self.btnGetImgR = self.walkTree.get_widget('btnGetImgR')
 		self.entPathR = self.walkTree.get_widget('entPathR')
 
-		self.entLMergin = self.walkTree.get_widget('entLMergin')
-		self.entRMergin = self.walkTree.get_widget('entRMergin')
-		self.entTopMergin = self.walkTree.get_widget('entTopMergin')
-		self.entBtmMergin = self.walkTree.get_widget('entBtmMergin')
+		self.spnLMergin = self.walkTree.get_widget('spnLMergin')
+		self.spnRMergin = self.walkTree.get_widget('spnRMergin')
+		self.spnTopMergin = self.walkTree.get_widget('spnTopMergin')
+		self.spnBtmMergin = self.walkTree.get_widget('spnBtmMergin')
 		self.radXinerama = self.walkTree.get_widget('radXinerama')
 		self.radTwinView = self.walkTree.get_widget('radTwinView')
 		self.radFixed = self.walkTree.get_widget('radFixed')
@@ -144,10 +144,10 @@ class AppletUtil(object):
 		self.tglLowerR.set_sensitive(boolean)
 		self.btnGetImgR.set_sensitive(boolean)
 		self.entPathR.set_sensitive(boolean)
-		self.entLMergin.set_sensitive(boolean)
-		self.entRMergin.set_sensitive(boolean)
-		self.entTopMergin.set_sensitive(boolean)
-		self.entBtmMergin.set_sensitive(boolean)
+		self.spnLMergin.set_sensitive(boolean)
+		self.spnRMergin.set_sensitive(boolean)
+		self.spnTopMergin.set_sensitive(boolean)
+		self.spnBtmMergin.set_sensitive(boolean)
 #		self.radXinerama.set_sensitive(boolean)
 #		self.radTwinView.set_sensitive(boolean)
 		self.radFixed.set_sensitive(boolean)
@@ -361,7 +361,7 @@ class SaveWallpaperDialog(object):
 	def btnCancel_clicked(self, widget):
 		self.Dialog.response(gtk.RESPONSE_CANCEL)
 
-	def openDialog(self, Option, Config, Ws, images):
+	def openDialog(self, Option, Config, Ws, images, logger):
 		self.Dialog.show_all()
 		result = self.Dialog.run()
 		if (result == gtk.RESPONSE_OK):
@@ -370,7 +370,7 @@ class SaveWallpaperDialog(object):
 			Option.args[0] = images[0]
 			Option.args[1] = images[1]
 			Option.opts.save = self.Dialog.get_filename()
-			core = Core(Applet.logging)
+			core = Core(logger)
 			core.singlerun(Option, Config, Ws)
 		self.Dialog.destroy()
 
@@ -453,7 +453,7 @@ class Applet(object):
 			lr = AppletUtil.judgeLeftRight(wName)
 			Applet.config[attr][lr] = val
 
-	def entMergin_activate(self, widget):
+	def spnMergin_value_changed(self, widget):
 		wName = widget.get_name()
 		if (wName.find('LMergin')) > 0:
 			idx = 0
@@ -463,7 +463,7 @@ class Applet(object):
 			idx = 2
 		elif (wName.find('BtmMergin')) > 0:
 			idx = 3
-		Applet.config['mergin'][idx] = int(self.walkTree.get_widget(wName).get_text())
+		Applet.config['mergin'][idx] = int(self.walkTree.get_widget(wName).get_value_as_int())
 
 	def radFixed_toggled(self, widget):
 		wName = widget.get_name()
@@ -479,16 +479,6 @@ class Applet(object):
 		else:
 			self.entPathR.set_text(Applet.images[lr])
 
-	def entImgPath_activate(self, widget):
-		wName = widget.get_name()
-		lr = AppletUtil.judgeLeftRight(wName)
-		Applet.images[lr] = os.path.expanduser(self.walkTree.get_widget(wName).get_text())
-		if (lr == 0):
-			self.entPathL.set_text(Applet.images[lr])
-		else:
-			self.entPathR.set_text(Applet.images[lr])
-#TODO: 拡張子チェック?
-
 	def btnSetting_clicked(self, widget):
 		settingDialog = SettingDialog(self.gladefile)
 		settingDialog.openDialog(Applet.config['display'], Applet.config['srcdir'])
@@ -499,7 +489,7 @@ class Applet(object):
 
 	def btnSave_clicked(self, widget):
 		savewallpaperDialog = SaveWallpaperDialog(self.gladefile)
-		savewallpaperDialog.openDialog(self.Option, self.Config, self.Ws, Applet.images)
+		savewallpaperDialog.openDialog(self.Option, self.Config, self.Ws, Applet.images, self.logging)
 
 	def btnSetWall_clicked(self, widget):
 		AppletUtil.setCoreArg(self.Option, self.Config, self.Ws)
@@ -582,10 +572,9 @@ class Applet(object):
 			"on_tglBtn_pressed" : self.tglBtn_pressed,
 			"on_tglBtn_toggled" : self.tglBtn_toggled,
 			"on_tglBtn_released" : self.tglBtn_released,
-			"on_entMergin_activate" : self.entMergin_activate,
+			"on_spnMergin_value_changed" : self.spnMergin_value_changed,
 			"on_radFixed_toggled" : self.radFixed_toggled,
 			"on_btnGetImg_clicked" : self.btnGetImg_clicked,
-			"on_entPath_activate" : self.entImgPath_activate,
 			"on_btnSetting_clicked" : self.btnSetting_clicked,
 			"on_btnSetColor_clicked" : self.btnSetColor_clicked,
 			"on_btnSave_clicked" : self.btnSave_clicked,

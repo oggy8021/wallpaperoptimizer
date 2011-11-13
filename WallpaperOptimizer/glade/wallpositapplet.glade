@@ -83,19 +83,17 @@
 	  </child>
 
 	  <child>
-	    <widget class="GtkEntry" id="entTopMergin">
-	      <property name="width_request">50</property>
+	    <widget class="GtkSpinButton" id="spnTopMergin">
 	      <property name="visible">True</property>
-	      <property name="can_default">True</property>
 	      <property name="can_focus">True</property>
-	      <property name="editable">True</property>
-	      <property name="visibility">True</property>
-	      <property name="max_length">3</property>
-	      <property name="text" translatable="yes">0</property>
-	      <property name="has_frame">True</property>
-	      <property name="invisible_char">•</property>
-	      <property name="activates_default">False</property>
-	      <signal name="activate" handler="on_entMergin_activate" last_modification_time="Sun, 06 Nov 2011 02:40:52 GMT"/>
+	      <property name="climb_rate">1</property>
+	      <property name="digits">0</property>
+	      <property name="numeric">False</property>
+	      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
+	      <property name="snap_to_ticks">False</property>
+	      <property name="wrap">False</property>
+	      <property name="adjustment">0 0 250 1 10 10</property>
+	      <signal name="value_changed" handler="on_spnMergin_value_changed" last_modification_time="Sun, 13 Nov 2011 16:22:49 GMT"/>
 	    </widget>
 	    <packing>
 	      <property name="padding">0</property>
@@ -166,19 +164,17 @@
 	      </child>
 
 	      <child>
-		<widget class="GtkEntry" id="entLMergin">
-		  <property name="width_request">50</property>
+		<widget class="GtkSpinButton" id="spnLMergin">
 		  <property name="visible">True</property>
-		  <property name="can_default">True</property>
 		  <property name="can_focus">True</property>
-		  <property name="editable">True</property>
-		  <property name="visibility">True</property>
-		  <property name="max_length">3</property>
-		  <property name="text" translatable="yes">0</property>
-		  <property name="has_frame">True</property>
-		  <property name="invisible_char">•</property>
-		  <property name="activates_default">False</property>
-		  <signal name="activate" handler="on_entMergin_activate" last_modification_time="Sun, 06 Nov 2011 02:58:15 GMT"/>
+		  <property name="climb_rate">1</property>
+		  <property name="digits">0</property>
+		  <property name="numeric">False</property>
+		  <property name="update_policy">GTK_UPDATE_ALWAYS</property>
+		  <property name="snap_to_ticks">False</property>
+		  <property name="wrap">False</property>
+		  <property name="adjustment">0 0 500 1 10 10</property>
+		  <signal name="value_changed" handler="on_spnMergin_value_changed" last_modification_time="Sun, 13 Nov 2011 16:22:05 GMT"/>
 		</widget>
 		<packing>
 		  <property name="padding">0</property>
@@ -561,14 +557,13 @@
 			<widget class="GtkEntry" id="entPathL">
 			  <property name="visible">True</property>
 			  <property name="can_focus">True</property>
-			  <property name="editable">True</property>
+			  <property name="editable">False</property>
 			  <property name="visibility">True</property>
 			  <property name="max_length">0</property>
 			  <property name="text" translatable="yes"></property>
 			  <property name="has_frame">True</property>
 			  <property name="invisible_char">•</property>
 			  <property name="activates_default">False</property>
-			  <signal name="activate" handler="on_entPath_activate" last_modification_time="Tue, 08 Nov 2011 23:54:29 GMT"/>
 			</widget>
 			<packing>
 			  <property name="padding">0</property>
@@ -607,14 +602,13 @@
 			<widget class="GtkEntry" id="entPathR">
 			  <property name="visible">True</property>
 			  <property name="can_focus">True</property>
-			  <property name="editable">True</property>
+			  <property name="editable">False</property>
 			  <property name="visibility">True</property>
 			  <property name="max_length">0</property>
 			  <property name="text" translatable="yes"></property>
 			  <property name="has_frame">True</property>
 			  <property name="invisible_char">•</property>
 			  <property name="activates_default">False</property>
-			  <signal name="activate" handler="on_entPath_activate" last_modification_time="Tue, 08 Nov 2011 23:54:18 GMT"/>
 			</widget>
 			<packing>
 			  <property name="padding">0</property>
@@ -750,19 +744,17 @@
 		  </child>
 
 		  <child>
-		    <widget class="GtkEntry" id="entRMergin">
-		      <property name="width_request">50</property>
+		    <widget class="GtkSpinButton" id="spnRMergin">
 		      <property name="visible">True</property>
-		      <property name="can_default">True</property>
 		      <property name="can_focus">True</property>
-		      <property name="editable">True</property>
-		      <property name="visibility">True</property>
-		      <property name="max_length">3</property>
-		      <property name="text" translatable="yes">0</property>
-		      <property name="has_frame">True</property>
-		      <property name="invisible_char">•</property>
-		      <property name="activates_default">False</property>
-		      <signal name="activate" handler="on_entMergin_activate" last_modification_time="Sun, 06 Nov 2011 02:57:45 GMT"/>
+		      <property name="climb_rate">1</property>
+		      <property name="digits">0</property>
+		      <property name="numeric">False</property>
+		      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
+		      <property name="snap_to_ticks">False</property>
+		      <property name="wrap">False</property>
+		      <property name="adjustment">0 0 500 1 10 10</property>
+		      <signal name="value_changed" handler="on_spnMergin_value_changed" last_modification_time="Sun, 13 Nov 2011 16:22:38 GMT"/>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
@@ -849,19 +841,17 @@
 	  </child>
 
 	  <child>
-	    <widget class="GtkEntry" id="entBtmMergin">
-	      <property name="width_request">50</property>
+	    <widget class="GtkSpinButton" id="spnBtmMergin">
 	      <property name="visible">True</property>
-	      <property name="can_default">True</property>
 	      <property name="can_focus">True</property>
-	      <property name="editable">True</property>
-	      <property name="visibility">True</property>
-	      <property name="max_length">3</property>
-	      <property name="text" translatable="yes">0</property>
-	      <property name="has_frame">True</property>
-	      <property name="invisible_char">•</property>
-	      <property name="activates_default">False</property>
-	      <signal name="activate" handler="on_entMergin_activate" last_modification_time="Sun, 06 Nov 2011 02:58:03 GMT"/>
+	      <property name="climb_rate">1</property>
+	      <property name="digits">0</property>
+	      <property name="numeric">False</property>
+	      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
+	      <property name="snap_to_ticks">False</property>
+	      <property name="wrap">False</property>
+	      <property name="adjustment">0 0 250 1 10 10</property>
+	      <signal name="value_changed" handler="on_spnMergin_value_changed" last_modification_time="Sun, 13 Nov 2011 16:22:22 GMT"/>
 	    </widget>
 	    <packing>
 	      <property name="padding">0</property>
@@ -1329,7 +1319,7 @@
 	      <property name="can_default">True</property>
 	      <property name="has_default">True</property>
 	      <property name="can_focus">True</property>
-	      <property name="label">gtk-open</property>
+	      <property name="label">gtk-save</property>
 	      <property name="use_stock">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
 	      <property name="focus_on_click">True</property>
@@ -2014,6 +2004,27 @@
 	</packing>
       </child>
     </widget>
+  </child>
+</widget>
+
+<widget class="GtkWindow" id="window1">
+  <property name="visible">True</property>
+  <property name="title" translatable="yes">window1</property>
+  <property name="type">GTK_WINDOW_TOPLEVEL</property>
+  <property name="window_position">GTK_WIN_POS_NONE</property>
+  <property name="modal">False</property>
+  <property name="resizable">True</property>
+  <property name="destroy_with_parent">False</property>
+  <property name="decorated">True</property>
+  <property name="skip_taskbar_hint">False</property>
+  <property name="skip_pager_hint">False</property>
+  <property name="type_hint">GDK_WINDOW_TYPE_HINT_NORMAL</property>
+  <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
+  <property name="focus_on_map">True</property>
+  <property name="urgency_hint">False</property>
+
+  <child>
+    <placeholder/>
   </child>
 </widget>
 

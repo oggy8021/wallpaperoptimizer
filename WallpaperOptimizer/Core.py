@@ -78,7 +78,7 @@ class Core(object):
 				return True
 			else:
 				return False
-		else:
+		elif ( Img.posit == 'right' ):
 			# rScreenに、Imgがおさまる
 			if ( Ws.rScreen.containsPlusMergin( Img, tmpMergin) ):
 				return True
@@ -89,7 +89,7 @@ class Core(object):
 	def downsizeImg(self, Ws, Img, tmpMergin):
 		if ( Img.posit == 'left' ):
 			tmpScreen = Ws.lScreen
-		if ( Img.posit == 'right' ):
+		elif ( Img.posit == 'right' ):
 			tmpScreen = Ws.rScreen
 		self.logging.debug('Convert Imgfile with %s Screen.' % Img.posit)
 
@@ -139,7 +139,7 @@ class Core(object):
 			tmpScreen = Ws.lScreen
 			tmpAlign = Option.getLAlign()
 			tmpValign = Option.getLValign()
-		else:
+		elif ( Img.posit == 'right'):
 			tmpScreen = Ws.rScreen
 			tmpAlign = Option.getRAlign()
 			tmpValign = Option.getRValign()
@@ -274,24 +274,22 @@ class Core(object):
 
 
 	def singlerun(self, Option, Config, Ws):
-		if len( Option.getArgs() ) > 1:
+		if len( Option.getArgs() ) == 2:
 			Img1 = ImgFile(Option.getLArg())
 			self.logging.debug('Create Img1 object. [%s]' % Option.getLArg())
 			self.logging.debug('%20s [%d,%d]' % ( 'Img1', Img1.getSize().w, Img1.getSize().h ))
-
 			Img2 = ImgFile(Option.getRArg())
 			self.logging.debug('Create Img2 object. [%s]' % Option.getRArg())
 			self.logging.debug('%20s [%s,%s]' % ( 'Img2', Img2.getSize().w, Img2.getSize().h ))
+			bkImg = self.optimizeWallpaper(Option, Config, Ws, Img1, Img2)
 
-		bkImg = self.optimizeWallpaper(Option, Config, Ws, Img1, Img2)
+			tmpPath = Option.getSavePath()
+			if (tmpPath <> None):
+				bkImg.save(tmpPath)
+				self.logging.debug('Save optimized wallpaper [%s].' % tmpPath)
 
-		tmpPath = Option.getSavePath()
-		if (tmpPath <> None):
-			bkImg.save(tmpPath)
-			self.logging.debug('Save optimized wallpaper [%s].' % tmpPath)
-
-		if (Option.getSetWall()):
-			self.setWall(bkImg)
+			if (Option.getSetWall()):
+				self.setWall(bkImg)
 
 
 	def __init__(self, logger):

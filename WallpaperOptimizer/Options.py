@@ -33,7 +33,7 @@ class Options(object):
 						raise OptionValueError("option: %s to 2 values." % dest)
 				elif action == "doublestore":
 					lvalue = value.split(",")
-					if (len(lvalue) > 1 and len(lvalue) <= 2 and lvalue[0] <> "" and lvalue[1] <> ""):
+					if (len(lvalue) == 2 and lvalue[0] <> "" and lvalue[1] <> ""):
 						exchangeValue(lvalue, dest, values)
 					else:
 						raise OptionValueError("option: %s necessary 2 values." % dest)
@@ -96,7 +96,7 @@ class Options(object):
 		parser.add_option_group(actiongroup)
 
 		(self.opts, self.args) = parser.parse_args()
-		if (len(self.args) < 1 and
+		if (len(self.args) < 2 and
 				 (self.opts.save != None or self.opts.setWall == True)):
 			parser.error("Please set imgfile parameter.")
 
