@@ -215,7 +215,7 @@ class Core(object):
 		return bkImg
 
 
-	def setWall(self, bkImg, tmpPath=None, flg=0):
+	def setWall(self, bkImg, tmpPath=None, flg='_setWall'):
 		if (tmpPath == None):
 			tmpPath = '/tmp/wallposit' + str(flg) + '.jpg'
 			bkImg.save(tmpPath)
@@ -240,10 +240,8 @@ class Core(object):
 		LChangerDir = ChangerDir(Config.lDisplay.getConfig()['srcdir'])
 		RChangerDir = ChangerDir(Config.rDisplay.getConfig()['srcdir'])
 
-		limg = LChangerDir.getImgfileRnd()
-		rimg = RChangerDir.getImgfileRnd()
-		Img1 = ImgFile(limg)
-		Img2 = ImgFile(rimg)
+		Img1 = ImgFile(LChangerDir.getImgfileRnd())
+		Img2 = ImgFile(RChangerDir.getImgfileRnd())
 
 		bkImg = self.optimizeWallpaper(Option, Config, Ws, Img1, Img2)
 		if (i == 1):
@@ -261,14 +259,12 @@ class Core(object):
 		try:
 			i = 1
 			while(1):
-				if (i > 2):
-					i = 1
-				limg = LChangerDir.getImgfileRnd()
-				rimg = RChangerDir.getImgfileRnd()
-				Img1 = ImgFile(limg)
-				Img2 = ImgFile(rimg)
+				Img1 = ImgFile(LChangerDir.getImgfileRnd())
+				Img2 = ImgFile(RChangerDir.getImgfileRnd())
 
 				bkImg = self.optimizeWallpaper(Option, Config, Ws, Img1, Img2)
+				if (i > 2):
+					i = 1
 				self.setWall(bkImg, None, i)
 				interval = Option.getInterval()
 				time.sleep(interval)

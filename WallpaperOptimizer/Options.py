@@ -97,7 +97,7 @@ class Options(object):
 
 		(self.opts, self.args) = parser.parse_args()
 		if (len(self.args) < 1 and
-				 self.opts.save != None or self.opts.setWall == True):
+				 (self.opts.save != None or self.opts.setWall == True)):
 			parser.error("Please set imgfile parameter.")
 
 		for m_align in self.opts.align:

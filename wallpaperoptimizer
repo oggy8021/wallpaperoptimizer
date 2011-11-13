@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # singlerun
-#	./wallpaperoptimizer  ../2560x1920.jpg ../1500x844.jpg -w
+#	./wallpaperoptimizer  ../2560x1920.jpg ../1500x844.jpg -W
 # background
 #	./wallpaperoptimizer -D -i 5
 # applet
@@ -16,15 +16,15 @@ import logging
 import subprocess
 
 if __name__ == "__main__":
-	from WallpaperOptimizer.Option import Option
+	from WallpaperOptimizer.Options import Options
 	from WallpaperOptimizer.Config import Config
 	from WallpaperOptimizer.Core import Core
 	from WallpaperOptimizer.Applet import Applet
 	from WallpaperOptimizer.WorkSpace import WorkSpace
 
 # analize commandline option
-	Option = Options()
-	Verbose = Option.getVerbose()
+	option = Options()
+	Verbose = option.getVerbose()
 
 	if (Verbose):
 		loglevel = logging.DEBUG
@@ -47,39 +47,39 @@ if __name__ == "__main__":
 
 	logging.debug('Command line option as.')
 	logging.debug('%20s [%s,%s].'
-		 % ( 'align', Option.getLAlign(), Option.getRAlign() ))
+		 % ( 'align', option.getLAlign(), option.getRAlign() ))
 	logging.debug('%20s [%s,%s].'
-		 % ( 'valign', Option.getLValign(), Option.getRValign() ))
+		 % ( 'valign', option.getLValign(), option.getRValign() ))
 	logging.debug('%20s [%d,%d,%d,%d]'
 		 % ( 'mergin'
-		 , Option.getLMergin(), Option.getRMergin()
-		 , Option.getTopMergin(), Option.getBtmMergin() ))
+		 , option.getLMergin(), option.getRMergin()
+		 , option.getTopMergin(), option.getBtmMergin() ))
 	logging.debug('%20s [%s]'
-		 % ( 'fixed', Option.getFixed() ))
+		 % ( 'fixed', option.getFixed() ))
 	logging.debug('%20s [%s,%s]'
-		 % ( 'display', Option.getLSize(), Option.getRSize() ))
+		 % ( 'display', option.getLSize(), option.getRSize() ))
 	logging.debug('%20s [%s]'
-		 % ( 'bgcolor', Option.getBgcolor() ))
+		 % ( 'bgcolor', option.getBgcolor() ))
 	logging.debug('%20s [%s,%s]'
-		 % ( 'srcdir', Option.getLSrcdir(), Option.getRSrcdir() ))
+		 % ( 'srcdir', option.getLSrcdir(), option.getRSrcdir() ))
 	logging.debug('%20s [%s]'
-		 % ( 'setWall', Option.getSetWall() ))
+		 % ( 'setWall', option.getSetWall() ))
 	logging.debug('%20s [%s]'
-		 % ( 'savepath', Option.getSavePath() ))
+		 % ( 'savepath', option.getSavePath() ))
 	logging.debug('%20s [%s]'
-		 % ( 'daemon', Option.getDaemonize() ))
+		 % ( 'daemon', option.getDaemonize() ))
 	logging.debug('%20s [%s]'
-		 % ( 'interval', Option.getInterval() ))
+		 % ( 'interval', option.getInterval() ))
 
 
 # initialize config
 	# 条件弱い？
-	if (Option.getLSize() == None and Option.getRSize() == None):
+	if (option.getLSize() == None and option.getRSize() == None):
 		# config set from configfile
 		configfile = '~/.wallpositrc'
 		configfile = os.path.expanduser(configfile)
 		if (os.path.exists(configfile)):
-			Config = Config(configfile, None, None)
+			config = Config(configfile, None, None)
 			logging.debug('Load configfile [%s].' % configfile)
 		else:
 			logging.error('** Not exists configfile [%s]. ' % configfile)
@@ -87,27 +87,27 @@ if __name__ == "__main__":
 		logging.debug('Config set from configfile.')
 	else:
 		# config set from commandline option
-		Config = Config(None
-				, Option.getLSize()
-				, Option.getRSize()
-				, [Option.getLSrcdir(), Option.getRSrcdir()])
+		config = Config(None
+				, option.getLSize()
+				, option.getRSize()
+				, [option.getLSrcdir(), option.getRSrcdir()])
 		logging.debug('Config set from commandline option.')
 
 	logging.debug('%20s [%s,%s]'
 			 % ( 'left display size'
-			 , Config.lDisplay.getConfig()['width'], Config.rDisplay.getConfig()['width'] ))
+			 , config.lDisplay.getConfig()['width'], config.rDisplay.getConfig()['width'] ))
 	logging.debug('%20s [%s,%s]'
 			 % ( 'right display size'
-			 , Config.lDisplay.getConfig()['height'], Config.rDisplay.getConfig()['height'] ))
+			 , config.lDisplay.getConfig()['height'], config.rDisplay.getConfig()['height'] ))
 	logging.debug('%20s [%s,%s]'
 			 % ( 'position'
-			 , Config.lDisplay.getConfig()['posit'], Config.rDisplay.getConfig()['posit'] ))
+			 , config.lDisplay.getConfig()['posit'], config.rDisplay.getConfig()['posit'] ))
 	logging.debug('%20s [%s]'
 			 % ( 'srcdir to left'
-			 , Config.lDisplay.getConfig()['srcdir'] ))
+			 , config.lDisplay.getConfig()['srcdir'] ))
 	logging.debug('%20s [%s]'
 			 % ( 'srcdir to right'
-			 , Config.rDisplay.getConfig()['srcdir'] ))
+			 , config.rDisplay.getConfig()['srcdir'] ))
 
 
 # initialize WorkSpace
@@ -119,10 +119,10 @@ if __name__ == "__main__":
 		 % ( 'WorkSpace depth', Ws.getDepth() ))
 
 	logging.debug('Config Setting To WorkSpace().')
-	Ws.setScreenSize([Config.lDisplay.getConfig()['width'], Config.lDisplay.getConfig()['height']]
-				, [Config.rDisplay.getConfig()['width'], Config.rDisplay.getConfig()['height']])
+	Ws.setScreenSize([config.lDisplay.getConfig()['width'], config.lDisplay.getConfig()['height']]
+				, [config.rDisplay.getConfig()['width'], config.rDisplay.getConfig()['height']])
 
-	if (Ws.compareToScreen()):
+	if (not Ws.compareToScreen()):
 		logging.error(
 		'** WorkSpace width[%d] < sum(left display size, right display size) [%d, %d].'
 		 % ( Ws.Size.w, Ws.lScreen.Size.w, Ws.rScreen.Size.w ))
@@ -144,20 +144,20 @@ if __name__ == "__main__":
 		 	 % ( 'display type' , Ws.lScreen.displayType, Ws.rScreen.displayType ))
 
 
-	if (Option.getSetWall() == False
-		 and Option.getSavePath() == None
-		 and Option.getDaemonize() == False):
+	if (option.getSetWall() == False
+		 and option.getSavePath() == None
+		 and option.getDaemonize() == False):
 		logging.debug('Running ... applet mode.')
-		Applet = Applet(Option, Config, Ws, logging)
+		Applet = Applet(option, config, Ws, logging)
 		Applet.finalize()
-	elif (Option.getDaemonize()):
+	elif (option.getDaemonize()):
 		Core = Core(logging)
 		logging.debug('Running ... daemonize mode.')
-		Core.background(Option, Config, Ws)
+		Core.background(option, config, Ws)
 	else:
 		Core = Core(logging)
 		logging.debug('Running ... singlerun mode.')
-		Core.singlerun(Option, Config, Ws)
+		Core.singlerun(option, config, Ws)
 
 	logging.debug('Quit ... wallpaperoptimizer.')
 	sys.exit(0)
