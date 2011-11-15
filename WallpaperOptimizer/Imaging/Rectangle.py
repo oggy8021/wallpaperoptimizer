@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-import math
+from math import floor
+
 from WallpaperOptimizer.Imaging.Bounds import Bounds
 
 class Rectangle(Bounds):
@@ -48,8 +49,8 @@ class Rectangle(Bounds):
 		return self.checkAspectRatio(widthAs, heightAs)
 
 	def checkAspectRatio(self, widthAs, heightAs):
-		quotient_w = math.floor(self.Size.w / widthAs)
-		quotient_h = math.floor(self.Size.h / heightAs)
+		quotient_w = floor(self.Size.w / widthAs)
+		quotient_h = floor(self.Size.h / heightAs)
 		if (quotient_w == quotient_h):
 			return True
 		else:

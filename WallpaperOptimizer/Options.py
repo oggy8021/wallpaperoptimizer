@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 
+import os.path
+import re
+
 from optparse import Option, OptionGroup, OptionParser, OptionValueError
 
 class Options(object):
@@ -49,7 +52,7 @@ class Options(object):
 					, fixed=False
 					, size=[None, None]
 					, bgcolor="black"
-					, srcdir=['.','.']
+					, srcdir=['','']
 					, verbose=False
 					, save=None
 					, setWall=False
@@ -103,14 +106,18 @@ class Options(object):
 		for m_align in self.opts.align:
 			if m_align in ("left", "center", "right"):
 				break
-			raise OptionValueError("option: align invalid")
+			raise OptionValueError("align invalid")
 
 		for m_valign in self.opts.valign:
 			if m_valign in ("top", "middle", "bottom"):
 				break
-			raise OptionValueError("option: valign invalid")
+			raise OptionValueError("valign invalid")
 
-		import re
+		if (self.opts.srcdir[0] != '' and self.opts.srcdir[1] != ''):
+			for i in range(0,1):
+				if (not os.path.exists(self.opts.srcdir[i])):
+					raise OptionValueError('not exists srcdir [%s]' % self.opts.srcdir[i])
+
 		ptn = re.compile('^0x(.+)$')
 		if (ptn.match(self.opts.bgcolor)):
 			subStr = ptn.split(self.opts.bgcolor)

@@ -406,7 +406,7 @@ class Applet(object):
 	#TODO:str,int行ったり来たり
 	config['display'] = ['1024x768','1024x768']
 	config['bgcolor'] = 'black'
-	config['srcdir'] = ['.','.']
+	config['srcdir'] = ['','']
 	#TODO:左右独立、ワークスペース全体は未検討
 
 	option = dict()

@@ -1,8 +1,18 @@
 # -*- coding: utf-8 -*-
 
+import os.path
+import commands
+import re
+
 from WallpaperOptimizer.Imaging.Rectangle import Rectangle
 
 class WorkSpace(Rectangle):
+
+	class WorkSpaceRuntimeError(Exception):
+		def __init__(self, msg):
+			self.value = msg
+		def __str__(self):
+			return repr(self.value)
 
 	def setScreenSize(self, lDisplay, rDisplay):
 		self.lScreen.setSize(lDisplay[0], lDisplay[1])
@@ -45,11 +55,11 @@ class WorkSpace(Rectangle):
 		self.rScreen = Rectangle()
 
 		xdpyinfo='/usr/bin/xdpyinfo'
-		import commands
+		if (not os.path.exists(xdpyinfo)):
+			raise WorkSpace.WorkSpaceRuntimeError('xdpyinfo not installed [%s]' % xdpyinfo)
 		dimensions = commands.getoutput(xdpyinfo + '| grep dimensions')
 		depth = commands.getoutput(xdpyinfo + '| grep "depth of root window"')
 
-		import re
 		#"  dimensions:    3200x1080 pixels (856x292 millimeters)"
 		ptn = re.compile('[\s]+|x')
 		subStr = ptn.split( dimensions )

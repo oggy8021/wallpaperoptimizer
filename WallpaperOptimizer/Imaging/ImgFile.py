@@ -1,6 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from PIL import Image
+import sys
+try:
+	from PIL import Image
+except:
+	print 'not installed Python Imaging Library (PIL)'
+	sys.exit(2)
+
 from WallpaperOptimizer.Imaging.Rectangle import Rectangle
 
 class ImgFile(Rectangle, Image.Image):

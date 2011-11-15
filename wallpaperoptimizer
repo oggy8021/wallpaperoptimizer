@@ -21,9 +21,14 @@ if __name__ == "__main__":
 	from WallpaperOptimizer.Core import Core
 	from WallpaperOptimizer.Applet import Applet
 	from WallpaperOptimizer.WorkSpace import WorkSpace
+	from optparse import OptionValueError
 
 # analize commandline option
-	option = Options()
+	try:
+		option = Options()
+	except OptionValueError, msg:
+				logging.error('** OptionValueError: %s. ' % msg)
+				sys.exit(2)
 	Verbose = option.getVerbose()
 
 	if (Verbose):
@@ -74,19 +79,24 @@ if __name__ == "__main__":
 
 # initialize config
 	# 条件弱い？
-	if (option.getLSize() == None and option.getRSize() == None):
-		# config set from configfile
+	if ( (option.getLSize() == None and option.getRSize() == None) and 
+		(option.getLSrcdir() == '' and option.getRSrcdir() == '') ):
+	# config set from configfile
 		configfile = '~/.wallpositrc'
 		configfile = os.path.expanduser(configfile)
 		if (os.path.exists(configfile)):
-			config = Config(configfile, None, None)
-			logging.debug('Load configfile [%s].' % configfile)
+			try:
+				config = Config(configfile, None, None)
+				logging.debug('Load configfile [%s].' % configfile)
+			except Config.FormatError, msg:
+				logging.error('** FormatError: %s. ' % msg)
+				sys.exit(2)
 		else:
 			logging.error('** Not exists configfile [%s]. ' % configfile)
 			sys.exit(2)
 		logging.debug('Config set from configfile.')
 	else:
-		# config set from commandline option
+	# config set from commandline option
 		config = Config(None
 				, option.getLSize()
 				, option.getRSize()
@@ -111,7 +121,12 @@ if __name__ == "__main__":
 
 
 # initialize WorkSpace
-	Ws = WorkSpace()
+	try:
+		Ws = WorkSpace()
+	except WorkSpace.WorkSpaceRuntimeError, msg:
+		logging.error('** WorkSpaceRuntimeError: %s. ' % msg)
+		sys.exit(2)
+
 	logging.debug('Current WorkSpace setting as.')
 	logging.debug('%20s [%d,%d]'
 		 % ( 'WorkSpace Size', Ws.getSize().w, Ws.getSize().h ))
@@ -124,8 +139,8 @@ if __name__ == "__main__":
 
 	if (not Ws.compareToScreen()):
 		logging.error(
-		'** WorkSpace width[%d] < sum(left display size, right display size) [%d, %d].'
-		 % ( Ws.Size.w, Ws.lScreen.Size.w, Ws.rScreen.Size.w ))
+			'** WorkSpace width[%d] < sum(left display size, right display size) [%d, %d].'
+			 % ( Ws.Size.w, Ws.lScreen.Size.w, Ws.rScreen.Size.w ))
 		sys.exit(2)
 
 	if (hasattr(Ws.lScreen.Size, 'islessThanWorkSpaceHeight')
