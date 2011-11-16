@@ -78,30 +78,42 @@ if __name__ == "__main__":
 
 
 # initialize config
-	# 条件弱い？
-	if ( (option.getLSize() == None and option.getRSize() == None) and 
-		(option.getLSrcdir() == '' and option.getRSrcdir() == '') ):
 	# config set from configfile
-		configfile = '~/.wallpositrc'
-		configfile = os.path.expanduser(configfile)
-		if (os.path.exists(configfile)):
-			try:
-				config = Config(configfile, None, None)
-				logging.debug('Load configfile [%s].' % configfile)
-			except Config.FormatError, msg:
-				logging.error('** FormatError: %s. ' % msg)
-				sys.exit(2)
-		else:
-			logging.error('** Not exists configfile [%s]. ' % configfile)
+	configfile = '~/.wallpositrc'
+	configfile = os.path.expanduser(configfile)
+	if (os.path.exists(configfile)):
+		try:
+			config = Config(configfile)
+			logging.debug('Config set from configfile.')
+		except Config.FormatError, msg:
+			logging.error('** FormatError: %s. ' % msg)
 			sys.exit(2)
-		logging.debug('Config set from configfile.')
 	else:
-	# config set from commandline option
-		config = Config(None
-				, option.getLSize()
-				, option.getRSize()
-				, [option.getLSrcdir(), option.getRSrcdir()])
-		logging.debug('Config set from commandline option.')
+		config = Config()
+
+	# config set/update from commandline option
+	if (option.getLSize() != None and option.getRSize() != None):
+		config.lDisplay.setSize(option.getLSize())
+		config.rDisplay.setSize(option.getRSize())
+
+	if (option.getLSrcdir() != '' and option.getRSrcdir() != ''):
+		config.lDisplay.setSrcdir(option.getLSrcdir())
+		config.rDisplay.setSrcdir(option.getRSrcdir())
+
+	logging.debug('Config update from commandline option.')
+
+	if ( config.lDisplay.getConfig()['width'] == 0 and 
+		config.lDisplay.getConfig()['height'] == 0 and
+		config.rDisplay.getConfig()['width'] == 0 and 
+		config.rDisplay.getConfig()['height'] == 0 ):
+		logging.error('** Please setting left/right display size.')
+		sys.exit(2)
+
+	if ( option.getDaemonize() and 
+			config.lDisplay.getConfig()['srcdir'] == '' and 
+			config.rDisplay.getConfig()['srcdir'] == '' ):
+		logging.error('** Please setting srcdir in Daemonize mode.')
+		sys.exit(2)
 
 	logging.debug('%20s [%s,%s]'
 			 % ( 'left display size'
