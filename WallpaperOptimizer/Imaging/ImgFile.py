@@ -11,6 +11,12 @@ from WallpaperOptimizer.Imaging.Rectangle import Rectangle
 
 class ImgFile(Rectangle, Image.Image):
 
+	class ImgFileIOError(IOError):
+		def __init__(self, value):
+			self.value = value
+		def __str__(self):
+			return repr(self.value)
+
 	def __init__(self, file='', w=5, h=5, color='black'):
 		Rectangle.__init__(self)
 		if (file == ''):
@@ -33,4 +39,7 @@ class ImgFile(Rectangle, Image.Image):
 		self._img.paste(image._img, box)
 
 	def save(self, path):
-		self._img.save(path)
+		try:
+			self._img.save(path)
+		except IOError, msg:
+			raise ImgFile.ImgFileIOError('Cannot save Imgfile [%s]' % path)

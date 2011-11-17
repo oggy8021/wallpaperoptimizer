@@ -12,6 +12,12 @@ from WallpaperOptimizer.Imaging.ImgFile import ImgFile
 
 class Core(object):
 
+	class CoreRuntimeError(Exception):
+		def __init__(self, value):
+			self.value = value
+		def __str__(self):
+			return repr(self.value)
+
 	def checkImgType(self, Ws, Img1, Img2):
 		self.logging.debug('Checking imgType as Imgfile.')
 
@@ -218,8 +224,7 @@ class Core(object):
 	def setWall(self, bkImg, tmpPath=None, flg='_setWall'):
 		if (tmpPath == None):
 			tmpPath = '/tmp/wallposit' + str(flg) + '.jpg'
-			bkImg.save(tmpPath)
-			self.logging.debug('Save optimized wallpaper [%s].' % tmpPath)
+			self.saveImgfile(bkImg, tmpPath)
 		else:
 			# (, )だけだと、ちょっと間抜け
 			tmpPath = tmpPath.replace('(','\\(')
@@ -236,9 +241,21 @@ class Core(object):
 		self.logging.debug('Change wallpaper to current Workspace [%s].' % tmpPath)
 
 
+	def saveImgfile(self, bkImg, tmpPath=None):
+		try:
+			bkImg.save(tmpPath)
+			self.logging.debug('Save optimized wallpaper [%s].' % tmpPath)
+		except ImgFile.ImgFileIOError, msg:
+			raise Core.CoreRuntimeError(msg)
+
+
 	def timerRun(self, Option, Config, Ws, i):
-		LChangerDir = ChangerDir(Config.lDisplay.getConfig()['srcdir'])
-		RChangerDir = ChangerDir(Config.rDisplay.getConfig()['srcdir'])
+		try:
+			LChangerDir = ChangerDir(Config.lDisplay.getConfig()['srcdir'])
+			RChangerDir = ChangerDir(Config.rDisplay.getConfig()['srcdir'])
+		except ChangerDir.FileCountZeroError, msg:
+			raise
+#			raise ChangerDir.FileCountZeroError(msg)
 
 		Img1 = ImgFile(LChangerDir.getImgfileRnd())
 		Img2 = ImgFile(RChangerDir.getImgfileRnd())
@@ -253,8 +270,12 @@ class Core(object):
 
 
 	def background(self, Option, Config, Ws):
-		LChangerDir = ChangerDir(Config.lDisplay.getConfig()['srcdir'])
-		RChangerDir = ChangerDir(Config.rDisplay.getConfig()['srcdir'])
+		try:
+			LChangerDir = ChangerDir(Config.lDisplay.getConfig()['srcdir'])
+			RChangerDir = ChangerDir(Config.rDisplay.getConfig()['srcdir'])
+		except ChangerDir.FileCountZeroError, msg:
+			logging.error('** %s.' % msg)
+			sys.exit(2)
 
 		try:
 			i = 1
@@ -285,8 +306,7 @@ class Core(object):
 
 			tmpPath = Option.getSavePath()
 			if (tmpPath <> None):
-				bkImg.save(tmpPath)
-				self.logging.debug('Save optimized wallpaper [%s].' % tmpPath)
+				self.saveImgfile(bkImg, tmpPath)
 
 			if (Option.getSetWall()):
 				self.setWall(bkImg)

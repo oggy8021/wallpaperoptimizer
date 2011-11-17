@@ -184,7 +184,11 @@ if __name__ == "__main__":
 	else:
 		Core = Core(logging)
 		logging.debug('Running ... singlerun mode.')
-		Core.singlerun(option, config, Ws)
+		try:
+			Core.singlerun(option, config, Ws)
+		except Core.CoreRuntimeError, msg:
+			logging.error('** CoreRuntimeError: %s. ' % msg.value)
+			sys.exit(2)
 
 	logging.debug('Quit ... wallpaperoptimizer.')
 	sys.exit(0)
