@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os.path
-import commands
+import subprocess
 import re
 
 from WallpaperOptimizer.Imaging.Rectangle import Rectangle
@@ -57,8 +57,14 @@ class WorkSpace(Rectangle):
 		xdpyinfo='/usr/bin/xdpyinfo'
 		if (not os.path.exists(xdpyinfo)):
 			raise WorkSpace.WorkSpaceRuntimeError('xdpyinfo not installed [%s]' % xdpyinfo)
-		dimensions = commands.getoutput(xdpyinfo + '| grep dimensions')
-		depth = commands.getoutput(xdpyinfo + '| grep "depth of root window"')
+		dimensions = subprocess.Popen(
+			["grep", "dimensions"]
+			, stdin=subprocess.Popen([xdpyinfo], stdout=subprocess.PIPE).stdout
+			, stdout=subprocess.PIPE).communicate()[0]
+		depth = subprocess.Popen(
+			["grep", "depth of root window"]
+			, stdin=subprocess.Popen([xdpyinfo], stdout=subprocess.PIPE).stdout
+			, stdout=subprocess.PIPE).communicate()[0]
 
 		#"  dimensions:    3200x1080 pixels (856x292 millimeters)"
 		ptn = re.compile('[\s]+|x')

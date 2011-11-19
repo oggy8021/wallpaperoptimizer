@@ -163,6 +163,39 @@ class AppletUtil(object):
 #		self.btnHelp.set_sensitive(boolean)
 		self.btnAbout.set_sensitive(boolean)
 
+	@staticmethod
+	def runErrorDialog(self, msg):
+		errorDialog = ErrorDialog(self.gladefile)
+		errorDialog.openDialog(msg)
+
+
+class ErrorDialog(object):
+
+	def btnOk_clicked(self, widget):
+		self.Dialog.response(gtk.RESPONSE_OK)
+
+	def btnCancel_clicked(self, widget):
+		self.Dialog.response(gtk.RESPONSE_CANCEL)
+
+	def openDialog(self, msg):
+		self.Dialog.show_all()
+		self.walkTree.get_widget('tviewError').get_buffer().set_text(msg)
+		result = self.Dialog.run()
+		if (result == gtk.RESPONSE_OK):
+			self.Dialog.destroy()
+		else:
+			self.Dialog.destroy()
+
+	def __init__(self, gladefile):
+		self.walkTree = gtk.glade.XML(gladefile, "ErrorDialog")
+		self.Dialog = self.walkTree.get_widget("ErrorDialog")
+
+		dic = {
+			"on_btnOk_clicked" : self.btnOk_clicked,
+			"on_ErrorDialog_destroy" : self.btnCancel_clicked
+			}
+		self.walkTree.signal_autoconnect(dic)
+
 
 class ImgOpenDialog(object):
 
@@ -255,11 +288,16 @@ class SettingDialog(object):
 			self.walkTree.get_widget('entSrcdirR').set_text(self.srcdirs[lr])
 
 	def btnSaveSetting_clicked(self, widget):
+#		configfile='~/.wallpositrc'
 #dummy
 		configfile='~/Develop/WallPosit/trunk/.wallpositrc_gui'
-		cf = csv.writer(file(os.path.expanduser(configfile), 'w'))
-		cf.writerow(AppletUtil.getSettingDialog(0))
-		cf.writerow(AppletUtil.getSettingDialog(1))
+		try:
+			cf = csv.writer(file(os.path.expanduser(configfile), 'w'))
+			cf.writerow(AppletUtil.getSettingDialog(0))
+			cf.writerow(AppletUtil.getSettingDialog(1))
+		except IOError, msg:
+			logging.error('** CoreRuntimeError: %s. ' % msg)
+			AppletUtil.runErrorDialog(self, '** CoreRuntimeError: %s. ' % msg)
 
 	def btnClear_clicked(self, widget):
 		self.walkTree.get_widget('entDisplayWL').set_text('')
@@ -371,7 +409,11 @@ class SaveWallpaperDialog(object):
 			Option.args[1] = images[1]
 			Option.opts.save = self.Dialog.get_filename()
 			core = Core(logger)
-			core.singlerun(Option, Config, Ws)
+			try:
+				core.singlerun(Option, Config, Ws)
+			except Core.CoreRuntimeError, msg:
+				logger.error('** CoreRuntimeError: %s. ' % msg.value)
+				AppletUtil.runErrorDialog(self, '** CoreRuntimeError: %s. ' % msg.value)
 		self.Dialog.destroy()
 
 	def __init__(self, gladefile):
@@ -475,9 +517,10 @@ class Applet(object):
 		imgopenDialog = ImgOpenDialog(self.gladefile)
 		Applet.images[lr] = imgopenDialog.openDialog()
 		if (lr == 0):
-			self.entPathL.set_text(Applet.images[lr])
+			entPath = self.entPathL
 		else:
-			self.entPathR.set_text(Applet.images[lr])
+			entPath = self.entPathR
+		entPath.set_text(os.path.basename(Applet.images[lr]))
 
 	def btnSetting_clicked(self, widget):
 		settingDialog = SettingDialog(self.gladefile)
@@ -497,7 +540,11 @@ class Applet(object):
 		self.Option.args[1] = Applet.images[1]
 		self.Option.opts.setWall = True
 		core = Core(self.logging)
-		core.singlerun(self.Option, self.Config, self.Ws)
+		try:
+			core.singlerun(self.Option, self.Config, self.Ws)
+		except Core.CoreRuntimeError, msg:
+			logging.error('** CoreRuntimeError: %s. ' % msg.value)
+			AppletUtil.runErrorDialog(self, '** CoreRuntimeError: %s. ' % msg.value)
 
 	def spnInterval_value_changed(self, widget):
 		Applet.option['interval'] = self.spnInterval.get_value_as_int()
@@ -508,7 +555,11 @@ class Applet(object):
 
 	def _runChanger(self):
 		core = Core(self.logging)
-		self.seed = core.timerRun(self.Option, self.Config, self.Ws, self.seed)
+		try:
+			core.timerRun(self.Option, self.Config, self.Ws)
+		except Core.CoreRuntimeError, msg:
+			logging.error('** CoreRuntimeError: %s. ' % msg.value)
+			AppletUtil.runErrorDialog(self, '** CoreRuntimeError: %s. ' % msg.value)
 
 	def _timeout(self, applet):
 		self.logging.debug('%20s at %d sec.' % ('Timeout', Applet.option['interval']))
@@ -555,10 +606,10 @@ class Applet(object):
 
 		AppletUtil.setAppletConfig(self.Option, self.Config, self.Ws)
 		self.timeoutObject = None
-		self.seed = 1
 		self.canceled = False
 		self.cid_stat = self.statbar.get_context_id('status')
 		self.cid_err = self.statbar.get_context_id('error')
+#		self.errorDialog = ErrorDialog(self.gladefile)
 
 # 未実装ボタン
 		self.radXinerama.set_sensitive(False)

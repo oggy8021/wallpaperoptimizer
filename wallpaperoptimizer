@@ -11,7 +11,6 @@
 import sys
 import os.path
 import time
-import commands
 import logging
 import subprocess
 
@@ -175,17 +174,23 @@ if __name__ == "__main__":
 		 and option.getSavePath() == None
 		 and option.getDaemonize() == False):
 		logging.debug('Running ... applet mode.')
-		Applet = Applet(option, config, Ws, logging)
-		Applet.finalize()
+		applet = Applet(option, config, Ws, logging)
+		applet.finalize()
+
 	elif (option.getDaemonize()):
-		Core = Core(logging)
+		core = Core(logging)
 		logging.debug('Running ... daemonize mode.')
-		Core.background(option, config, Ws)
+		try:
+			core.background(option, config, Ws)
+		except Core.CoreRuntimeError, msg:
+			logging.error('** CoreRuntimeError: %s. ' % msg.value)
+			sys.exit(2)
+
 	else:
-		Core = Core(logging)
+		core = Core(logging)
 		logging.debug('Running ... singlerun mode.')
 		try:
-			Core.singlerun(option, config, Ws)
+			core.singlerun(option, config, Ws)
 		except Core.CoreRuntimeError, msg:
 			logging.error('** CoreRuntimeError: %s. ' % msg.value)
 			sys.exit(2)

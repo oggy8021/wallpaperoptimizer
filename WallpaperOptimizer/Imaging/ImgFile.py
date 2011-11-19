@@ -17,14 +17,17 @@ class ImgFile(Rectangle, Image.Image):
 		def __str__(self):
 			return repr(self.value)
 
-	def __init__(self, file='', w=5, h=5, color='black'):
+	def __init__(self, path='', w=5, h=5, color='black'):
 		Rectangle.__init__(self)
-		if (file == ''):
+		if (path == ''):
 			mode = 'RGB'
 			size = (w, h)
 			self._img = Image.new(mode, size, color)
 		else:
-			self._img = Image.open(file)
+			try:
+				self._img = Image.open(path)
+			except:
+				raise ImgFile.ImgFileIOError('Cannot load Imgfile [%s]' % path)
 		self.setSize(self._img.size[0], self._img.size[1])
 
 	def show(self):

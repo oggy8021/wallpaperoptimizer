@@ -221,9 +221,17 @@ class Core(object):
 		return bkImg
 
 
-	def setWall(self, bkImg, tmpPath=None, flg='_setWall'):
+	def setWall(self, bkImg, tmpPath=None):
+		removePath = subprocess.Popen(
+				["gconftool-2"
+				,"--get"
+				,"/desktop/gnome/background/picture_filename"]
+				, stdout=subprocess.PIPE).communicate()[0]
+		if (os.path.exists(removePath) and tmpPath == removePath):
+			os.remove(removePath)
+
 		if (tmpPath == None):
-			tmpPath = '/tmp/wallposit' + str(flg) + '.jpg'
+			tmpPath = '/tmp/wallposit.jpg'
 			self.saveImgfile(bkImg, tmpPath)
 		else:
 			# (, )だけだと、ちょっと間抜け
@@ -246,27 +254,21 @@ class Core(object):
 			bkImg.save(tmpPath)
 			self.logging.debug('Save optimized wallpaper [%s].' % tmpPath)
 		except ImgFile.ImgFileIOError, msg:
-			raise Core.CoreRuntimeError(msg)
+			raise Core.CoreRuntimeError(msg.value)
 
 
-	def timerRun(self, Option, Config, Ws, i):
+	def timerRun(self, Option, Config, Ws):
 		try:
 			LChangerDir = ChangerDir(Config.lDisplay.getConfig()['srcdir'])
 			RChangerDir = ChangerDir(Config.rDisplay.getConfig()['srcdir'])
 		except ChangerDir.FileCountZeroError, msg:
 			raise
-#			raise ChangerDir.FileCountZeroError(msg)
 
 		Img1 = ImgFile(LChangerDir.getImgfileRnd())
 		Img2 = ImgFile(RChangerDir.getImgfileRnd())
 
 		bkImg = self.optimizeWallpaper(Option, Config, Ws, Img1, Img2)
-		if (i == 1):
-			i = 2
-		else:
-			i = 1
-		self.setWall(bkImg, None, i)
-		return i
+		self.setWall(bkImg, None)
 
 
 	def background(self, Option, Config, Ws):
@@ -278,28 +280,33 @@ class Core(object):
 			sys.exit(2)
 
 		try:
-			i = 1
 			while(1):
-				Img1 = ImgFile(LChangerDir.getImgfileRnd())
-				Img2 = ImgFile(RChangerDir.getImgfileRnd())
+				try:
+					Img1 = ImgFile(LChangerDir.getImgfileRnd())
+					Img2 = ImgFile(RChangerDir.getImgfileRnd())
+				except ImgFile.ImgFileIOError, msg:
+					raise Core.CoreRuntimeError(msg.value)
 
 				bkImg = self.optimizeWallpaper(Option, Config, Ws, Img1, Img2)
-				if (i > 2):
-					i = 1
-				self.setWall(bkImg, None, i)
+				self.setWall(bkImg, None)
 				interval = Option.getInterval()
 				time.sleep(interval)
-				i += 1
 		except KeyboardInterrupt:
 			sys.exit(0)
 
 
 	def singlerun(self, Option, Config, Ws):
 		if len( Option.getArgs() ) == 2:
-			Img1 = ImgFile(Option.getLArg())
+			try:
+				Img1 = ImgFile(Option.getLArg())
+			except ImgFile.ImgFileIOError, msg:
+					raise Core.CoreRuntimeError(msg.value)
 			self.logging.debug('Create Img1 object. [%s]' % Option.getLArg())
 			self.logging.debug('%20s [%d,%d]' % ( 'Img1', Img1.getSize().w, Img1.getSize().h ))
-			Img2 = ImgFile(Option.getRArg())
+			try:
+				Img2 = ImgFile(Option.getRArg())
+			except ImgFile.ImgFileIOError, msg:
+					raise Core.CoreRuntimeError(msg.value)
 			self.logging.debug('Create Img2 object. [%s]' % Option.getRArg())
 			self.logging.debug('%20s [%s,%s]' % ( 'Img2', Img2.getSize().w, Img2.getSize().h ))
 			bkImg = self.optimizeWallpaper(Option, Config, Ws, Img1, Img2)
