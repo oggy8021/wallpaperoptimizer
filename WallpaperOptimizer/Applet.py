@@ -278,8 +278,7 @@ class SrcdirDialog(object):
 class SettingDialog(object):
 
 	def btnOpenSrcdir_clicked(self, widget):
-		wName = widget.get_name()
-		lr = AppletUtil.judgeLeftRight(wName)
+		lr = AppletUtil.judgeLeftRight(widget.get_name())
 		srcdirDialog = SrcdirDialog(self.gladefile)
 		self.srcdirs[lr] = srcdirDialog.openDialog(self.srcdirs[lr])
 		if (lr == 0):
@@ -508,12 +507,10 @@ class Applet(object):
 		Applet.config['mergin'][idx] = int(self.walkTree.get_widget(wName).get_value_as_int())
 
 	def radFixed_toggled(self, widget):
-		wName = widget.get_name()
-		Applet.config['fixed'] = self.walkTree.get_widget(wName).get_active()
+		Applet.config['fixed'] = self.walkTree.get_widget(widget.get_name()).get_active()
 
 	def btnGetImg_clicked(self, widget):
-		wName = widget.get_name()
-		lr = AppletUtil.judgeLeftRight(wName)
+		lr = AppletUtil.judgeLeftRight(widget.get_name())
 		imgopenDialog = ImgOpenDialog(self.gladefile)
 		Applet.images[lr] = imgopenDialog.openDialog()
 		if (lr == 0):
@@ -521,6 +518,15 @@ class Applet(object):
 		else:
 			entPath = self.entPathR
 		entPath.set_text(os.path.basename(Applet.images[lr]))
+
+	def entPath_insert(self, widget, text, length, pos):
+		lr = AppletUtil.judgeLeftRight(widget.get_name())
+		if (length > 0):
+			self.bEntryPath[lr] = True
+			print self.bEntryPath[lr]
+		if (self.bEntryPath == [True, True]):
+			self.btnSave.set_sensitive(True)
+			self.btnSetWall.set_sensitive(True)
 
 	def btnSetting_clicked(self, widget):
 		settingDialog = SettingDialog(self.gladefile)
@@ -568,13 +574,13 @@ class Applet(object):
 				, self.cid_stat
 				, 'Timeout ... run changer.')
 		self._runChanger()
-		if (self.canceled):
+		if (self.bCanceled):
 			return False
 		else:
 			return True
 
 	def btnDaemonize_clicked(self, widget):
-		self.canceled = False
+		self.bCanceled = False
 		AppletUtil.switchWidget(self, False)
 		self.btnCancelDaemonize.set_sensitive(True)
 		AppletUtil.setCoreArg(self.Option, self.Config, self.Ws)
@@ -584,7 +590,7 @@ class Applet(object):
 		self._runChanger()
 
 	def btnCancelDaemonize_clicked(self, widget):
-		self.canceled = True
+		self.bCanceled = True
 		glibobj.source_remove(self.timeoutObject)
 		self.timeoutObject = None
 		AppletUtil.writeStatusbar(self.statbar, self.cid_stat, 'Cancel ... changer action.')
@@ -602,14 +608,15 @@ class Applet(object):
 		self.walkTree = gtk.glade.XML(self.gladefile, "WallPosit_MainWindow")
 		self.window = self.walkTree.get_widget("WallPosit_MainWindow")
 		AppletUtil.initWidget(self)
+		self.btnSave.set_sensitive(False)
+		self.btnSetWall.set_sensitive(False)
 		self.btnCancelDaemonize.set_sensitive(False)
 
 		AppletUtil.setAppletConfig(self.Option, self.Config, self.Ws)
 		self.timeoutObject = None
-		self.canceled = False
+		self.bCanceled = False
 		self.cid_stat = self.statbar.get_context_id('status')
-		self.cid_err = self.statbar.get_context_id('error')
-#		self.errorDialog = ErrorDialog(self.gladefile)
+		self.bEntryPath = [False,False]
 
 # 未実装ボタン
 		self.radXinerama.set_sensitive(False)
@@ -626,6 +633,7 @@ class Applet(object):
 			"on_spnMergin_value_changed" : self.spnMergin_value_changed,
 			"on_radFixed_toggled" : self.radFixed_toggled,
 			"on_btnGetImg_clicked" : self.btnGetImg_clicked,
+			"on_entPath_insert_text" : self.entPath_insert,
 			"on_btnSetting_clicked" : self.btnSetting_clicked,
 			"on_btnSetColor_clicked" : self.btnSetColor_clicked,
 			"on_btnSave_clicked" : self.btnSave_clicked,
