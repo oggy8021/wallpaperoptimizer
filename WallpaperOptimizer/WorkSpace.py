@@ -60,11 +60,11 @@ class WorkSpace(Rectangle):
 		dimensions = subprocess.Popen(
 			["grep", "dimensions"]
 			, stdin=subprocess.Popen([xdpyinfo], stdout=subprocess.PIPE).stdout
-			, stdout=subprocess.PIPE).communicate()[0]
+			, stdout=subprocess.PIPE).communicate()[0].rstrip()
 		depth = subprocess.Popen(
 			["grep", "depth of root window"]
 			, stdin=subprocess.Popen([xdpyinfo], stdout=subprocess.PIPE).stdout
-			, stdout=subprocess.PIPE).communicate()[0]
+			, stdout=subprocess.PIPE).communicate()[0].rstrip()
 
 		#"  dimensions:    3200x1080 pixels (856x292 millimeters)"
 		ptn = re.compile('[\s]+|x')

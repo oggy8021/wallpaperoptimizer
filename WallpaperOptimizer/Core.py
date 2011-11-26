@@ -18,7 +18,7 @@ class Core(object):
 		def __str__(self):
 			return repr(self.value)
 
-	def checkImgType(self, Ws, Img1, Img2):
+	def _checkImgType(self, Ws, Img1, Img2):
 		self.logging.debug('Checking imgType as Imgfile.')
 
 		if ( Img1.getSize().w < Ws.lScreen.Size.w or Img1.getSize().w < Ws.rScreen.Size.w ):
@@ -47,7 +47,7 @@ class Core(object):
 		self.logging.debug('%20s [%s]' % ( 'imgType as Img2', Img2.imgType) )
 
 
-	def bindingImgToScreen(self, Fixed, Img1, Img2):
+	def _bindingImgToScreen(self, Fixed, Img1, Img2):
 		# バリエーションに対応できているか、見極められていない
 		self.logging.debug('Binding Img to Screen.')
 
@@ -75,7 +75,7 @@ class Core(object):
 				self.logging.debug('%20s [%s]' % ( 'Img2 binding', Img2.posit) )
 
 
-	def checkContain(self, Ws, Img, tmpMergin):
+	def _checkContain(self, Ws, Img, tmpMergin):
 		self.logging.debug('Check Imgfile contain %s Screen.' % Img.posit)
 
 		if ( Img.posit == 'left' ):
@@ -92,7 +92,7 @@ class Core(object):
 				return False
 
 
-	def downsizeImg(self, Ws, Img, tmpMergin):
+	def _downsizeImg(self, Ws, Img, tmpMergin):
 		if ( Img.posit == 'left' ):
 			tmpScreen = Ws.lScreen
 		elif ( Img.posit == 'right' ):
@@ -117,7 +117,7 @@ class Core(object):
 		self.logging.debug('%20s [%d,%d]' % ( 'converted size', Img.getSize().w, Img.getSize().h) )
 
 
-	def allocateInit(self, Ws, Img1, Img2):
+	def _allocateInit(self, Ws, Img1, Img2):
 		self.logging.debug('Calculate center position.')
 
 		Ws.lScreen.calcCenter()
@@ -140,7 +140,7 @@ class Core(object):
 			self.logging.debug('%20s [%d,%d]' % ( 'Img2', Img2.center.x, Img2.center.y) )
 
 
-	def allocateImg(self, Option, Ws, Img):
+	def _allocateImg(self, Option, Ws, Img):
 		if ( Img.posit == 'left'):
 			tmpScreen = Ws.lScreen
 			tmpAlign = Option.getLAlign()
@@ -180,7 +180,7 @@ class Core(object):
 		self.logging.debug('%20s [%d,%d]' % ( 'end', Img.end.x, Img.end.y) )
 
 
-	def mergeWallpaper(self, Ws, bkImg, Img):
+	def _mergeWallpaper(self, Ws, bkImg, Img):
 		self.logging.debug('Merge Imgfile to %s Screen.' % Img.posit)
 
 		if (Img.posit == 'right'):
@@ -190,11 +190,11 @@ class Core(object):
 		bkImg.paste( Img, (Img.start.x, Img.start.y, Img.end.x, Img.end.y) )
 
 
-	def optimizeWallpaper(self, Option, Config, Ws, Img1, Img2):
+	def _optimizeWallpaper(self, Option, Config, Ws, Img1, Img2):
 		self.logging.debug('Optimizing ... wallpapaer.')
-		self.checkImgType(Ws, Img1, Img2)
+		self._checkImgType(Ws, Img1, Img2)
 
-		self.bindingImgToScreen(Option.getFixed, Img1, Img2)
+		self._bindingImgToScreen(Option.getFixed, Img1, Img2)
 
 		self.logging.debug('Calculate mergin.')
 		lMergin = [Option.getLMergin(), 0, Option.getTopMergin(), Option.getBtmMergin()]
@@ -204,35 +204,37 @@ class Core(object):
 		self.logging.debug('%20s [%d,%d,%d,%d]'
 				 % ( 'right display mergin', rMergin[0], rMergin[1], rMergin[2], rMergin[3] ))
 
-		if (not self.checkContain(Ws, Img1, lMergin)):
-			self.downsizeImg(Ws, Img1, lMergin)
-		if (not self.checkContain(Ws, Img2, rMergin)):
-			self.downsizeImg(Ws, Img2, rMergin)
+		if (not self._checkContain(Ws, Img1, lMergin)):
+			self._downsizeImg(Ws, Img1, lMergin)
+		if (not self._checkContain(Ws, Img2, rMergin)):
+			self._downsizeImg(Ws, Img2, rMergin)
 
-		self.allocateInit(Ws, Img1, Img2)
-		self.allocateImg(Option, Ws, Img1)
-		self.allocateImg(Option, Ws, Img2)
+		self._allocateInit(Ws, Img1, Img2)
+		self._allocateImg(Option, Ws, Img1)
+		self._allocateImg(Option, Ws, Img2)
 
 		bkImg = ImgFile('', Ws.Size.w, Ws.Size.h, Option.getBgcolor())
 
-		self.mergeWallpaper(Ws, bkImg, Img1)
-		self.mergeWallpaper(Ws, bkImg, Img2)
+		self._mergeWallpaper(Ws, bkImg, Img1)
+		self._mergeWallpaper(Ws, bkImg, Img2)
 
 		return bkImg
 
 
-	def setWall(self, bkImg, tmpPath=None):
+	def _setWall(self, bkImg, tmpPath=None):
 		removePath = subprocess.Popen(
 				["gconftool-2"
 				,"--get"
 				,"/desktop/gnome/background/picture_filename"]
-				, stdout=subprocess.PIPE).communicate()[0]
-		if (os.path.exists(removePath) and tmpPath == removePath):
+				, stdout=subprocess.PIPE).communicate()[0].rstrip()
+		self.logging.debug('Current wallpaper [%s].' % removePath)
+		if (os.path.exists(removePath) and removePath == '/tmp/wallposit.jpg'):
 			os.remove(removePath)
+			self.logging.debug('Delete wallpaper [%s].' % removePath)
 
 		if (tmpPath == None):
 			tmpPath = '/tmp/wallposit.jpg'
-			self.saveImgfile(bkImg, tmpPath)
+			self._saveImgfile(bkImg, tmpPath)
 		else:
 			# (, )だけだと、ちょっと間抜け
 			tmpPath = tmpPath.replace('(','\\(')
@@ -246,10 +248,10 @@ class Core(object):
 				,"--set"
 				,"/desktop/gnome/background/picture_filename"
 				,tmpPath])
-		self.logging.debug('Change wallpaper to current Workspace [%s].' % tmpPath)
+		self.logging.debug('Change wallpaper to current Workspace [%s].' % (tmpPath))
 
 
-	def saveImgfile(self, bkImg, tmpPath=None):
+	def _saveImgfile(self, bkImg, tmpPath):
 		try:
 			bkImg.save(tmpPath)
 			self.logging.debug('Save optimized wallpaper [%s].' % tmpPath)
@@ -267,8 +269,8 @@ class Core(object):
 		Img1 = ImgFile(LChangerDir.getImgfileRnd())
 		Img2 = ImgFile(RChangerDir.getImgfileRnd())
 
-		bkImg = self.optimizeWallpaper(Option, Config, Ws, Img1, Img2)
-		self.setWall(bkImg, None)
+		bkImg = self._optimizeWallpaper(Option, Config, Ws, Img1, Img2)
+		self._setWall(bkImg)
 
 
 	def background(self, Option, Config, Ws):
@@ -287,8 +289,8 @@ class Core(object):
 				except ImgFile.ImgFileIOError, msg:
 					raise Core.CoreRuntimeError(msg.value)
 
-				bkImg = self.optimizeWallpaper(Option, Config, Ws, Img1, Img2)
-				self.setWall(bkImg, None)
+				bkImg = self._optimizeWallpaper(Option, Config, Ws, Img1, Img2)
+				self._setWall(bkImg)
 				interval = Option.getInterval()
 				time.sleep(interval)
 		except KeyboardInterrupt:
@@ -309,14 +311,14 @@ class Core(object):
 					raise Core.CoreRuntimeError(msg.value)
 			self.logging.debug('Create Img2 object. [%s]' % Option.getRArg())
 			self.logging.debug('%20s [%s,%s]' % ( 'Img2', Img2.getSize().w, Img2.getSize().h ))
-			bkImg = self.optimizeWallpaper(Option, Config, Ws, Img1, Img2)
+			bkImg = self._optimizeWallpaper(Option, Config, Ws, Img1, Img2)
 
 			tmpPath = Option.getSavePath()
 			if (tmpPath <> None):
-				self.saveImgfile(bkImg, tmpPath)
+				self._saveImgfile(bkImg, tmpPath)
 
 			if (Option.getSetWall()):
-				self.setWall(bkImg)
+				self._setWall(bkImg, tmpPath)
 
 
 	def __init__(self, logger):

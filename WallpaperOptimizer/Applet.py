@@ -19,7 +19,7 @@ except:
 		sys.exit(2)
 
 from WallpaperOptimizer.Core import Core
-
+from WallpaperOptimizer.OptionsBase import OptionsBase
 
 class AppletUtil(object):
 	@staticmethod
@@ -31,8 +31,8 @@ class AppletUtil(object):
 		return idx
 
 	@staticmethod
-	def setAppletConfig(Option, Config, Ws):
-		Applet.config['display'] = [
+	def setAppletConfig(Config):
+		Applet.config['size'] = [
 			str(Config.lDisplay.getConfig()['width']) +
 			 'x' +
 			  str(Config.lDisplay.getConfig()['height']),
@@ -44,7 +44,6 @@ class AppletUtil(object):
 			Config.lDisplay.getConfig()['srcdir'],
 			Config.rDisplay.getConfig()['srcdir']
 			]
-		Applet.config['interval'] = Option.opts.interval
 
 	@staticmethod
 	def getSettingDialog(lr):
@@ -60,20 +59,13 @@ class AppletUtil(object):
 				 ]
 
 	@staticmethod
-	def setCoreArg(Option, Config, Ws):
-		Option.opts.align = Applet.config['align']
-		Option.opts.valign = Applet.config['valign']
-		Option.opts.mergin = Applet.config['mergin']
-		Option.opts.fixed = Applet.config['fixed']
-		Option.opts.bgcolor = Applet.config['bgcolor']
-		Option.opts.interval = Applet.option['interval']
-
-		lWidthHeight = Applet.config['display'][0].split('x')
+	def setCoreArg(Config, Ws):
+		lWidthHeight = Applet.config['size'][0].split('x')
 		Config.lDisplay.setConfig(int(lWidthHeight[0]),
 										int(lWidthHeight[1]),
 										Config.lDisplay.getConfig()['posit'],
 										Applet.config['srcdir'][0])
-		rWidthHeight = Applet.config['display'][1].split('x')
+		rWidthHeight = Applet.config['size'][1].split('x')
 		Config.rDisplay.setConfig(int(rWidthHeight[0]),
 										int(rWidthHeight[1]),
 										Config.rDisplay.getConfig()['posit'],
@@ -326,7 +318,7 @@ class SettingDialog(object):
 		self.walkTree.get_widget('entSrcdirR').set_text(srcdirs[1])
 		result = self.Dialog.run()
 		if (result == gtk.RESPONSE_OK):
-			Applet.config['display'] = [
+			Applet.config['size'] = [
 				self.walkTree.get_widget('entDisplayWL').get_text()
 				 + 'x' 
 				 + self.walkTree.get_widget('entDisplayHL').get_text()
@@ -376,7 +368,7 @@ class ColorSelectionDiag(object):
 			gtkColor = self.walkTree.get_widget('color_selection').get_current_color()
 			bgcolor = gtk.color_selection_palette_to_string([gtkColor])
 		self.Dialog.destroy()
-		Applet.config['bgcolor'] = bgcolor
+		return bgcolor
 
 	def __init__(self, gladefile):
 		self.walkTree = gtk.glade.XML(gladefile, "ColorSelectionDialog")
@@ -403,7 +395,7 @@ class SaveWallpaperDialog(object):
 		result = self.Dialog.run()
 		if (result == gtk.RESPONSE_OK):
 #TODO:ホントは値あるなし,PATH有効かなど、チェックがいる
-			AppletUtil.setCoreArg(Option, Config, Ws)
+			AppletUtil.setCoreArg(Config, Ws)
 			Option.args[0] = images[0]
 			Option.args[1] = images[1]
 			Option.opts.save = self.Dialog.get_filename()
@@ -427,6 +419,31 @@ class SaveWallpaperDialog(object):
 			}
 		self.walkTree.signal_autoconnect(dic)
 
+
+class AppletOptions(OptionsBase):
+
+	class Opts(object):
+
+		def __init__(self):
+			self.align = ['center','center']
+			self.valign = ['middle','middle']
+			self.mergin = [0,0,0,0]
+			self.fixed = True
+			self.size = ['1024x768','1024x768']
+			self.bgcolor = 'black'
+			self.srcdir = ['','']
+			self.verbose = False
+			self.save=None
+			self.setWall=False
+			self.daemonize=False
+			self.interval = 60
+			#TODO:左右独立、ワークスペース全体は未検討
+
+	def __init__(self):
+		self.opts = AppletOptions.Opts()
+		self.args = ['','']
+
+
 class Applet(object):
 
 	tgldic = dict()
@@ -440,26 +457,20 @@ class Applet(object):
 	tgldic['tglLowerR'] = 'tglUpperR'
 
 	config = dict()
-	config['align'] = ['center','center']
-	config['valign'] = ['middle','middle']
-	config['mergin'] = [0,0,0,0]
-	config['fixed'] = True
-	#TODO:str,int行ったり来たり
-	config['display'] = ['1024x768','1024x768']
-	config['bgcolor'] = 'black'
+#本当は、size　オプションでありconfigでもある
+	config['size'] = ['1024x768','1024x768']
 	config['srcdir'] = ['','']
-	#TODO:左右独立、ワークスペース全体は未検討
-
-	option = dict()
-	option['interval'] = 60
 	images = ['','']
 
-	def setConfigAttr(self, btnName):
+	def setConfigAttr(self, btnName, lr, val=None):
 		if (btnName.find('PushLeft') > 0 or btnName.find('PushRight') > 0):
-			attr = 'align'
+			if (val == None):
+				val = 'center'
+			self.Option.opts.align[lr] = val
 		elif (btnName.find('Upper') > 0 or btnName.find('Lower') > 0):
-			attr = 'valign'
-		return attr
+			if (val == None):
+				val = 'middle'
+			self.Option.opts.valign[lr] = val
 
 	def tglBtn_pressed(self, widget):
 		vsName = Applet.tgldic[widget.get_name()]
@@ -469,7 +480,6 @@ class Applet(object):
 	def tglBtn_toggled(self, widget):
 		if (widget.get_active()):
 			wName = widget.get_name()
-			attr = self.setConfigAttr(wName)
 			if (wName.find('PushLeft') > 0):
 				val = 'left'
 			elif (wName.find('PushRight') > 0):
@@ -479,20 +489,15 @@ class Applet(object):
 			elif (wName.find('Lower') > 0):
 				val = 'bottom'
 			lr = AppletUtil.judgeLeftRight(wName)
-			Applet.config[attr][lr] = val
+			self.setConfigAttr(wName, lr, val)
 
 	def tglBtn_released(self, widget):
 		vsName = Applet.tgldic[widget.get_name()]
 		if (widget.get_active() == False and 
 				self.walkTree.get_widget(vsName).get_active() == False):
 			wName = widget.get_name()
-			attr = self.setConfigAttr(wName)
-			if (attr == 'align'):
-				val = 'center'
-			elif (attr == 'valign'):
-				val = 'middle'
 			lr = AppletUtil.judgeLeftRight(wName)
-			Applet.config[attr][lr] = val
+			self.setConfigAttr(wName, lr)
 
 	def spnMergin_value_changed(self, widget):
 		wName = widget.get_name()
@@ -504,10 +509,10 @@ class Applet(object):
 			idx = 2
 		elif (wName.find('BtmMergin')) > 0:
 			idx = 3
-		Applet.config['mergin'][idx] = int(self.walkTree.get_widget(wName).get_value_as_int())
+		self.Option.opts.mergin[idx] = int(self.walkTree.get_widget(wName).get_value_as_int())
 
 	def radFixed_toggled(self, widget):
-		Applet.config['fixed'] = self.walkTree.get_widget(widget.get_name()).get_active()
+		self.Option.opts.fixed = self.walkTree.get_widget(widget.get_name()).get_active()
 
 	def btnGetImg_clicked(self, widget):
 		lr = AppletUtil.judgeLeftRight(widget.get_name())
@@ -530,18 +535,18 @@ class Applet(object):
 
 	def btnSetting_clicked(self, widget):
 		settingDialog = SettingDialog(self.gladefile)
-		settingDialog.openDialog(Applet.config['display'], Applet.config['srcdir'])
+		settingDialog.openDialog(Applet.config['size'], Applet.config['srcdir'])
 
 	def btnSetColor_clicked(self, widget):
 		colorselectionDialog = ColorSelectionDiag(self.gladefile)
-		colorselectionDialog.openDialog(Applet.config['bgcolor'])
+		self.Option.opts.bgcolor = colorselectionDialog.openDialog(self.Option.opts.bgcolor)
 
 	def btnSave_clicked(self, widget):
 		savewallpaperDialog = SaveWallpaperDialog(self.gladefile)
 		savewallpaperDialog.openDialog(self.Option, self.Config, self.Ws, Applet.images, self.logging)
 
 	def btnSetWall_clicked(self, widget):
-		AppletUtil.setCoreArg(self.Option, self.Config, self.Ws)
+		AppletUtil.setCoreArg(self.Config, self.Ws)
 		self.Option.args[0] = Applet.images[0]
 		self.Option.args[1] = Applet.images[1]
 		self.Option.opts.setWall = True
@@ -553,11 +558,11 @@ class Applet(object):
 			AppletUtil.runErrorDialog(self, '** CoreRuntimeError: %s. ' % msg.value)
 
 	def spnInterval_value_changed(self, widget):
-		Applet.option['interval'] = self.spnInterval.get_value_as_int()
+		self.Option.opts.interval = self.spnInterval.get_value_as_int()
 		AppletUtil.eraseStatusbar(self.statbar, self.cid_stat)
 		AppletUtil.writeStatusbar(self.statbar
 				, self.cid_stat
-				, 'Change Interval ... %d sec.' % Applet.option['interval'])
+				, 'Change Interval ... %d sec.' % self.Option.opts.interval)
 
 	def _runChanger(self):
 		core = Core(self.logging)
@@ -568,7 +573,7 @@ class Applet(object):
 			AppletUtil.runErrorDialog(self, '** CoreRuntimeError: %s. ' % msg.value)
 
 	def _timeout(self, applet):
-		self.logging.debug('%20s at %d sec.' % ('Timeout', Applet.option['interval']))
+		self.logging.debug('%20s at %d sec.' % ('Timeout', self.Option.opts.interval))
 		AppletUtil.eraseStatusbar(self.statbar, self.cid_stat)
 		AppletUtil.writeStatusbar(self.statbar
 				, self.cid_stat
@@ -583,10 +588,10 @@ class Applet(object):
 		self.bCanceled = False
 		AppletUtil.switchWidget(self, False)
 		self.btnCancelDaemonize.set_sensitive(True)
-		AppletUtil.setCoreArg(self.Option, self.Config, self.Ws)
-		self.timeoutObject = glibobj.timeout_add(Applet.option['interval']*1000
+		AppletUtil.setCoreArg(self.Config, self.Ws)
+		self.timeoutObject = glibobj.timeout_add(self.Option.opts.interval*1000
 				, self._timeout, self)
-		self.logging.debug('%20s' % 'Start Daemonize ... interval [%d].' % Applet.option['interval'])
+		self.logging.debug('%20s' % 'Start Daemonize ... interval [%d].' % self.Option.opts.interval)
 		self._runChanger()
 
 	def btnCancelDaemonize_clicked(self, widget):
@@ -597,12 +602,11 @@ class Applet(object):
 		AppletUtil.switchWidget(self, True)
 		self.btnCancelDaemonize.set_sensitive(False)
 
-	def __init__(self, Option, Config, Ws, logger):
+	def __init__(self, Config, Ws, logger):
 		self.logging = logger
-		self.Option = Option
+		self.Option = AppletOptions()
 		self.Config = Config
 		self.Ws = Ws
-		self.Option.args = ['','']
 
 		self.gladefile = os.path.abspath("./WallpaperOptimizer/glade/wallpositapplet.glade")
 		self.walkTree = gtk.glade.XML(self.gladefile, "WallPosit_MainWindow")
@@ -612,7 +616,7 @@ class Applet(object):
 		self.btnSetWall.set_sensitive(False)
 		self.btnCancelDaemonize.set_sensitive(False)
 
-		AppletUtil.setAppletConfig(self.Option, self.Config, self.Ws)
+		AppletUtil.setAppletConfig(self.Config)
 		self.timeoutObject = None
 		self.bCanceled = False
 		self.cid_stat = self.statbar.get_context_id('status')
