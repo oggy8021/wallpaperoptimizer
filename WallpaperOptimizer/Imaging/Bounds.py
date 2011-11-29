@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 
 class Point(object):
-	def __init__(self):
-		self.x = 0
-		self.y = 0
 
 	def distanceX(self, other):
 		if (self.x >= other.x):
@@ -20,11 +17,12 @@ class Point(object):
 	def distance(self, other):
 		pass
 
-class Bounds(object):
 	def __init__(self):
-		self.start = Point()
-		self.end = Point()
-		self.center = Point()
+		self.x = 0
+		self.y = 0
+
+
+class Bounds(object):
 
 	def getWidth(self):
 		return self.end.distanceX(self.start)
@@ -45,3 +43,7 @@ class Bounds(object):
 	def getCenter(self):
 		return self.center
 
+	def __init__(self):
+		self.start = Point()
+		self.end = Point()
+		self.center = Point()

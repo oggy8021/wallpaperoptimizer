@@ -174,9 +174,7 @@ class SettingDialog(object):
 			self.walkTree.get_widget('entSrcdirR').set_text(self.srcdirs[lr])
 
 	def btnSaveSetting_clicked(self, widget):
-#		configfile='~/.wallpositrc'
-#dummy
-		configfile='~/Develop/WallPosit/trunk/.wallpositrc_gui'
+		configfile='~/.wallpositrc'
 		try:
 			cf = csv.writer(file(os.path.expanduser(configfile), 'w'))
 			cf.writerow(self.getSettingDialog(0))
@@ -199,8 +197,8 @@ class SettingDialog(object):
 	def btnCancel_clicked(self, widget):
 		self.Dialog.response(gtk.RESPONSE_CANCEL)
 
-	def getSize(self):
-		return self.size
+	def getSizeString(self):
+		return self.sizeString
 
 	def getSrcdir(self):
 		return self.srcdir
@@ -219,7 +217,7 @@ class SettingDialog(object):
 		self.walkTree.get_widget('entSrcdirR').set_text(self.srcdirs[1])
 		result = self.Dialog.run()
 		if (result == gtk.RESPONSE_OK):
-			self.size = [
+			self.sizeString = [
 				self.walkTree.get_widget('entDisplayWL').get_text()
 				 + 'x' 
 				 + self.walkTree.get_widget('entDisplayHL').get_text()
@@ -436,8 +434,8 @@ class Applet(object):
 					self.core.config.lDisplay.getConfig()['srcdir']
 					, self.core.config.rDisplay.getConfig()['srcdir']
 					])):
-			self.core.config.lDisplay.setSize(settingDialog.getSize()[0])
-			self.core.config.rDisplay.setSize(settingDialog.getSize()[1])
+			self.core.config.lDisplay.toIntAsSizeString(settingDialog.getSizeString()[0])
+			self.core.config.rDisplay.toIntAsSizeString(settingDialog.getSizeString()[1])
 			self.core.config.lDisplay.setSrcdir(settingDialog.getSrcdir()[0])
 			self.core.config.lDisplay.setSrcdir(settingDialog.getSrcdir()[1])
 		else:
@@ -455,7 +453,7 @@ class Applet(object):
 			self._presetCore()
 			try:
 				self.core.singlerun()
-			except self.Core.CoreRuntimeError, msg:
+			except self.core.CoreRuntimeError, msg:
 				logger.error('** CoreRuntimeError: %s. ' % msg.value)
 				AppletUtil.runErrorDialog(self, '** CoreRuntimeError: %s. ' % msg.value)
 		else:
@@ -467,7 +465,7 @@ class Applet(object):
 		self.core.option.opts.setWall = True
 		try:
 			self.core.singlerun()
-		except self.Core.CoreRuntimeError, msg:
+		except self.core.CoreRuntimeError, msg:
 			logging.error('** CoreRuntimeError: %s. ' % msg.value)
 			AppletUtil.runErrorDialog(self, '** CoreRuntimeError: %s. ' % msg.value)
 
@@ -481,7 +479,7 @@ class Applet(object):
 	def _runChanger(self):
 		try:
 			self.core.timerRun()
-		except self.Core.CoreRuntimeError, msg:
+		except self.core.CoreRuntimeError, msg:
 			logging.error('** CoreRuntimeError: %s. ' % msg.value)
 			AppletUtil.runErrorDialog(self, '** CoreRuntimeError: %s. ' % msg.value)
 
@@ -553,7 +551,7 @@ class Applet(object):
 
 	def _presetCore(self):
 		self.core.Ws.compareToScreen()
-		self.core.Ws.setScreenType()
+		self.core.Ws.setAttrScreenType()
 
 	def _switchWidget(self, boolean):
 		self.tglPushLeftL.set_sensitive(boolean)

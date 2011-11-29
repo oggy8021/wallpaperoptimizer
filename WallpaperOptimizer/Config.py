@@ -16,7 +16,15 @@ class Config(object):
 
 	class Display(object):
 
-		def setSize(self, val):
+		def getConfig(self):
+			config = dict()
+			config['width'] = self.width
+			config['height'] = self.height
+			config['posit'] = self.posit
+			config['srcdir'] = self.srcdir
+			return config
+
+		def toIntAsSizeString(self, val):
 			wh = val.split('x')
 			self.width = int(wh[0])
 			self.height = int(wh[1])
@@ -38,14 +46,6 @@ class Config(object):
 			self.height = h
 			self.posit = p
 			self.srcdir = s
-
-		def getConfig(self):
-			config = dict()
-			config['width'] = self.width
-			config['height'] = self.height
-			config['posit'] = self.posit
-			config['srcdir'] = self.srcdir
-			return config
 
 		def __init__(self):
 			self.width = 0

@@ -118,12 +118,9 @@ class Options(OptionsBase):
 		if (self.opts.srcdir[0] != '' and self.opts.srcdir[1] != ''):
 			for i in range(0,1):
 				if (not os.path.exists(self.opts.srcdir[i])):
-					raise OptionValueError('not exists srcdir [%s]' % self.opts.srcdir[i])
+					raise OptionValueError('No such srcdir [%s]' % self.opts.srcdir[i])
 
 		ptn = re.compile('^0x(.+)$')
 		if (ptn.match(self.opts.bgcolor)):
 			subStr = ptn.split(self.opts.bgcolor)
 			self.opts.bgcolor = '#%s' % subStr[1]
-#
-#		print type(self.opts) <type 'instance'>
-#		print type(self.args) <type 'list'>

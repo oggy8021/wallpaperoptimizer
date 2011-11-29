@@ -14,16 +14,16 @@ class WorkSpace(Rectangle):
 		def __str__(self):
 			return repr(self.value)
 
-	def setScreenSize(self, lDisplay, rDisplay):
-		self.lScreen.setSize(lDisplay[0], lDisplay[1])
-		self.rScreen.setSize(rDisplay[0], rDisplay[1])
-
 	def getScreenSize(self):
 		return [[self.lScreen.Size.w, self.lScreen.Size.h]
 			, [self.rScreen.Size.w, self.rScreen.Size.h]]
 
 	def getDepth(self):
 		return self.depth
+
+	def setScreenSize(self, lDisplay, rDisplay):
+		self.lScreen.setSize(lDisplay[0], lDisplay[1])
+		self.rScreen.setSize(rDisplay[0], rDisplay[1])
 
 	def compareToScreen(self):
 		if ( self.Size.w < (self.lScreen.Size.w + self.rScreen.Size.w) ):
@@ -36,7 +36,7 @@ class WorkSpace(Rectangle):
 			pass
 		return True
 
-	def setScreenType(self):
+	def setAttrScreenType(self):
 		if ( self.lScreen.isSquare() ):
 			setattr(self.lScreen, 'displayType', 'square')
 		if ( self.lScreen.isWide() ):
@@ -69,7 +69,7 @@ class WorkSpace(Rectangle):
 		#"  dimensions:    3200x1080 pixels (856x292 millimeters)"
 		ptn = re.compile('[\s]+|x')
 		subStr = ptn.split( dimensions )
-		self.setSize(int(subStr[2]), int(subStr[3])) # WoRectangle Method
+		self.setSize(int(subStr[2]), int(subStr[3])) #Rectangle Method
 
 		ptn = re.compile('[\s]')
 		subStr = ptn.split( depth )

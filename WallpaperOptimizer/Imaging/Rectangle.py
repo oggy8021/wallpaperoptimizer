@@ -10,10 +10,6 @@ class Rectangle(Bounds):
 		w = 0
 		h = 0
 
-	def __init__(self):
-		self.Size = Rectangle.Size()
-		Bounds.__init__(self)
-
 	def getSize(self):
 		return self.Size
 
@@ -62,10 +58,15 @@ class Rectangle(Bounds):
 		else:
 			return False
 
-	def containsPlusMergin(self, other, mergin):
+	def containsPlusMergin(self, other, mergin=[0,0,0,0]):
+		# mergin(left/right/top/bottom)
 		if ( self.Size.w >= (other.Size.w + mergin[0] + mergin[1])
 			 and self.Size.h >= (other.Size.h  + mergin[2] + mergin[3])):
 			return True
 		else:
 			return False
+
+	def __init__(self):
+		self.Size = Rectangle.Size()
+		Bounds.__init__(self)
 

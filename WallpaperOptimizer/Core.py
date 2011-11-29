@@ -2,9 +2,10 @@
 
 import sys
 import os.path
-import time
 import logging
 import subprocess
+import time
+import datetime
 
 from WallpaperOptimizer.Config import Config
 from WallpaperOptimizer.WorkSpace import WorkSpace
@@ -36,8 +37,8 @@ class Core(object):
 
 		# config set/update from commandline option
 		if (self.option.getLSize() != None and self.option.getRSize() != None):
-			self.config.lDisplay.setSize(self.option.getLSize())
-			self.config.rDisplay.setSize(self.option.getRSize())
+			self.config.lDisplay.toIntAsSizeString(self.option.getLSize())
+			self.config.rDisplay.toIntAsSizeString(self.option.getRSize())
 			logging.debug('Config "display" update from commandline option.')
 
 		if (self.option.getLSrcdir() != '' and self.option.getRSrcdir() != ''):
@@ -58,11 +59,11 @@ class Core(object):
 			logging.error('** Please setting srcdir in Daemonize mode.')
 			raise Core.CoreRuntimeError('No setting srcdir ind Daemonize mode.')
 
-		logging.debug('%20s [%s,%s]'
+		logging.debug('%20s [%d,%d]'
 				 % ( 'left display size'
 				 , self.config.lDisplay.getConfig()['width']
 				 , self.config.rDisplay.getConfig()['width'] ))
-		logging.debug('%20s [%s,%s]'
+		logging.debug('%20s [%d,%d]'
 				 % ( 'right display size'
 				 , self.config.lDisplay.getConfig()['height']
 				 , self.config.rDisplay.getConfig()['height'] ))
@@ -114,7 +115,7 @@ class Core(object):
 				'* WorkSpace height [%s] > right display height [%s].'
 				 % (self.Ws.Size.h, self.Ws.rScreen.Size.h ))
 
-		self.Ws.setScreenType()
+		self.Ws.setAttrScreenType()
 		logging.debug('%20s [%s,%s]'
 			 	 % ( 'display type' , self.Ws.lScreen.displayType, self.Ws.rScreen.displayType ))
 
@@ -329,13 +330,10 @@ class Core(object):
 				,"/desktop/gnome/background/picture_filename"]
 				, stdout=subprocess.PIPE).communicate()[0].rstrip()
 		logging.debug('Current wallpaper [%s].' % removePath)
-		if (os.path.exists(removePath) and removePath == '/tmp/wallposit.jpg'):
-			os.remove(removePath)
-			logging.debug('Delete wallpaper [%s].' % removePath)
 
 		if (tmpPath == None):
-			tmpPath = '/tmp/wallposit.jpg'
-			self._saveImgfile(bkImg, tmpPath)
+#			tmpPath = '/tmp/wallposit.jpg'
+			tmpPath = self._saveImgfile(bkImg, tmpPath)
 		else:
 			# (, )だけだと、ちょっと間抜け
 			tmpPath = tmpPath.replace('(','\\(')
@@ -351,11 +349,18 @@ class Core(object):
 				,tmpPath])
 		logging.debug('Change wallpaper to current Workspace [%s].' % (tmpPath))
 
+		if (os.path.exists(removePath)):
+			os.remove(removePath)
+			logging.debug('Delete wallpaper [%s].' % removePath)
+
 
 	def _saveImgfile(self, bkImg, tmpPath):
 		try:
+			if (tmpPath == None):
+				tmpPath = '/tmp/wallposit' + datetime.datetime.now().strftime('%Y%m%d-%H%M%S') + '.jpg'
 			bkImg.save(tmpPath)
 			logging.debug('Save optimized wallpaper [%s].' % tmpPath)
+			return tmpPath
 		except ImgFile.ImgFileIOError, msg:
 			raise Core.CoreRuntimeError(msg.value)
 

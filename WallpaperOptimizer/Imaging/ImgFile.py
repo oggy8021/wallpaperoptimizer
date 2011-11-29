@@ -17,19 +17,6 @@ class ImgFile(Rectangle, Image.Image):
 		def __str__(self):
 			return repr(self.value)
 
-	def __init__(self, path='', w=5, h=5, color='black'):
-		Rectangle.__init__(self)
-		if (path == ''):
-			mode = 'RGB'
-			size = (w, h)
-			self._img = Image.new(mode, size, color)
-		else:
-			try:
-				self._img = Image.open(path)
-			except:
-				raise ImgFile.ImgFileIOError('Cannot load Imgfile [%s]' % path)
-		self.setSize(self._img.size[0], self._img.size[1])
-
 	def show(self):
 		self._img.show()
 
@@ -46,3 +33,17 @@ class ImgFile(Rectangle, Image.Image):
 			self._img.save(path)
 		except IOError, msg:
 			raise ImgFile.ImgFileIOError('Cannot save Imgfile [%s]' % path)
+
+	def __init__(self, path='', w=5, h=5, color='black'):
+		Rectangle.__init__(self)
+		if (path == ''):
+			mode = 'RGB'
+			size = (w, h)
+			self._img = Image.new(mode, size, color)
+		else:
+			try:
+				self._img = Image.open(path)
+			except:
+				raise ImgFile.ImgFileIOError('Cannot load Imgfile [%s]' % path)
+		#Rectangle Method
+		self.setSize(self._img.size[0], self._img.size[1])
