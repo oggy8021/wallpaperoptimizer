@@ -6,6 +6,8 @@ import time
 import logging
 import subprocess
 
+from WallpaperOptimizer.Config import Config
+from WallpaperOptimizer.WorkSpace import WorkSpace
 from WallpaperOptimizer.ChangerDir import ChangerDir
 from WallpaperOptimizer.Imaging.ImgFile import ImgFile
 
@@ -18,8 +20,107 @@ class Core(object):
 		def __str__(self):
 			return repr(self.value)
 
+	def initializeConfig(self):
+		# config set from configfile
+		self.configfile = '~/.wallpositrc'
+		self.configfile = os.path.expanduser(self.configfile)
+		if (os.path.exists(self.configfile)):
+			try:
+				self.config = Config(self.configfile)
+				logging.debug('Config set from configfile.')
+			except Config.FormatError, msg:
+				logging.error('** FormatError: %s. ' % msg)
+				raise Core.CoreRuntimeError(msg.value)
+		else:
+			self.config = Config()
+
+		# config set/update from commandline option
+		if (self.option.getLSize() != None and self.option.getRSize() != None):
+			self.config.lDisplay.setSize(self.option.getLSize())
+			self.config.rDisplay.setSize(self.option.getRSize())
+			logging.debug('Config "display" update from commandline option.')
+
+		if (self.option.getLSrcdir() != '' and self.option.getRSrcdir() != ''):
+			self.config.lDisplay.setSrcdir(self.option.getLSrcdir())
+			self.config.rDisplay.setSrcdir(self.option.getRSrcdir())
+			logging.debug('Config "srcdir" update from commandline option.')
+
+		if ( self.config.lDisplay.getConfig()['width'] == 0 and 
+			self.config.lDisplay.getConfig()['height'] == 0 and
+			self.config.rDisplay.getConfig()['width'] == 0 and 
+			self.config.rDisplay.getConfig()['height'] == 0 ):
+			logging.error('** Please setting left/right display size.')
+			raise Core.CoreRuntimeError('No setting left/right display size.')
+
+		if ( self.option.getDaemonize() and 
+				self.config.lDisplay.getConfig()['srcdir'] == '' and 
+				self.config.rDisplay.getConfig()['srcdir'] == '' ):
+			logging.error('** Please setting srcdir in Daemonize mode.')
+			raise Core.CoreRuntimeError('No setting srcdir ind Daemonize mode.')
+
+		logging.debug('%20s [%s,%s]'
+				 % ( 'left display size'
+				 , self.config.lDisplay.getConfig()['width']
+				 , self.config.rDisplay.getConfig()['width'] ))
+		logging.debug('%20s [%s,%s]'
+				 % ( 'right display size'
+				 , self.config.lDisplay.getConfig()['height']
+				 , self.config.rDisplay.getConfig()['height'] ))
+		logging.debug('%20s [%s,%s]'
+				 % ( 'position'
+				 , self.config.lDisplay.getConfig()['posit']
+				 , self.config.rDisplay.getConfig()['posit'] ))
+		logging.debug('%20s [%s]'
+				 % ( 'srcdir to left'
+				 , self.config.lDisplay.getConfig()['srcdir'] ))
+		logging.debug('%20s [%s]'
+				 % ( 'srcdir to right'
+				 , self.config.rDisplay.getConfig()['srcdir'] ))
+
+
+	def initializeWorkSpace(self):
+		try:
+			self.Ws = WorkSpace()
+		except WorkSpace.WorkSpaceRuntimeError, msg:
+			logging.error('** WorkSpaceRuntimeError: %s. ' % msg)
+			raise Core.CoreRuntimeError(msg.value)
+
+		logging.debug('Current WorkSpace setting as.')
+		logging.debug('%20s [%d,%d]'
+			 % ( 'WorkSpace Size', self.Ws.getSize().w, self.Ws.getSize().h ))
+		logging.debug('%20s [%s]'
+			 % ( 'WorkSpace depth', self.Ws.getDepth() ))
+
+		logging.debug('Config Setting To WorkSpace().')
+		self.Ws.setScreenSize([self.config.lDisplay.getConfig()['width']
+								, self.config.lDisplay.getConfig()['height']]
+								, [self.config.rDisplay.getConfig()['width']
+								, self.config.rDisplay.getConfig()['height']])
+
+		if (not self.Ws.compareToScreen()):
+			logging.error(
+				'** WorkSpace width[%d] < sum(left display size, right display size) [%d, %d].'
+				 % ( self.Ws.Size.w, self.Ws.lScreen.Size.w, self.Ws.rScreen.Size.w ))
+			raise Core.CoreRuntimeError('WorkSpace width over left/right display size summing')
+
+		if (hasattr(self.Ws.lScreen.Size, 'islessThanWorkSpaceHeight')
+		 and self.Ws.lScreen.Size.islessThanWorkSpaceHeight):
+			logging.warning(
+				'* WorkSpace height [%s] > left display height [%s].'
+				 % (self.Ws.Size.h, self.Ws.lScreen.Size.h ))
+		if (hasattr(self.Ws.rScreen.Size, 'islessThanWorkSpaceHeight')
+		 and self.Ws.rScreen.Size.islessThanWorkSpaceHeight):
+			logging.warning(
+				'* WorkSpace height [%s] > right display height [%s].'
+				 % (self.Ws.Size.h, self.Ws.rScreen.Size.h ))
+
+		self.Ws.setScreenType()
+		logging.debug('%20s [%s,%s]'
+			 	 % ( 'display type' , self.Ws.lScreen.displayType, self.Ws.rScreen.displayType ))
+
+
 	def _checkImgType(self, Ws, Img1, Img2):
-		self.logging.debug('Checking imgType as Imgfile.')
+		logging.debug('Checking imgType as Imgfile.')
 
 		if ( Img1.getSize().w < Ws.lScreen.Size.w or Img1.getSize().w < Ws.rScreen.Size.w ):
 			if ( Img1.isDual() ):
@@ -43,40 +144,40 @@ class Core(object):
 		if (not hasattr(Img2, 'imgType') ):
 			setattr(Img2, 'imgType', 'other')
 
-		self.logging.debug('%20s [%s]' % ( 'imgType as Img1', Img1.imgType) )
-		self.logging.debug('%20s [%s]' % ( 'imgType as Img2', Img2.imgType) )
+		logging.debug('%20s [%s]' % ( 'imgType as Img1', Img1.imgType) )
+		logging.debug('%20s [%s]' % ( 'imgType as Img2', Img2.imgType) )
 
 
 	def _bindingImgToScreen(self, Fixed, Img1, Img2):
 		# バリエーションに対応できているか、見極められていない
-		self.logging.debug('Binding Img to Screen.')
+		logging.debug('Binding Img to Screen.')
 
 		if ( Fixed ):
 			setattr(Img1, 'posit', 'left')
-			self.logging.debug('%20s [%s]' % ( 'Img1 fixed binding', Img1.posit) )
+			logging.debug('%20s [%s]' % ( 'Img1 fixed binding', Img1.posit) )
 			setattr(Img2, 'posit', 'right')
-			self.logging.debug('%20s [%s]' % ( 'Img2 fixed binding', Img2.posit) )
+			logging.debug('%20s [%s]' % ( 'Img2 fixed binding', Img2.posit) )
 		else:
 			# アスペクト比見て、ディスプレイのタイプに応じて優先的に割り当てる
 			if ( Img1.imgType == Ws.lScreen.displayType ):
 				setattr(Img1, 'posit', 'left')
-				self.logging.debug('%20s [%s]' % ( 'Img1 binding', Img1.posit) )
+				logging.debug('%20s [%s]' % ( 'Img1 binding', Img1.posit) )
 				setattr(Img2, 'posit', 'right')
-				self.logging.debug('%20s [%s]' % ( 'Img2 binding', Img2.posit) )
+				logging.debug('%20s [%s]' % ( 'Img2 binding', Img2.posit) )
 			elif ( Img1.imgType == Ws.rScreen.displayType ):
 				setattr(Img1, 'posit', 'right')
-				self.logging.debug('%20s [%s]' % ( 'Img1 binding', Img1.posit) )
+				logging.debug('%20s [%s]' % ( 'Img1 binding', Img1.posit) )
 				setattr(Img2, 'posit', 'left')
-				self.logging.debug('%20s [%s]' % ( 'Img2 binding', Img2.posit) )
+				logging.debug('%20s [%s]' % ( 'Img2 binding', Img2.posit) )
 			else:
 				setattr(Img1, 'posit', 'left')
-				self.logging.debug('%20s [%s]' % ( 'Img1 binding', Img1.posit) )
+				logging.debug('%20s [%s]' % ( 'Img1 binding', Img1.posit) )
 				setattr(Img2, 'posit', 'right')
-				self.logging.debug('%20s [%s]' % ( 'Img2 binding', Img2.posit) )
+				logging.debug('%20s [%s]' % ( 'Img2 binding', Img2.posit) )
 
 
 	def _checkContain(self, Ws, Img, tmpMergin):
-		self.logging.debug('Check Imgfile contain %s Screen.' % Img.posit)
+		logging.debug('Check Imgfile contain %s Screen.' % Img.posit)
 
 		if ( Img.posit == 'left' ):
 			# lScreenに、Imgがおさまる
@@ -97,12 +198,12 @@ class Core(object):
 			tmpScreen = Ws.lScreen
 		elif ( Img.posit == 'right' ):
 			tmpScreen = Ws.rScreen
-		self.logging.debug('Convert Imgfile with %s Screen.' % Img.posit)
+		logging.debug('Convert Imgfile with %s Screen.' % Img.posit)
 
 		tmpMerginW = tmpMergin[0] + tmpMergin[1]
-		self.logging.debug('%20s [%s]' % ( 'width mergin', tmpMerginW) )
+		logging.debug('%20s [%s]' % ( 'width mergin', tmpMerginW) )
 		tmpMerginH = tmpMergin[2] + tmpMergin[3]
-		self.logging.debug('%20s [%s]' % ( 'height mergin', tmpMerginH) )
+		logging.debug('%20s [%s]' % ( 'height mergin', tmpMerginH) )
 
 		if ( Img.getSize().w > tmpScreen.getSize().w ):
 			Img.setSize( (tmpScreen.getSize().w - tmpMerginW), 
@@ -114,30 +215,30 @@ class Core(object):
 					(tmpScreen.getSize().h - tmpMerginH) )
 
 		Img.reSize( Img.getSize().w, Img.getSize().h)
-		self.logging.debug('%20s [%d,%d]' % ( 'converted size', Img.getSize().w, Img.getSize().h) )
+		logging.debug('%20s [%d,%d]' % ( 'converted size', Img.getSize().w, Img.getSize().h) )
 
 
 	def _allocateInit(self, Ws, Img1, Img2):
-		self.logging.debug('Calculate center position.')
+		logging.debug('Calculate center position.')
 
 		Ws.lScreen.calcCenter()
 		Ws.rScreen.calcCenter()
 		Img1.calcCenter()
 		Img2.calcCenter()
 
-		self.logging.debug('%20s [%d,%d]'
+		logging.debug('%20s [%d,%d]'
 			 % ( 'left screen', Ws.lScreen.center.x, Ws.lScreen.center.y) )
 		if (Img1.posit == 'left'):
-			self.logging.debug('%20s [%d,%d]' % ( 'Img1', Img1.center.x, Img1.center.y) )
+			logging.debug('%20s [%d,%d]' % ( 'Img1', Img1.center.x, Img1.center.y) )
 		else:
-			self.logging.debug('%20s [%d,%d]' % ( 'Img2', Img2.center.x, Img2.center.y) )
+			logging.debug('%20s [%d,%d]' % ( 'Img2', Img2.center.x, Img2.center.y) )
 
-		self.logging.debug('%20s [%d,%d]'
+		logging.debug('%20s [%d,%d]'
 			 % ( 'right screen', Ws.rScreen.center.x, Ws.rScreen.center.y) )
 		if (Img1.posit == 'right'):
-			self.logging.debug('%20s [%d,%d]' % ( 'Img1', Img1.center.x, Img1.center.y) )
+			logging.debug('%20s [%d,%d]' % ( 'Img1', Img1.center.x, Img1.center.y) )
 		else:
-			self.logging.debug('%20s [%d,%d]' % ( 'Img2', Img2.center.x, Img2.center.y) )
+			logging.debug('%20s [%d,%d]' % ( 'Img2', Img2.center.x, Img2.center.y) )
 
 
 	def _allocateImg(self, Option, Ws, Img):
@@ -149,7 +250,7 @@ class Core(object):
 			tmpScreen = Ws.rScreen
 			tmpAlign = Option.getRAlign()
 			tmpValign = Option.getRValign()
-		self.logging.debug('Allocate Imgfile to %s Screen.' % Img.posit)
+		logging.debug('Allocate Imgfile to %s Screen.' % Img.posit)
 
 		# 画面中央と画像中央との距離をタプルで得る
 		centerDistance = (abs( Img.center.distanceX(tmpScreen.center) ) 
@@ -176,12 +277,12 @@ class Core(object):
 				Img.start.y += rightcornerDistance[1]
 				Img.end.y += rightcornerDistance[1]
 
-		self.logging.debug('%20s [%d,%d]' % ( 'start', Img.start.x, Img.start.y) )
-		self.logging.debug('%20s [%d,%d]' % ( 'end', Img.end.x, Img.end.y) )
+		logging.debug('%20s [%d,%d]' % ( 'start', Img.start.x, Img.start.y) )
+		logging.debug('%20s [%d,%d]' % ( 'end', Img.end.x, Img.end.y) )
 
 
 	def _mergeWallpaper(self, Ws, bkImg, Img):
-		self.logging.debug('Merge Imgfile to %s Screen.' % Img.posit)
+		logging.debug('Merge Imgfile to %s Screen.' % Img.posit)
 
 		if (Img.posit == 'right'):
 			Img.start.x += Ws.lScreen.Size.w
@@ -191,17 +292,17 @@ class Core(object):
 
 
 	def _optimizeWallpaper(self, Option, Config, Ws, Img1, Img2):
-		self.logging.debug('Optimizing ... wallpapaer.')
+		logging.debug('Optimizing ... wallpapaer.')
 		self._checkImgType(Ws, Img1, Img2)
 
 		self._bindingImgToScreen(Option.getFixed, Img1, Img2)
 
-		self.logging.debug('Calculate mergin.')
+		logging.debug('Calculate mergin.')
 		lMergin = [Option.getLMergin(), 0, Option.getTopMergin(), Option.getBtmMergin()]
-		self.logging.debug('%20s [%d,%d,%d,%d]'
+		logging.debug('%20s [%d,%d,%d,%d]'
 				 % ( 'left display mergin', lMergin[0], lMergin[1], lMergin[2], lMergin[3] ))
 		rMergin = [0, Option.getRMergin(), Option.getTopMergin(), Option.getBtmMergin()]
-		self.logging.debug('%20s [%d,%d,%d,%d]'
+		logging.debug('%20s [%d,%d,%d,%d]'
 				 % ( 'right display mergin', rMergin[0], rMergin[1], rMergin[2], rMergin[3] ))
 
 		if (not self._checkContain(Ws, Img1, lMergin)):
@@ -227,10 +328,10 @@ class Core(object):
 				,"--get"
 				,"/desktop/gnome/background/picture_filename"]
 				, stdout=subprocess.PIPE).communicate()[0].rstrip()
-		self.logging.debug('Current wallpaper [%s].' % removePath)
+		logging.debug('Current wallpaper [%s].' % removePath)
 		if (os.path.exists(removePath) and removePath == '/tmp/wallposit.jpg'):
 			os.remove(removePath)
-			self.logging.debug('Delete wallpaper [%s].' % removePath)
+			logging.debug('Delete wallpaper [%s].' % removePath)
 
 		if (tmpPath == None):
 			tmpPath = '/tmp/wallposit.jpg'
@@ -248,35 +349,35 @@ class Core(object):
 				,"--set"
 				,"/desktop/gnome/background/picture_filename"
 				,tmpPath])
-		self.logging.debug('Change wallpaper to current Workspace [%s].' % (tmpPath))
+		logging.debug('Change wallpaper to current Workspace [%s].' % (tmpPath))
 
 
 	def _saveImgfile(self, bkImg, tmpPath):
 		try:
 			bkImg.save(tmpPath)
-			self.logging.debug('Save optimized wallpaper [%s].' % tmpPath)
+			logging.debug('Save optimized wallpaper [%s].' % tmpPath)
 		except ImgFile.ImgFileIOError, msg:
 			raise Core.CoreRuntimeError(msg.value)
 
 
-	def timerRun(self, Option, Config, Ws):
+	def timerRun(self):
 		try:
-			LChangerDir = ChangerDir(Config.lDisplay.getConfig()['srcdir'])
-			RChangerDir = ChangerDir(Config.rDisplay.getConfig()['srcdir'])
+			LChangerDir = ChangerDir(self.config.lDisplay.getConfig()['srcdir'])
+			RChangerDir = ChangerDir(self.config.rDisplay.getConfig()['srcdir'])
 		except ChangerDir.FileCountZeroError, msg:
 			raise
 
 		Img1 = ImgFile(LChangerDir.getImgfileRnd())
 		Img2 = ImgFile(RChangerDir.getImgfileRnd())
 
-		bkImg = self._optimizeWallpaper(Option, Config, Ws, Img1, Img2)
+		bkImg = self._optimizeWallpaper(self.option, self.config, self.Ws, Img1, Img2)
 		self._setWall(bkImg)
 
 
-	def background(self, Option, Config, Ws):
+	def background(self):
 		try:
-			LChangerDir = ChangerDir(Config.lDisplay.getConfig()['srcdir'])
-			RChangerDir = ChangerDir(Config.rDisplay.getConfig()['srcdir'])
+			LChangerDir = ChangerDir(self.config.lDisplay.getConfig()['srcdir'])
+			RChangerDir = ChangerDir(self.config.rDisplay.getConfig()['srcdir'])
 		except ChangerDir.FileCountZeroError, msg:
 			logging.error('** %s.' % msg)
 			sys.exit(2)
@@ -289,37 +390,39 @@ class Core(object):
 				except ImgFile.ImgFileIOError, msg:
 					raise Core.CoreRuntimeError(msg.value)
 
-				bkImg = self._optimizeWallpaper(Option, Config, Ws, Img1, Img2)
+				bkImg = self._optimizeWallpaper(self.option, self.config, self.Ws, Img1, Img2)
 				self._setWall(bkImg)
-				interval = Option.getInterval()
+				interval = self.option.getInterval()
 				time.sleep(interval)
 		except KeyboardInterrupt:
 			sys.exit(0)
 
 
-	def singlerun(self, Option, Config, Ws):
-		if len( Option.getArgs() ) == 2:
+	def singlerun(self):
+		if len( self.option.getArgs() ) == 2:
 			try:
-				Img1 = ImgFile(Option.getLArg())
+				Img1 = ImgFile(self.option.getLArg())
 			except ImgFile.ImgFileIOError, msg:
 					raise Core.CoreRuntimeError(msg.value)
-			self.logging.debug('Create Img1 object. [%s]' % Option.getLArg())
-			self.logging.debug('%20s [%d,%d]' % ( 'Img1', Img1.getSize().w, Img1.getSize().h ))
+			logging.debug('Create Img1 object. [%s]' % self.option.getLArg())
+			logging.debug('%20s [%d,%d]' % ( 'Img1', Img1.getSize().w, Img1.getSize().h ))
 			try:
-				Img2 = ImgFile(Option.getRArg())
+				Img2 = ImgFile(self.option.getRArg())
 			except ImgFile.ImgFileIOError, msg:
 					raise Core.CoreRuntimeError(msg.value)
-			self.logging.debug('Create Img2 object. [%s]' % Option.getRArg())
-			self.logging.debug('%20s [%s,%s]' % ( 'Img2', Img2.getSize().w, Img2.getSize().h ))
-			bkImg = self._optimizeWallpaper(Option, Config, Ws, Img1, Img2)
+			logging.debug('Create Img2 object. [%s]' % self.option.getRArg())
+			logging.debug('%20s [%s,%s]' % ( 'Img2', Img2.getSize().w, Img2.getSize().h ))
+			bkImg = self._optimizeWallpaper(self.option, self.config, self.Ws, Img1, Img2)
 
-			tmpPath = Option.getSavePath()
+			tmpPath = self.option.getSavePath()
 			if (tmpPath <> None):
 				self._saveImgfile(bkImg, tmpPath)
 
-			if (Option.getSetWall()):
+			if (self.option.getSetWall()):
 				self._setWall(bkImg, tmpPath)
 
+	def __init__(self, Options):
+		self.option = Options
 
-	def __init__(self, logger):
-		self.logging = logger
+		self.initializeConfig()
+		self.initializeWorkSpace()

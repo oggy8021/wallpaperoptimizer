@@ -15,10 +15,8 @@ import logging
 
 if __name__ == "__main__":
 	from WallpaperOptimizer.Options import Options
-	from WallpaperOptimizer.Config import Config
 	from WallpaperOptimizer.Core import Core
 	from WallpaperOptimizer.Applet import Applet
-	from WallpaperOptimizer.WorkSpace import WorkSpace
 	from optparse import OptionValueError
 
 # analize commandline option
@@ -74,122 +72,27 @@ if __name__ == "__main__":
 	logging.debug('%20s [%s]'
 		 % ( 'interval', option.getInterval() ))
 
-
-# initialize config
-	# config set from configfile
-	configfile = '~/.wallpositrc'
-	configfile = os.path.expanduser(configfile)
-	if (os.path.exists(configfile)):
-		try:
-			config = Config(configfile)
-			logging.debug('Config set from configfile.')
-		except Config.FormatError, msg:
-			logging.error('** FormatError: %s. ' % msg)
-			sys.exit(2)
-	else:
-		config = Config()
-
-	# config set/update from commandline option
-	if (option.getLSize() != None and option.getRSize() != None):
-		config.lDisplay.setSize(option.getLSize())
-		config.rDisplay.setSize(option.getRSize())
-
-	if (option.getLSrcdir() != '' and option.getRSrcdir() != ''):
-		config.lDisplay.setSrcdir(option.getLSrcdir())
-		config.rDisplay.setSrcdir(option.getRSrcdir())
-
-	logging.debug('Config update from commandline option.')
-
-	if ( config.lDisplay.getConfig()['width'] == 0 and 
-		config.lDisplay.getConfig()['height'] == 0 and
-		config.rDisplay.getConfig()['width'] == 0 and 
-		config.rDisplay.getConfig()['height'] == 0 ):
-		logging.error('** Please setting left/right display size.')
-		sys.exit(2)
-
-	if ( option.getDaemonize() and 
-			config.lDisplay.getConfig()['srcdir'] == '' and 
-			config.rDisplay.getConfig()['srcdir'] == '' ):
-		logging.error('** Please setting srcdir in Daemonize mode.')
-		sys.exit(2)
-
-	logging.debug('%20s [%s,%s]'
-			 % ( 'left display size'
-			 , config.lDisplay.getConfig()['width'], config.rDisplay.getConfig()['width'] ))
-	logging.debug('%20s [%s,%s]'
-			 % ( 'right display size'
-			 , config.lDisplay.getConfig()['height'], config.rDisplay.getConfig()['height'] ))
-	logging.debug('%20s [%s,%s]'
-			 % ( 'position'
-			 , config.lDisplay.getConfig()['posit'], config.rDisplay.getConfig()['posit'] ))
-	logging.debug('%20s [%s]'
-			 % ( 'srcdir to left'
-			 , config.lDisplay.getConfig()['srcdir'] ))
-	logging.debug('%20s [%s]'
-			 % ( 'srcdir to right'
-			 , config.rDisplay.getConfig()['srcdir'] ))
-
-
-# initialize WorkSpace
-	try:
-		Ws = WorkSpace()
-	except WorkSpace.WorkSpaceRuntimeError, msg:
-		logging.error('** WorkSpaceRuntimeError: %s. ' % msg)
-		sys.exit(2)
-
-	logging.debug('Current WorkSpace setting as.')
-	logging.debug('%20s [%d,%d]'
-		 % ( 'WorkSpace Size', Ws.getSize().w, Ws.getSize().h ))
-	logging.debug('%20s [%s]'
-		 % ( 'WorkSpace depth', Ws.getDepth() ))
-
-	logging.debug('Config Setting To WorkSpace().')
-	Ws.setScreenSize([config.lDisplay.getConfig()['width'], config.lDisplay.getConfig()['height']]
-				, [config.rDisplay.getConfig()['width'], config.rDisplay.getConfig()['height']])
-
-	if (not Ws.compareToScreen()):
-		logging.error(
-			'** WorkSpace width[%d] < sum(left display size, right display size) [%d, %d].'
-			 % ( Ws.Size.w, Ws.lScreen.Size.w, Ws.rScreen.Size.w ))
-		sys.exit(2)
-
-	if (hasattr(Ws.lScreen.Size, 'islessThanWorkSpaceHeight')
-	 and Ws.lScreen.Size.islessThanWorkSpaceHeight):
-		logging.warning(
-			'* WorkSpace height [%s] > left display height [%s].'
-			 % (Ws.Size.h, Ws.lScreen.Size.h ))
-	if (hasattr(Ws.rScreen.Size, 'islessThanWorkSpaceHeight')
-	 and Ws.rScreen.Size.islessThanWorkSpaceHeight):
-		logging.warning(
-			'* WorkSpace height [%s] > right display height [%s].'
-			 % (Ws.Size.h, Ws.rScreen.Size.h ))
-
-	Ws.setScreenType()
-	logging.debug('%20s [%s,%s]'
-		 	 % ( 'display type' , Ws.lScreen.displayType, Ws.rScreen.displayType ))
-
-
 	if (option.getSetWall() == False
 		 and option.getSavePath() == None
 		 and option.getDaemonize() == False):
 		logging.debug('Running ... applet mode.')
-		applet = Applet(config, Ws, logging)
+		applet = Applet()
 		applet.finalize()
 
 	elif (option.getDaemonize()):
-		core = Core(logging)
+		core = Core(option, logging)
 		logging.debug('Running ... daemonize mode.')
 		try:
-			core.background(option, config, Ws)
+			core.background()
 		except Core.CoreRuntimeError, msg:
 			logging.error('** CoreRuntimeError: %s. ' % msg.value)
 			sys.exit(2)
 
 	else:
-		core = Core(logging)
+		core = Core(option, logging)
 		logging.debug('Running ... singlerun mode.')
 		try:
-			core.singlerun(option, config, Ws)
+			core.singlerun()
 		except Core.CoreRuntimeError, msg:
 			logging.error('** CoreRuntimeError: %s. ' % msg.value)
 			sys.exit(2)
