@@ -25,7 +25,7 @@ class Core(object):
 		# config set from configfile
 		self.configfile = '~/.wallpositrc'
 		self.configfile = os.path.expanduser(self.configfile)
-		if (os.path.exists(self.configfile)):
+		if os.path.exists(self.configfile):
 			try:
 				self.config = Config(self.configfile)
 				logging.debug('Config set from configfile.')
@@ -98,7 +98,7 @@ class Core(object):
 								, [self.config.rDisplay.getConfig()['width']
 								, self.config.rDisplay.getConfig()['height']])
 
-		if (not self.Ws.compareToScreen()):
+		if not self.Ws.compareToScreen():
 			logging.error(
 				'** WorkSpace width[%d] < sum(left display size, right display size) [%d, %d].'
 				 % ( self.Ws.Size.w, self.Ws.lScreen.Size.w, self.Ws.rScreen.Size.w ))
@@ -124,25 +124,25 @@ class Core(object):
 		logging.debug('Checking imgType as Imgfile.')
 
 		if ( Img1.getSize().w < Ws.lScreen.Size.w or Img1.getSize().w < Ws.rScreen.Size.w ):
-			if ( Img1.isDual() ):
+			if Img1.isDual():
 				setattr(Img1, 'imgType', 'dual')
 		if ( Img2.getSize().w < Ws.lScreen.Size.w or Img2.getSize().w < Ws.rScreen.Size.w ):
-			if ( Img2.isDual() ):
+			if Img2.isDual():
 				setattr(Img2, 'imgType', 'dual')
 
-		if ( Img1.isSquare() ):
+		if Img1.isSquare():
 			setattr(Img1, 'imgType', 'square')
-		if ( Img1.isWide() ):
+		if Img1.isWide():
 			setattr(Img1, 'imgType', 'wide')
 
-		if ( Img2.isSquare() ):
+		if Img2.isSquare():
 			setattr(Img2, 'imgType', 'square')
-		if ( Img2.isWide() ):
+		if Img2.isWide():
 			setattr(Img2, 'imgType', 'wide')
 
-		if (not hasattr(Img1, 'imgType') ):
+		if not hasattr(Img1, 'imgType'):
 			setattr(Img1, 'imgType', 'other')
-		if (not hasattr(Img2, 'imgType') ):
+		if not hasattr(Img2, 'imgType'):
 			setattr(Img2, 'imgType', 'other')
 
 		logging.debug('%20s [%s]' % ( 'imgType as Img1', Img1.imgType) )
@@ -153,19 +153,19 @@ class Core(object):
 		# バリエーションに対応できているか、見極められていない
 		logging.debug('Binding Img to Screen.')
 
-		if ( Fixed ):
+		if Fixed:
 			setattr(Img1, 'posit', 'left')
 			logging.debug('%20s [%s]' % ( 'Img1 fixed binding', Img1.posit) )
 			setattr(Img2, 'posit', 'right')
 			logging.debug('%20s [%s]' % ( 'Img2 fixed binding', Img2.posit) )
 		else:
 			# アスペクト比見て、ディスプレイのタイプに応じて優先的に割り当てる
-			if ( Img1.imgType == Ws.lScreen.displayType ):
+			if Img1.imgType == Ws.lScreen.displayType:
 				setattr(Img1, 'posit', 'left')
 				logging.debug('%20s [%s]' % ( 'Img1 binding', Img1.posit) )
 				setattr(Img2, 'posit', 'right')
 				logging.debug('%20s [%s]' % ( 'Img2 binding', Img2.posit) )
-			elif ( Img1.imgType == Ws.rScreen.displayType ):
+			elif Img1.imgType == Ws.rScreen.displayType:
 				setattr(Img1, 'posit', 'right')
 				logging.debug('%20s [%s]' % ( 'Img1 binding', Img1.posit) )
 				setattr(Img2, 'posit', 'left')
@@ -180,13 +180,13 @@ class Core(object):
 	def _checkContain(self, Ws, Img, tmpMergin):
 		logging.debug('Check Imgfile contain %s Screen.' % Img.posit)
 
-		if ( Img.posit == 'left' ):
+		if Img.posit == 'left':
 			# lScreenに、Imgがおさまる
 			if ( Ws.lScreen.containsPlusMergin( Img, tmpMergin) ):
 				return True
 			else:
 				return False
-		elif ( Img.posit == 'right' ):
+		elif Img.posit == 'right':
 			# rScreenに、Imgがおさまる
 			if ( Ws.rScreen.containsPlusMergin( Img, tmpMergin) ):
 				return True
@@ -195,9 +195,9 @@ class Core(object):
 
 
 	def _downsizeImg(self, Ws, Img, tmpMergin):
-		if ( Img.posit == 'left' ):
+		if Img.posit == 'left':
 			tmpScreen = Ws.lScreen
-		elif ( Img.posit == 'right' ):
+		elif Img.posit == 'right':
 			tmpScreen = Ws.rScreen
 		logging.debug('Convert Imgfile with %s Screen.' % Img.posit)
 
@@ -206,11 +206,11 @@ class Core(object):
 		tmpMerginH = tmpMergin[2] + tmpMergin[3]
 		logging.debug('%20s [%s]' % ( 'height mergin', tmpMerginH) )
 
-		if ( Img.getSize().w > tmpScreen.getSize().w ):
+		if Img.getSize().w > tmpScreen.getSize().w:
 			Img.setSize( (tmpScreen.getSize().w - tmpMerginW), 
 					int(max( Img.getSize().h
 					 * (tmpScreen.getSize().w - tmpMerginW) / Img.getSize().w, 1 )) )
-		if ( Img.getSize().h > tmpScreen.getSize().h ):
+		if Img.getSize().h > tmpScreen.getSize().h:
 			Img.setSize( int(max( Img.getSize().w
 					 * (tmpScreen.getSize().h - tmpMerginH) / Img.getSize().h , 1 )), 
 					(tmpScreen.getSize().h - tmpMerginH) )
@@ -229,25 +229,25 @@ class Core(object):
 
 		logging.debug('%20s [%d,%d]'
 			 % ( 'left screen', Ws.lScreen.center.x, Ws.lScreen.center.y) )
-		if (Img1.posit == 'left'):
+		if Img1.posit == 'left':
 			logging.debug('%20s [%d,%d]' % ( 'Img1', Img1.center.x, Img1.center.y) )
 		else:
 			logging.debug('%20s [%d,%d]' % ( 'Img2', Img2.center.x, Img2.center.y) )
 
 		logging.debug('%20s [%d,%d]'
 			 % ( 'right screen', Ws.rScreen.center.x, Ws.rScreen.center.y) )
-		if (Img1.posit == 'right'):
+		if Img1.posit == 'right':
 			logging.debug('%20s [%d,%d]' % ( 'Img1', Img1.center.x, Img1.center.y) )
 		else:
 			logging.debug('%20s [%d,%d]' % ( 'Img2', Img2.center.x, Img2.center.y) )
 
 
 	def _allocateImg(self, Option, Ws, Img):
-		if ( Img.posit == 'left'):
+		if Img.posit == 'left':
 			tmpScreen = Ws.lScreen
 			tmpAlign = Option.getLAlign()
 			tmpValign = Option.getLValign()
-		elif ( Img.posit == 'right'):
+		elif Img.posit == 'right':
 			tmpScreen = Ws.rScreen
 			tmpAlign = Option.getRAlign()
 			tmpValign = Option.getRValign()
@@ -260,21 +260,21 @@ class Core(object):
 			 , abs( Img.end.distanceY(tmpScreen.end) ) )
 
 		# Imgはインスタンス化されたときに、x,y = 0,0 つまり align=left, valign=top
-		if (tmpAlign == 'center'):
-			if ( Img.center.x != tmpScreen.center.x):
+		if tmpAlign == 'center':
+			if Img.center.x != tmpScreen.center.x:
 				Img.start.x += centerDistance[0]
 				Img.end.x += centerDistance[0]
-		elif (tmpAlign == 'right'):
-			if ( Img.end.x != tmpScreen.end.x):
+		elif tmpAlign == 'right':
+			if Img.end.x != tmpScreen.end.x:
 				Img.start.x += rightcornerDistance[0]
 				Img.end.x += rightcornerDistance[0]
 
-		if (tmpValign == 'middle'):
-			if ( Img.center.y != tmpScreen.center.y):
+		if tmpValign == 'middle':
+			if Img.center.y != tmpScreen.center.y:
 				Img.start.y += centerDistance[1]
 				Img.end.y += centerDistance[1]
-		elif (tmpValign == 'bottom'):
-			if ( Img.end.y != tmpScreen.end.y):
+		elif tmpValign == 'bottom':
+			if Img.end.y != tmpScreen.end.y:
 				Img.start.y += rightcornerDistance[1]
 				Img.end.y += rightcornerDistance[1]
 
@@ -285,7 +285,7 @@ class Core(object):
 	def _mergeWallpaper(self, Ws, bkImg, Img):
 		logging.debug('Merge Imgfile to %s Screen.' % Img.posit)
 
-		if (Img.posit == 'right'):
+		if Img.posit == 'right':
 			Img.start.x += Ws.lScreen.Size.w
 			Img.end.x += Ws.lScreen.Size.w
 			# center.x
@@ -306,9 +306,9 @@ class Core(object):
 		logging.debug('%20s [%d,%d,%d,%d]'
 				 % ( 'right display mergin', rMergin[0], rMergin[1], rMergin[2], rMergin[3] ))
 
-		if (not self._checkContain(Ws, Img1, lMergin)):
+		if not self._checkContain(Ws, Img1, lMergin):
 			self._downsizeImg(Ws, Img1, lMergin)
-		if (not self._checkContain(Ws, Img2, rMergin)):
+		if not self._checkContain(Ws, Img2, rMergin):
 			self._downsizeImg(Ws, Img2, rMergin)
 
 		self._allocateInit(Ws, Img1, Img2)
@@ -331,7 +331,7 @@ class Core(object):
 				, stdout=subprocess.PIPE).communicate()[0].rstrip()
 		logging.debug('Current wallpaper [%s].' % removePath)
 
-		if (tmpPath == None):
+		if tmpPath == None:
 #			tmpPath = '/tmp/wallposit.jpg'
 			tmpPath = self._saveImgfile(bkImg, tmpPath)
 		else:
@@ -356,7 +356,7 @@ class Core(object):
 
 	def _saveImgfile(self, bkImg, tmpPath):
 		try:
-			if (tmpPath == None):
+			if tmpPath == None:
 				tmpPath = '/tmp/wallposit' + datetime.datetime.now().strftime('%Y%m%d-%H%M%S') + '.jpg'
 			bkImg.save(tmpPath)
 			logging.debug('Save optimized wallpaper [%s].' % tmpPath)
@@ -420,7 +420,7 @@ class Core(object):
 			bkImg = self._optimizeWallpaper(self.option, self.config, self.Ws, Img1, Img2)
 
 			tmpPath = self.option.getSavePath()
-			if (tmpPath <> None):
+			if tmpPath <> None:
 				self._saveImgfile(bkImg, tmpPath)
 
 			if (self.option.getSetWall()):

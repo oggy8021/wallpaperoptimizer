@@ -22,7 +22,7 @@ class Rectangle(Bounds):
 	def isSquare(self):
 		widthAs = 4;
 		heightAs = 3;
-		if ( not self.checkAspectRatio(widthAs, heightAs) ):
+		if not self.checkAspectRatio(widthAs, heightAs):
 			widthAs = 5;
 			heightAs = 4;
 			return self.checkAspectRatio(widthAs, heightAs)
@@ -32,7 +32,7 @@ class Rectangle(Bounds):
 	def isWide(self):
 		widthAs = 16;
 		heightAs = 9;
-		if ( not self.checkAspectRatio(widthAs, heightAs) ):
+		if not self.checkAspectRatio(widthAs, heightAs):
 			widthAs = 16;
 			heightAs = 10;
 			return self.checkAspectRatio(widthAs, heightAs)

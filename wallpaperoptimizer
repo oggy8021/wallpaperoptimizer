@@ -2,23 +2,41 @@
 # -*- coding: utf-8 -*-
 
 # singlerun
-#	./wallpaperoptimizer  ../2560x1920.jpg ../1500x844.jpg -W
+#	./wallpaperoptimizer  ../2560x1920.jpg ../1500x844.jpg -C
 # background
 #	./wallpaperoptimizer -D -i 5
 # applet
 #	./wallpaperoptimizer
+# applet run-in-window
+#	./wallpaperoptimizer -W
 
 import sys
 import os.path
 import time
 import logging
 
-if __name__ == "__main__":
-	from WallpaperOptimizer.Options import Options
-	from WallpaperOptimizer.Core import Core
-	from WallpaperOptimizer.Applet import Applet
-	from optparse import OptionValueError
+import pygtk
+pygtk.require("2.0")
+import gtk
+import gnomeapplet
 
+from WallpaperOptimizer.Options import Options
+from WallpaperOptimizer.Core import Core
+from WallpaperOptimizer.Applet import Applet
+from optparse import OptionValueError
+
+class wallpaperoptimizerApplet:
+	def __init__(self, applet, iid):
+		workapplet = Applet()
+
+
+def factory(applet, iid):
+	wallpaperoptimizerApplet(applet, iid)
+	applet.show_all()
+	return gtk.TRUE
+
+
+if __name__ == "__main__":
 # analize commandline option
 	try:
 		option = Options()
@@ -27,7 +45,7 @@ if __name__ == "__main__":
 		sys.exit(2)
 	Verbose = option.getVerbose()
 
-	if (Verbose):
+	if Verbose:
 		loglevel = logging.DEBUG
 	else:
 		loglevel = logging.INFO
@@ -38,7 +56,7 @@ if __name__ == "__main__":
 						, filemode='w')
 	logging.info('Starting ... wallpaperoptimizer.')
 
-	if (Verbose):
+	if Verbose:
 		console = logging.StreamHandler()
 		console.setLevel(logging.DEBUG)
 		formatter = logging.Formatter('%(name)-12s: %(levelname)-8s %(message)s')
@@ -75,11 +93,28 @@ if __name__ == "__main__":
 	if (option.getSetWall() == False
 		 and option.getSavePath() == None
 		 and option.getDaemonize() == False):
-		logging.debug('Running ... applet mode.')
-		applet = Applet()
-		applet.finalize()
 
-	elif (option.getDaemonize()):
+		if option.getRunInWindow():
+			logging.debug('Running ... window mode.')
+			main_window = gtk.Window(gtk.WINDOW_TOPLEVEL)
+			main_window.set_title("Python Applet")
+			main_window.connect("destroy", gtk.mainquit) 
+			app = gnomeapplet.Applet()
+			factory(app, None)
+			app.reparent(main_window)
+			main_window.show_all()
+			gtk.main()
+		else:
+			logging.debug('Running ... applet mode.')
+			gnomeapplet.bonobo_factory("OAFIID:wallpaperoptimizer_Factory"
+									, gnomeapplet.Applet.__gtype__
+									, "wallpaper changer"
+									, "1.0"
+									, factory)
+#			windowmode = Applet()
+#			windowmode.finalize()
+
+	elif option.getDaemonize():
 		core = Core(option, logging)
 		logging.debug('Running ... daemonize mode.')
 		try:

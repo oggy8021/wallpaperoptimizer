@@ -8,6 +8,9 @@ from WallpaperOptimizer.OptionsBase import OptionsBase
 
 class Options(OptionsBase):
 
+	def getRunInWindow(self):
+		return self.opts.runinwindow
+
 	def __init__(self):
 		class MultiargOption(Option):
 			ACTIONS = Option.ACTIONS + ("multistore", "quatrostore", "doublestore", )
@@ -18,7 +21,7 @@ class Options(OptionsBase):
 			def take_action(self, action, dest, opt, value, values, parser):
 				def exchangeValue(lvalue, dest, values):
 					for idx,m in enumerate(lvalue):
-						if (m <> ""):
+						if m <> "":
 							vals = getattr(values, dest)
 							vals[idx] = lvalue[idx]
 							setattr(values, dest, vals)
@@ -45,7 +48,7 @@ class Options(OptionsBase):
 					Option.take_action(self, action, dest, opt, value, values, parser)
 
 		parser = OptionParser(usage="%prog [options] imgfile1 imgfile2"
-					, version="%prog 0.2.0"
+					, version="%prog 0.1.0.0"
 					, option_class=MultiargOption)
 		parser.set_defaults(
 					align=["center","center"]
@@ -59,7 +62,8 @@ class Options(OptionsBase):
 					, save=None
 					, setWall=False
 					, daemonize=False
-					, interval=60)
+					, interval=60
+					, runinwindow=False)
 
 		viewgroup = OptionGroup(parser, 'View Options')
 		viewgroup.add_option("-a", "--align", dest="align", action="multistore"
@@ -89,13 +93,15 @@ class Options(OptionsBase):
 		actiongroup.add_option("-S", "--save", dest="save", action="store"
 					, metavar="PATH"
 					, help="Save Wallpaper to PATH")
-		actiongroup.add_option("-W", "--wall", dest="setWall", action="store_true"
+		actiongroup.add_option("-C", "--change", dest="setWall", action="store_true"
 					, help="Created wallpaper set to current WorkSpace")
-		actiongroup.add_option("-D", "--daemon", dest="daemonize", action="store_true"
+		actiongroup.add_option("-D", "--daemonize", dest="daemonize", action="store_true"
 					, help="daemonize (default: False)")
 		actiongroup.add_option("-i", "--interval", dest="interval", action="store", type="int"
 					, metavar="sec"
 					, help="change wallpaper interval (default: 60sec)")
+		actiongroup.add_option("-W", "--run-in-window", dest="runinwindow", action="store_true"
+					, help="applet run-in-window")
 
 		parser.add_option_group(viewgroup)
 		parser.add_option_group(actiongroup)
@@ -117,10 +123,10 @@ class Options(OptionsBase):
 
 		if (self.opts.srcdir[0] != '' and self.opts.srcdir[1] != ''):
 			for i in range(0,1):
-				if (not os.path.exists(self.opts.srcdir[i])):
+				if not os.path.exists(self.opts.srcdir[i]):
 					raise OptionValueError('No such srcdir [%s]' % self.opts.srcdir[i])
 
 		ptn = re.compile('^0x(.+)$')
-		if (ptn.match(self.opts.bgcolor)):
+		if ptn.match(self.opts.bgcolor):
 			subStr = ptn.split(self.opts.bgcolor)
 			self.opts.bgcolor = '#%s' % subStr[1]

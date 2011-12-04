@@ -54,9 +54,9 @@ class Config(object):
 			self.srcdir = ''
 
 	def setConfig(self, size, p, s):
-		if (p == 'left'):
+		if p == 'left':
 			display = self.lDisplay
-		elif (p == 'right'):
+		elif p == 'right':
 			display = self.rDisplay
 		else:
 			raise Config.FormatError("position setting is left or right")
@@ -84,7 +84,7 @@ class Config(object):
 				raise Config.FormatError("configfile written not expected Value")
 
 			cf.close()
-			if (i < 1):
+			if i < 1:
 				raise Config.FormatError("Config require 2 records")
 
 		else:

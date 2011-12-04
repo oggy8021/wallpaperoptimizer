@@ -17,6 +17,7 @@ except:
 		import gobject as glibobj
 	except:
 		sys.exit(2)
+from distutils.sysconfig import PREFIX, EXEC_PREFIX, get_python_lib
 
 from WallpaperOptimizer.Core import Core
 from WallpaperOptimizer.OptionsBase import OptionsBase
@@ -24,9 +25,9 @@ from WallpaperOptimizer.OptionsBase import OptionsBase
 class AppletUtil(object):
 	@staticmethod
 	def judgeLeftRight(wName):
-		if (wName.rfind('L') == (len(wName) - 1)):
+		if wName.rfind('L') == (len(wName) - 1):
 			idx = 0
-		elif (wName.rfind('R') == (len(wName) - 1)):
+		elif wName.rfind('R') == (len(wName) - 1):
 			idx = 1
 		return idx
 
@@ -56,7 +57,7 @@ class ErrorDialog(object):
 		self.Dialog.show_all()
 		self.walkTree.get_widget('tviewError').get_buffer().set_text(msg)
 		result = self.Dialog.run()
-		if (result == gtk.RESPONSE_OK):
+		if result == gtk.RESPONSE_OK:
 			self.Dialog.destroy()
 		else:
 			self.Dialog.destroy()
@@ -83,7 +84,7 @@ class ImgOpenDialog(object):
 	def openDialog(self):
 		self.Dialog.show_all()
 		result = self.Dialog.run()
-		if (result == gtk.RESPONSE_OK):
+		if result == gtk.RESPONSE_OK:
 			imgfile = self.Dialog.get_filename()
 			self.Dialog.destroy()
 			return imgfile
@@ -131,7 +132,7 @@ class SrcdirDialog(object):
 	def openDialog(self, srcdir):
 		self.Dialog.show_all()
 		result = self.Dialog.run()
-		if (result == gtk.RESPONSE_OK):
+		if result == gtk.RESPONSE_OK:
 			srcdir = self.Dialog.get_current_folder()
 			self.Dialog.destroy()
 			return srcdir
@@ -153,7 +154,7 @@ class SrcdirDialog(object):
 class SettingDialog(object):
 
 	def getSettingDialog(self, lr):
-		if (lr == 0):
+		if lr == 0:
 			lr = 'L'
 		else:
 			lr = 'R'
@@ -168,7 +169,7 @@ class SettingDialog(object):
 		lr = AppletUtil.judgeLeftRight(widget.get_name())
 		srcdirDialog = SrcdirDialog(self.gladefile)
 		self.srcdirs[lr] = srcdirDialog.openDialog(self.srcdirs[lr])
-		if (lr == 0):
+		if lr == 0:
 			self.walkTree.get_widget('entSrcdirL').set_text(self.srcdirs[lr])
 		else:
 			self.walkTree.get_widget('entSrcdirR').set_text(self.srcdirs[lr])
@@ -216,7 +217,7 @@ class SettingDialog(object):
 		self.walkTree.get_widget('entSrcdirL').set_text(self.srcdirs[0])
 		self.walkTree.get_widget('entSrcdirR').set_text(self.srcdirs[1])
 		result = self.Dialog.run()
-		if (result == gtk.RESPONSE_OK):
+		if result == gtk.RESPONSE_OK:
 			self.sizeString = [
 				self.walkTree.get_widget('entDisplayWL').get_text()
 				 + 'x' 
@@ -267,7 +268,7 @@ class ColorSelectionDiag(object):
 		gdkColor = gtk.color_selection_palette_from_string(bgcolor)
 		self.walkTree.get_widget('color_selection').set_current_color(gdkColor[0])
 		result = self.Dialog.run()
-		if (result == gtk.RESPONSE_OK):
+		if result == gtk.RESPONSE_OK:
 			gtkColor = self.walkTree.get_widget('color_selection').get_current_color()
 			bgcolor = gtk.color_selection_palette_to_string([gtkColor])
 		self.Dialog.destroy()
@@ -296,7 +297,7 @@ class SaveWallpaperDialog(object):
 	def openDialog(self):
 		self.Dialog.show_all()
 		result = self.Dialog.run()
-		if (result == gtk.RESPONSE_OK):
+		if result == gtk.RESPONSE_OK:
 			savefilename = self.Dialog.get_filename()
 		else:
 			savefilename = None
@@ -354,11 +355,11 @@ class Applet(object):
 
 	def setConfigAttr(self, btnName, lr, val=None):
 		if (btnName.find('PushLeft') > 0 or btnName.find('PushRight') > 0):
-			if (val == None):
+			if val == None:
 				val = 'center'
 			self.option.opts.align[lr] = val
 		elif (btnName.find('Upper') > 0 or btnName.find('Lower') > 0):
-			if (val == None):
+			if val == None:
 				val = 'middle'
 			self.option.opts.valign[lr] = val
 
@@ -368,15 +369,15 @@ class Applet(object):
 			self.walkTree.get_widget(vsName).set_active(False)
 
 	def tglBtn_toggled(self, widget):
-		if (widget.get_active()):
+		if widget.get_active():
 			wName = widget.get_name()
-			if (wName.find('PushLeft') > 0):
+			if wName.find('PushLeft') > 0:
 				val = 'left'
-			elif (wName.find('PushRight') > 0):
+			elif wName.find('PushRight') > 0:
 				val = 'right'
-			elif (wName.find('Upper') > 0):
+			elif wName.find('Upper') > 0:
 				val = 'top'
-			elif (wName.find('Lower') > 0):
+			elif wName.find('Lower') > 0:
 				val = 'bottom'
 			lr = AppletUtil.judgeLeftRight(wName)
 			self.setConfigAttr(wName, lr, val)
@@ -391,13 +392,13 @@ class Applet(object):
 
 	def spnMergin_value_changed(self, widget):
 		wName = widget.get_name()
-		if (wName.find('LMergin')) > 0:
+		if wName.find('LMergin') > 0:
 			idx = 0
-		elif (wName.find('RMergin')) > 0:
+		elif wName.find('RMergin') > 0:
 			idx = 1
-		elif (wName.find('TopMergin')) > 0:
+		elif wName.find('TopMergin') > 0:
 			idx = 2
-		elif (wName.find('BtmMergin')) > 0:
+		elif wName.find('BtmMergin') > 0:
 			idx = 3
 		self.option.opts.mergin[idx] = int(self.walkTree.get_widget(wName).get_value_as_int())
 
@@ -408,7 +409,7 @@ class Applet(object):
 		lr = AppletUtil.judgeLeftRight(widget.get_name())
 		imgopenDialog = ImgOpenDialog(self.gladefile)
 		self.core.option.args[lr] = imgopenDialog.openDialog()
-		if (lr == 0):
+		if lr == 0:
 			entPath = self.entPathL
 		else:
 			entPath = self.entPathR
@@ -416,7 +417,7 @@ class Applet(object):
 
 	def entPath_insert(self, widget, text, length, pos):
 		lr = AppletUtil.judgeLeftRight(widget.get_name())
-		if (length > 0):
+		if length > 0:
 			self.bEntryPath[lr] = True
 		if (self.bEntryPath == [True, True]):
 			self.btnSave.set_sensitive(True)
@@ -490,7 +491,7 @@ class Applet(object):
 				, self.cid_stat
 				, 'Timeout ... run changer.')
 		self._runChanger()
-		if (self.bCanceled):
+		if self.bCanceled:
 			return False
 		else:
 			return True
@@ -593,7 +594,7 @@ class Applet(object):
 		self.core = Core(self.option)
 
 # Applet
-		self.gladefile = os.path.abspath("./WallpaperOptimizer/glade/wallpositapplet.glade")
+		self.gladefile = os.path.abspath(get_python_lib() + '/WallpaperOptimizer/glade/wallpositapplet.glade')
 		self.walkTree = gtk.glade.XML(self.gladefile, "WallPosit_MainWindow")
 		self.window = self.walkTree.get_widget("WallPosit_MainWindow")
 		self._initWidget()

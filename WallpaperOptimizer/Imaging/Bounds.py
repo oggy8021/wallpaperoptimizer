@@ -3,13 +3,13 @@
 class Point(object):
 
 	def distanceX(self, other):
-		if (self.x >= other.x):
+		if self.x >= other.x:
 			return self.x - other.x
 		else:
 			return other.x - self.x
 
 	def distanceY(self, other):
-		if (self.y >= other.y):
+		if self.y >= other.y:
 			return self.y - other.y
 		else:
 			return other.y - self.y

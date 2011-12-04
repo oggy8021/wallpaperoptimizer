@@ -26,25 +26,25 @@ class WorkSpace(Rectangle):
 		self.rScreen.setSize(rDisplay[0], rDisplay[1])
 
 	def compareToScreen(self):
-		if ( self.Size.w < (self.lScreen.Size.w + self.rScreen.Size.w) ):
+		if self.Size.w < (self.lScreen.Size.w + self.rScreen.Size.w):
 			return False
-		if ( self.Size.h > self.lScreen.Size.h ):
+		if self.Size.h > self.lScreen.Size.h:
 			setattr(self.lScreen.Size, 'islessThanWorkSpaceHeight', True)
-		elif ( self.Size.h > self.rScreen.Size.h ):
+		elif self.Size.h > self.rScreen.Size.h:
 			setattr(self.rScreen.Size, 'islessThanWorkSpaceHeight', True)
 		else:
 			pass
 		return True
 
 	def setAttrScreenType(self):
-		if ( self.lScreen.isSquare() ):
+		if self.lScreen.isSquare():
 			setattr(self.lScreen, 'displayType', 'square')
-		if ( self.lScreen.isWide() ):
+		if self.lScreen.isWide():
 			setattr(self.lScreen, 'displayType', 'wide')
 
-		if ( self.rScreen.isSquare() ):
+		if self.rScreen.isSquare():
 			setattr(self.rScreen, 'displayType', 'square')
-		if ( self.rScreen.isWide() ):
+		if self.rScreen.isWide():
 			setattr(self.rScreen, 'displayType', 'wide')
 
 	def __init__(self):
@@ -55,7 +55,7 @@ class WorkSpace(Rectangle):
 		self.rScreen = Rectangle()
 
 		xdpyinfo='/usr/bin/xdpyinfo'
-		if (not os.path.exists(xdpyinfo)):
+		if not os.path.exists(xdpyinfo):
 			raise WorkSpace.WorkSpaceRuntimeError('xdpyinfo not installed [%s]' % xdpyinfo)
 		dimensions = subprocess.Popen(
 			["grep", "dimensions"]

@@ -36,7 +36,7 @@ class ImgFile(Rectangle, Image.Image):
 
 	def __init__(self, path='', w=5, h=5, color='black'):
 		Rectangle.__init__(self)
-		if (path == ''):
+		if path == '':
 			mode = 'RGB'
 			size = (w, h)
 			self._img = Image.new(mode, size, color)
