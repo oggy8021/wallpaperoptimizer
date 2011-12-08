@@ -35,6 +35,15 @@ def factory(applet, iid):
 	Applet(applet, iid)
 	return gtk.TRUE
 
+#if len(sys.argv) == 2 and sys.argv[1] == "run-in-window":
+#	analize commandline option
+#try:
+#	option = Options()
+#except OptionValueError, msg:
+#	logging.error('** OptionValueError: %s. ' % msg)
+#	sys.exit(2)
+#Verbose = option.getVerbose()
+
 if __name__ == "__main__":
 #	loglevel = logging.INFO
 	loglevel = logging.DEBUG

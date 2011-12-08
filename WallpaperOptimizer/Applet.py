@@ -588,12 +588,16 @@ class Applet(object):
 
 
 	def __init__(self, applet, iid):
-# AppletOption extends Options class
-		self.option = AppletOptions()
+		self.applet = applet
+		lblBar = gtk.Label("wallposit")
+		self.applet.add(lblBar)
+		self.applet.show_all()
 
+#		AppletOption extends Options class
+		self.option = AppletOptions()
 		self.core = Core(self.option)
 
-# Applet
+#		Initialize Applet
 		self.gladefile = os.path.abspath(get_python_lib() + '/WallpaperOptimizer/glade/wallpositapplet.glade')
 		self.walkTree = gtk.glade.XML(self.gladefile, "WallPosit_MainWindow")
 		self.window = self.walkTree.get_widget("WallPosit_MainWindow")
