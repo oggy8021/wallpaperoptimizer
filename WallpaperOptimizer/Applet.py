@@ -587,7 +587,7 @@ class Applet(object):
 		self.btnAbout.set_sensitive(boolean)
 
 
-	def __init__(self):
+	def __init__(self, applet, iid):
 # AppletOption extends Options class
 		self.option = AppletOptions()
 
@@ -634,6 +634,7 @@ class Applet(object):
 		self.radTwinView.set_sensitive(False)
 		self.btnHelp.set_sensitive(False)
 		self.btnAbout.set_sensitive(False)
+		self.applet.show_all
 
 	def finalize(self):
 		gtk.main()

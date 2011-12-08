@@ -324,15 +324,13 @@ class Core(object):
 
 
 	def _setWall(self, bkImg, tmpPath=None):
-		removePath = subprocess.Popen(
-				["gconftool-2"
-				,"--get"
-				,"/desktop/gnome/background/picture_filename"]
-				, stdout=subprocess.PIPE).communicate()[0].rstrip()
-		logging.debug('Current wallpaper [%s].' % removePath)
-
 		if tmpPath == None:
-#			tmpPath = '/tmp/wallposit.jpg'
+			removePath = subprocess.Popen(
+					["gconftool-2"
+					,"--get"
+					,"/desktop/gnome/background/picture_filename"]
+					, stdout=subprocess.PIPE).communicate()[0].rstrip()
+			logging.debug('Next delete wallpaper [%s].' % removePath)
 			tmpPath = self._saveImgfile(bkImg, tmpPath)
 		else:
 			# (, )だけだと、ちょっと間抜け
@@ -349,7 +347,7 @@ class Core(object):
 				,tmpPath])
 		logging.debug('Change wallpaper to current Workspace [%s].' % (tmpPath))
 
-		if (os.path.exists(removePath)):
+		if (os.path.exists(removePath) and removePath != None):
 			os.remove(removePath)
 			logging.debug('Delete wallpaper [%s].' % removePath)
 

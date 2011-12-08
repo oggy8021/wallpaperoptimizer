@@ -2,11 +2,9 @@
 # -*- coding: utf-8 -*-
 
 # singlerun
-#	./wallpaperoptimizer  ../2560x1920.jpg ../1500x844.jpg -C
+#	./wallpaperoptimizer  ../2560x1920.jpg ../1500x844.jpg -C -W
 # background
-#	./wallpaperoptimizer -D -i 5
-# applet
-#	./wallpaperoptimizer
+#	./wallpaperoptimizer -D -i 5 -W
 # applet run-in-window
 #	./wallpaperoptimizer -W
 
@@ -19,36 +17,27 @@ import pygtk
 pygtk.require("2.0")
 import gtk
 import gnomeapplet
+import gnome.ui
+try:
+	import glib as glibobj
+except:
+	try:
+		import gobject as glibobj
+	except:
+		sys.exit(2)
 
 from WallpaperOptimizer.Options import Options
 from WallpaperOptimizer.Core import Core
 from WallpaperOptimizer.Applet import Applet
 from optparse import OptionValueError
 
-class wallpaperoptimizerApplet:
-	def __init__(self, applet, iid):
-		workapplet = Applet()
-
-
 def factory(applet, iid):
-	wallpaperoptimizerApplet(applet, iid)
-	applet.show_all()
+	Applet(applet, iid)
 	return gtk.TRUE
 
-
 if __name__ == "__main__":
-# analize commandline option
-	try:
-		option = Options()
-	except OptionValueError, msg:
-		logging.error('** OptionValueError: %s. ' % msg)
-		sys.exit(2)
-	Verbose = option.getVerbose()
-
-	if Verbose:
-		loglevel = logging.DEBUG
-	else:
-		loglevel = logging.INFO
+#	loglevel = logging.INFO
+	loglevel = logging.DEBUG
 
 	logging.basicConfig(level=loglevel
 						, format='%(asctime)s %(levelname)5s %(message)s'
@@ -56,81 +45,9 @@ if __name__ == "__main__":
 						, filemode='w')
 	logging.info('Starting ... wallpaperoptimizer.')
 
-	if Verbose:
-		console = logging.StreamHandler()
-		console.setLevel(logging.DEBUG)
-		formatter = logging.Formatter('%(name)-12s: %(levelname)-8s %(message)s')
-		console.setFormatter(formatter)
-		logging.getLogger('').addHandler(console)
-
-
-	logging.debug('Command line option as.')
-	logging.debug('%20s [%s,%s].'
-		 % ( 'align', option.getLAlign(), option.getRAlign() ))
-	logging.debug('%20s [%s,%s].'
-		 % ( 'valign', option.getLValign(), option.getRValign() ))
-	logging.debug('%20s [%d,%d,%d,%d]'
-		 % ( 'mergin'
-		 , option.getLMergin(), option.getRMergin()
-		 , option.getTopMergin(), option.getBtmMergin() ))
-	logging.debug('%20s [%s]'
-		 % ( 'fixed', option.getFixed() ))
-	logging.debug('%20s [%s,%s]'
-		 % ( 'display', option.getLSize(), option.getRSize() ))
-	logging.debug('%20s [%s]'
-		 % ( 'bgcolor', option.getBgcolor() ))
-	logging.debug('%20s [%s,%s]'
-		 % ( 'srcdir', option.getLSrcdir(), option.getRSrcdir() ))
-	logging.debug('%20s [%s]'
-		 % ( 'setWall', option.getSetWall() ))
-	logging.debug('%20s [%s]'
-		 % ( 'savepath', option.getSavePath() ))
-	logging.debug('%20s [%s]'
-		 % ( 'daemon', option.getDaemonize() ))
-	logging.debug('%20s [%s]'
-		 % ( 'interval', option.getInterval() ))
-
-	if (option.getSetWall() == False
-		 and option.getSavePath() == None
-		 and option.getDaemonize() == False):
-
-		if option.getRunInWindow():
-			logging.debug('Running ... window mode.')
-			main_window = gtk.Window(gtk.WINDOW_TOPLEVEL)
-			main_window.set_title("Python Applet")
-			main_window.connect("destroy", gtk.mainquit) 
-			app = gnomeapplet.Applet()
-			factory(app, None)
-			app.reparent(main_window)
-			main_window.show_all()
-			gtk.main()
-		else:
-			logging.debug('Running ... applet mode.')
-			gnomeapplet.bonobo_factory("OAFIID:wallpaperoptimizer_Factory"
-									, gnomeapplet.Applet.__gtype__
-									, "wallpaper changer"
-									, "1.0"
-									, factory)
-#			windowmode = Applet()
-#			windowmode.finalize()
-
-	elif option.getDaemonize():
-		core = Core(option, logging)
-		logging.debug('Running ... daemonize mode.')
-		try:
-			core.background()
-		except Core.CoreRuntimeError, msg:
-			logging.error('** CoreRuntimeError: %s. ' % msg.value)
-			sys.exit(2)
-
-	else:
-		core = Core(option, logging)
-		logging.debug('Running ... singlerun mode.')
-		try:
-			core.singlerun()
-		except Core.CoreRuntimeError, msg:
-			logging.error('** CoreRuntimeError: %s. ' % msg.value)
-			sys.exit(2)
-
-	logging.debug('Quit ... wallpaperoptimizer.')
-	sys.exit(0)
+	logging.debug('Running ... applet mode.')
+	gnomeapplet.bonobo_factory("OAFIID:wallpaperoptimizer_Factory"
+							, gnomeapplet.Applet.__gtype__
+							, "wallpaper changer"
+							, "1.0"
+							, factory)

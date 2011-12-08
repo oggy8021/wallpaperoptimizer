@@ -21,6 +21,6 @@
 			<oaf_attribute name="name" type="string" value="wallpaperoptimizer"/>
 			<oaf_attribute name="description" type="string" value="wallpaper changer"/>
 			<oaf_attribute name="panel:category" type="string" value="Utility"/>
-			<oaf_attribute name="panel:icon" type="string" value="bug-buddy.png"/>
+			<oaf_attribute name="panel:icon" type="string" value="/usr/lib/python2.4/site-packages/WallpaperOptimizer/wallopt.png"/>
 	</oaf_server>
 </oaf_info>
