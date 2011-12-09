@@ -17,14 +17,14 @@ import pygtk
 pygtk.require("2.0")
 import gtk
 import gnomeapplet
-import gnome.ui
-try:
-	import glib as glibobj
-except:
-	try:
-		import gobject as glibobj
-	except:
-		sys.exit(2)
+#import gnome.ui
+#try:
+#	import glib as glibobj
+#except:
+#	try:
+#		import gobject as glibobj
+#	except:
+#		sys.exit(2)
 
 from WallpaperOptimizer.Options import Options
 from WallpaperOptimizer.Core import Core
