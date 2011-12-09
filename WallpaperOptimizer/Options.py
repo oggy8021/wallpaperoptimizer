@@ -8,9 +8,6 @@ from WallpaperOptimizer.OptionsBase import OptionsBase
 
 class Options(OptionsBase):
 
-	def getRunInWindow(self):
-		return self.opts.runinwindow
-
 	def __init__(self):
 		class MultiargOption(Option):
 			ACTIONS = Option.ACTIONS + ("multistore", "quatrostore", "doublestore", )
@@ -62,8 +59,7 @@ class Options(OptionsBase):
 					, save=None
 					, setWall=False
 					, daemonize=False
-					, interval=60
-					, runinwindow=False)
+					, interval=60)
 
 		viewgroup = OptionGroup(parser, 'View Options')
 		viewgroup.add_option("-a", "--align", dest="align", action="multistore"
@@ -93,15 +89,13 @@ class Options(OptionsBase):
 		actiongroup.add_option("-S", "--save", dest="save", action="store"
 					, metavar="PATH"
 					, help="Save Wallpaper to PATH")
-		actiongroup.add_option("-C", "--change", dest="setWall", action="store_true"
+		actiongroup.add_option("-W", "--wall", dest="setWall", action="store_true"
 					, help="Created wallpaper set to current WorkSpace")
 		actiongroup.add_option("-D", "--daemonize", dest="daemonize", action="store_true"
 					, help="daemonize (default: False)")
 		actiongroup.add_option("-i", "--interval", dest="interval", action="store", type="int"
 					, metavar="sec"
 					, help="change wallpaper interval (default: 60sec)")
-		actiongroup.add_option("-W", "--run-in-window", dest="runinwindow", action="store_true"
-					, help="applet run-in-window")
 
 		parser.add_option_group(viewgroup)
 		parser.add_option_group(actiongroup)

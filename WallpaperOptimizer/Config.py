@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# ~/wallpositrc
+# ~/walloptrc
 #1920x1080,left,srcdir
 #1280x1024,right,srcdir
 
@@ -90,4 +90,4 @@ class Config(object):
 		else:
 			pass
 
-# console版では、~/.wallpositrcは上書きしない
+# console版では、~/.walloptrcは上書きしない

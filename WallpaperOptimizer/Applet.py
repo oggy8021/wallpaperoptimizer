@@ -175,7 +175,7 @@ class SettingDialog(object):
 			self.walkTree.get_widget('entSrcdirR').set_text(self.srcdirs[lr])
 
 	def btnSaveSetting_clicked(self, widget):
-		configfile='~/.wallpositrc'
+		configfile='~/.walloptrc'
 		try:
 			cf = csv.writer(file(os.path.expanduser(configfile), 'w'))
 			cf.writerow(self.getSettingDialog(0))
@@ -589,7 +589,7 @@ class Applet(object):
 
 	def __init__(self, applet, iid):
 		self.applet = applet
-		lblBar = gtk.Label("wallposit")
+		lblBar = gtk.Label("wallopt")
 		self.applet.add(lblBar)
 		self.applet.show_all()
 

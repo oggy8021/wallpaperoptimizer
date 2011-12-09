@@ -23,7 +23,7 @@ class Core(object):
 
 	def initializeConfig(self):
 		# config set from configfile
-		self.configfile = '~/.wallpositrc'
+		self.configfile = '~/.walloptrc'
 		self.configfile = os.path.expanduser(self.configfile)
 		if os.path.exists(self.configfile):
 			try:
@@ -324,13 +324,16 @@ class Core(object):
 
 
 	def _setWall(self, bkImg, tmpPath=None):
+		removePath = subprocess.Popen(
+				["gconftool-2"
+				,"--get"
+				,"/desktop/gnome/background/picture_filename"]
+				, stdout=subprocess.PIPE).communicate()[0].rstrip()
+		logging.debug('Next delete wallpaper [%s].' % removePath)
+		if removePath.find('wallopt') == 0:
+			removePath = None
+
 		if tmpPath == None:
-			removePath = subprocess.Popen(
-					["gconftool-2"
-					,"--get"
-					,"/desktop/gnome/background/picture_filename"]
-					, stdout=subprocess.PIPE).communicate()[0].rstrip()
-			logging.debug('Next delete wallpaper [%s].' % removePath)
 			tmpPath = self._saveImgfile(bkImg, tmpPath)
 		else:
 			# (, )だけだと、ちょっと間抜け
@@ -355,7 +358,7 @@ class Core(object):
 	def _saveImgfile(self, bkImg, tmpPath):
 		try:
 			if tmpPath == None:
-				tmpPath = '/tmp/wallposit' + datetime.datetime.now().strftime('%Y%m%d-%H%M%S') + '.jpg'
+				tmpPath = '/tmp/wallopt' + datetime.datetime.now().strftime('%Y%m%d-%H%M%S') + '.jpg'
 			bkImg.save(tmpPath)
 			logging.debug('Save optimized wallpaper [%s].' % tmpPath)
 			return tmpPath
