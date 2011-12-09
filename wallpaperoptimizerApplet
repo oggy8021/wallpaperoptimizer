@@ -14,10 +14,7 @@ pygtk.require("2.0")
 import gtk
 import gnomeapplet
 
-#from WallpaperOptimizer.Options import Options
-#from WallpaperOptimizer.Core import Core
 from WallpaperOptimizer.Applet import Applet
-#from optparse import OptionValueError
 
 def factory(applet, iid):
 	Applet(applet, iid)

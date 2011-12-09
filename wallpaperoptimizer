@@ -5,8 +5,6 @@
 #	./wallpaperoptimizer  ../2560x1920.jpg ../1500x844.jpg -W
 # background
 #	./wallpaperoptimizer -D -i 5
-# gui
-#	./wallpaperoptimizer
 
 import sys
 import os.path
@@ -15,7 +13,6 @@ import logging
 
 from WallpaperOptimizer.Options import Options
 from WallpaperOptimizer.Core import Core
-from WallpaperOptimizer.Applet import Applet
 from optparse import OptionValueError
 
 if __name__ == "__main__":
@@ -72,14 +69,7 @@ if __name__ == "__main__":
 	logging.debug('%20s [%s]'
 		 % ( 'interval', option.getInterval() ))
 
-	if (option.getSetWall() == False
-			 and option.getSavePath() == None
-			 and option.getDaemonize() == False):
-		logging.debug('Running ... window mode.')
-		applet = Applet()
-		applet.finalize()
-
-	elif option.getDaemonize():
+	if option.getDaemonize():
 		core = Core(option)
 		logging.debug('Running ... daemonize mode.')
 		try:
