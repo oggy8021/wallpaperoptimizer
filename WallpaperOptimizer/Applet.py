@@ -458,7 +458,7 @@ class Applet(object):
 				logger.error('** CoreRuntimeError: %s. ' % msg.value)
 				AppletUtil.runErrorDialog(self, '** CoreRuntimeError: %s. ' % msg.value)
 		else:
-#			エラーメッセージがあると良い
+#TODO:エラーメッセージがあると良い
 			pass
 
 	def btnSetWall_clicked(self, widget):
@@ -586,19 +586,41 @@ class Applet(object):
 #		self.btnHelp.set_sensitive(boolean)
 		self.btnAbout.set_sensitive(boolean)
 
+	def _setPanelButton(self):
+		iconOnPanel = gtk.gdk.pixbuf_new_from_file(
+			os.path.abspath(get_python_lib()
+			 + '/WallpaperOptimizer/wallopt.png'))
+		iconOnPanel2 = iconOnPanel.scale_simple(
+					iconOnPanel.get_width() - 3
+					, iconOnPanel.get_width() - 3
+					, gtk.gdk.INTERP_BILINEAR )
+		del iconOnPanel
+		image = gtk.Image()
+		image.set_from_pixbuf(iconOnPanel2)
+		self.btnOnPanelBar = gtk.Button()
+		self.btnOnPanelBar.set_relief(gtk.RELIEF_NONE)
+		self.btnOnPanelBar.set_image(image)
+#!		self.btnOnPanelBar.connect("button_press_event", self._showMenu, self.applet)
+		self.applet.add(self.btnOnPanelBar)
 
 	def __init__(self, applet, iid):
 		self.applet = applet
-		lblBar = gtk.Label("wallopt")
-		self.applet.add(lblBar)
-		self.applet.show_all()
 
-#		AppletOption extends Options class
+#	Panel initialize
+		self.lblOnPanelBar = gtk.Label("wallopt")
+		self.applet.add(self.lblOnPanelBar)
+
+#! 		置いたけど、どう効いているか分かってない。元々のボタンに対する割り当てで足りていないか
+		self.applet.connect("destroy", gtk.main_quit)
+#		self.applet.show_all()
+
+#	AppletOption extends Options class
 		self.option = AppletOptions()
 		self.core = Core(self.option)
 
-#		Initialize Applet
-		self.gladefile = os.path.abspath(get_python_lib() + '/WallpaperOptimizer/glade/wallpositapplet.glade')
+#	Initialize Applet
+		self.gladefile = os.path.abspath(get_python_lib()
+				 + '/WallpaperOptimizer/glade/wallpositapplet.glade')
 		self.walkTree = gtk.glade.XML(self.gladefile, "WallPosit_MainWindow")
 		self.window = self.walkTree.get_widget("WallPosit_MainWindow")
 		self._initWidget()
@@ -638,7 +660,8 @@ class Applet(object):
 		self.radTwinView.set_sensitive(False)
 		self.btnHelp.set_sensitive(False)
 		self.btnAbout.set_sensitive(False)
-		self.applet.show_all
+
+		self.applet.show_all()
 
 	def finalize(self):
 		gtk.main()

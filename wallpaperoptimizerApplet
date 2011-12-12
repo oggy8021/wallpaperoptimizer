@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # applet run-in-window
-#	./wallpaperoptimizerApplet run-in-window
+#	./wallpaperoptimizerApplet -window
 
 import sys
 import os.path
@@ -16,20 +16,37 @@ import gnomeapplet
 
 from WallpaperOptimizer.Applet import Applet
 
+def _preferences(*arguments):
+	print(arguments)
+
+def _about(*arguments):
+	print(arguments)
+
+def create_menu(applet):
+	menuxml="""
+		<popup name="button3">
+			<menuitem name="Item 2" verb="preferences" label="設定" pixtype="stock" pixname="gtk-preferences"/>
+			<menuitem name="Item 3" verb="About" label="情報" pixtype="stock" pixname="gtk-about"/>
+		</popup>"""
+
+	verbs = [  ( "preferences", _preferences ), ("About", _about)]
+	applet.setup_menu(menuxml, verbs, None)
+
 def factory(applet, iid):
+	create_menu(applet)
 	Applet(applet, iid)
 	return gtk.TRUE
 
-if len(sys.argv) == 2 and sys.argv[1] == "run-in-window":
-	logging.debug('Running ... window mode.')
+if len(sys.argv) == 2 and sys.argv[1] == "-window":
 	main_window = gtk.Window(gtk.WINDOW_TOPLEVEL)
-	main_window.set_title("Python Applet")
-	main_window.connect("destroy", gtk.mainquit) 
+	main_window.set_title("Wallpaperoptimizer Applet Window")
+	main_window.connect("destroy", gtk.main_quit) 
 	app = gnomeapplet.Applet()
 	factory(app, None)
 	app.reparent(main_window)
 	main_window.show_all()
 	gtk.main()
+	sys.exit(0)
 
 if __name__ == "__main__":
 #	loglevel = logging.INFO

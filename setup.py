@@ -7,6 +7,11 @@
 #	$ python setup.py uninstall
 #	 or
 #	$ sudo paco -r [name]
+#<reinstall>
+#	$ sudo python setup.py uninstall ; sudo python setup.py install
+#<abort>
+# $ killall wallpaperoptimizerApplet
+
 
 #<root> = /usr/local/bin
 #		WallpaperOptimizer/
