@@ -17,6 +17,7 @@ except:
 		import gobject as glibobj
 	except:
 		sys.exit(2)
+import gnomeapplet
 from distutils.sysconfig import PREFIX, EXEC_PREFIX, get_python_lib
 
 from WallpaperOptimizer.Core import Core
@@ -603,6 +604,22 @@ class Applet(object):
 #!		self.btnOnPanelBar.connect("button_press_event", self._showMenu, self.applet)
 		self.applet.add(self.btnOnPanelBar)
 
+	def _preferences(self, *arguments):
+		print(arguments)
+
+	def _about(self, *arguments):
+		print(arguments)
+
+	def _create_menu(self, applet):
+		menuxml="""
+			<popup name="button3">
+				<menuitem name="Item 2" verb="preferences" label="設定" pixtype="stock" pixname="gtk-preferences"/>
+				<menuitem name="Item 3" verb="About" label="情報" pixtype="stock" pixname="gtk-about"/>
+			</popup>"""
+
+		verbs = [  ( "preferences", self._preferences ), ("About", self._about)]
+		self.applet.setup_menu(menuxml, verbs, None)
+
 	def __init__(self, applet, iid):
 		self.applet = applet
 
@@ -613,6 +630,7 @@ class Applet(object):
 #! 		置いたけど、どう効いているか分かってない。元々のボタンに対する割り当てで足りていないか
 		self.applet.connect("destroy", gtk.main_quit)
 #		self.applet.show_all()
+		self._create_menu(self.applet)
 
 #	AppletOption extends Options class
 		self.option = AppletOptions()

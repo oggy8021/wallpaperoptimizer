@@ -16,24 +16,7 @@ import gnomeapplet
 
 from WallpaperOptimizer.Applet import Applet
 
-def _preferences(*arguments):
-	print(arguments)
-
-def _about(*arguments):
-	print(arguments)
-
-def create_menu(applet):
-	menuxml="""
-		<popup name="button3">
-			<menuitem name="Item 2" verb="preferences" label="設定" pixtype="stock" pixname="gtk-preferences"/>
-			<menuitem name="Item 3" verb="About" label="情報" pixtype="stock" pixname="gtk-about"/>
-		</popup>"""
-
-	verbs = [  ( "preferences", _preferences ), ("About", _about)]
-	applet.setup_menu(menuxml, verbs, None)
-
 def factory(applet, iid):
-	create_menu(applet)
 	Applet(applet, iid)
 	return gtk.TRUE
 
