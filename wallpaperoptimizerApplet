@@ -16,16 +16,25 @@ import gnomeapplet
 
 from WallpaperOptimizer.Applet import Applet
 
-def factory(applet, iid):
-	Applet(applet, iid)
+def factory(applet, iid, logging):
+	Applet(applet, iid, logging)
 	return gtk.TRUE
+
+#loglevel = logging.INFO
+loglevel = logging.DEBUG
+
+logging.basicConfig(level=loglevel
+					, format='%(asctime)s %(levelname)5s %(message)s'
+					, filename='/tmp/walloptApplet.log'
+					, filemode='w')
+logging.info('Starting ... wallpaperoptimizer.')
 
 if len(sys.argv) == 2 and sys.argv[1] == "-window":
 	main_window = gtk.Window(gtk.WINDOW_TOPLEVEL)
 	main_window.set_title("Wallpaperoptimizer Applet Window")
 	main_window.connect("destroy", gtk.main_quit)
 	app = gnomeapplet.Applet()
-	factory(app, None)
+	factory(app, None, logging)
 	app.reparent(main_window)
 	main_window.show_all()
 #  Stopボタン押しやすく
@@ -35,18 +44,11 @@ if len(sys.argv) == 2 and sys.argv[1] == "-window":
 	sys.exit(0)
 
 if __name__ == "__main__":
-#	loglevel = logging.INFO
-	loglevel = logging.DEBUG
-
-	logging.basicConfig(level=loglevel
-						, format='%(asctime)s %(levelname)5s %(message)s'
-						, filename='/tmp/walloptApplet.log'
-						, filemode='w')
-	logging.info('Starting ... wallpaperoptimizer.')
-
 	logging.debug('Running ... applet mode.')
 	gnomeapplet.bonobo_factory("OAFIID:wallpaperoptimizerApplet_Factory"
 							, gnomeapplet.Applet.__gtype__
 							, "wallpaper changer"
 							, "1.0"
 							, factory)
+	logging.debug('Quit ... wallpaperoptimizer.')
+	sys.exit(0)

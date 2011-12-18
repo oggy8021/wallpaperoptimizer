@@ -110,6 +110,7 @@
 	      <property name="use_stock">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
 	      <property name="focus_on_click">True</property>
+	      <signal name="clicked" handler="on_btnAbout_clicked" last_modification_time="Sun, 18 Dec 2011 04:55:21 GMT"/>
 	    </widget>
 	    <packing>
 	      <property name="padding">0</property>

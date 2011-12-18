@@ -18,33 +18,12 @@ except:
 	except:
 		sys.exit(2)
 import gnomeapplet
+import gnome.ui
 from distutils.sysconfig import PREFIX, EXEC_PREFIX, get_python_lib
 
 from WallpaperOptimizer.Core import Core
 from WallpaperOptimizer.OptionsBase import OptionsBase
-
-class AppletUtil(object):
-	@staticmethod
-	def judgeLeftRight(wName):
-		if wName.rfind('L') == (len(wName) - 1):
-			idx = 0
-		elif wName.rfind('R') == (len(wName) - 1):
-			idx = 1
-		return idx
-
-	@staticmethod
-	def writeStatusbar(bar, cid, msg):
-		bar.push(cid, msg)
-
-	@staticmethod
-	def eraseStatusbar(bar, cid):
-		bar.pop(cid)
-
-	@staticmethod
-	def runErrorDialog(self, msg):
-		errorDialog = ErrorDialog(self.gladefile)
-		errorDialog.openDialog(msg)
-
+from WallpaperOptimizer.AppletUtil import AppletUtil
 
 class ErrorDialog(object):
 
@@ -182,7 +161,7 @@ class SettingDialog(object):
 			cf.writerow(self.getSettingDialog(0))
 			cf.writerow(self.getSettingDialog(1))
 		except IOError, msg:
-			logging.error('** CoreRuntimeError: %s. ' % msg)
+			self.logging.error('** CoreRuntimeError: %s. ' % msg)
 			AppletUtil.runErrorDialog(self, '** CoreRuntimeError: %s. ' % msg)
 
 	def btnClear_clicked(self, widget):
@@ -469,7 +448,7 @@ class Applet(object):
 		try:
 			self.core.singlerun()
 		except self.core.CoreRuntimeError, msg:
-			logging.error('** CoreRuntimeError: %s. ' % msg.value)
+			self.logging.error('** CoreRuntimeError: %s. ' % msg.value)
 			AppletUtil.runErrorDialog(self, '** CoreRuntimeError: %s. ' % msg.value)
 
 	def spnInterval_value_changed(self, widget):
@@ -483,11 +462,11 @@ class Applet(object):
 		try:
 			self.core.timerRun()
 		except self.core.CoreRuntimeError, msg:
-			logging.error('** CoreRuntimeError: %s. ' % msg.value)
+			self.logging.error('** CoreRuntimeError: %s. ' % msg.value)
 			AppletUtil.runErrorDialog(self, '** CoreRuntimeError: %s. ' % msg.value)
 
 	def _timeout(self, applet):
-		logging.debug('%20s at %d sec.' % ('Timeout', self.option.opts.interval))
+		self.logging.debug('%20s at %d sec.' % ('Timeout', self.option.opts.interval))
 		AppletUtil.eraseStatusbar(self.statbar, self.cid_stat)
 		AppletUtil.writeStatusbar(self.statbar
 				, self.cid_stat
@@ -500,25 +479,38 @@ class Applet(object):
 
 	def btnDaemonize_clicked(self, widget):
 		self.bCanceled = False
-#		print "btnDaemonize_clicked " , self.bCanceled
+		self._setPanelButton(self.applet, self.bCanceled)
 		self._switchWidget(False)
-		self.btnCancelDaemonize.set_sensitive(True)
 		self.window.hide()
 		self._presetCore()
 		self.timeoutObject = glibobj.timeout_add(self.option.opts.interval*1000
 				, self._timeout, self)
-		logging.debug('%20s' % 'Start Daemonize ... interval [%d].' % self.option.opts.interval)
+		self.logging.debug('%20s' % 
+				'Start Daemonize ... interval [%d].' % self.option.opts.interval)
 		self._runChanger()
 
 	def btnCancelDaemonize_clicked(self, widget):
-		self.window.show_all()
 		self.bCanceled = True
-#		print "btnCancelDaemonize_clicked " , self.bCanceled
+		self._setPanelButton(self.applet, self.bCanceled)
 		glibobj.source_remove(self.timeoutObject)
 		self.timeoutObject = None
 		AppletUtil.writeStatusbar(self.statbar, self.cid_stat, 'Cancel ... changer action.')
 		self._switchWidget(True)
-		self.btnCancelDaemonize.set_sensitive(False)
+
+	def btnAbout_clicked(self, widget):
+		iconFile = '/WallpaperOptimizer/wallopt.png'
+		icon = gtk.gdk.pixbuf_new_from_file(
+			os.path.abspath(get_python_lib()
+			 + iconFile))
+		about = gnome.ui.About("WallpaperOptimizer"
+							,"0.1.0.0"	#version
+							,"GPLv3"		#copyright
+							,"wallpaperoptimizer is multi wallpaper changer."	#comments
+							,["oggy"]		#**authors
+							,["oggy"]		#**documenters
+							,"oggy"		#*translator_credits
+							,icon)			#gtk.gdk.Pixbuf
+		about.show_all()
 
 	def _linkGladeTree(self):
 		self.tglPushLeftL = self.walkTree.get_widget('tglPushLeftL')
@@ -577,8 +569,6 @@ class Applet(object):
 		self.spnRMergin.set_sensitive(boolean)
 		self.spnTopMergin.set_sensitive(boolean)
 		self.spnBtmMergin.set_sensitive(boolean)
-#		self.radXinerama.set_sensitive(boolean)
-#		self.radTwinView.set_sensitive(boolean)
 		self.radFixed.set_sensitive(boolean)
 		self.radNoFixed.set_sensitive(boolean)
 		self.btnSetting.set_sensitive(boolean)
@@ -587,10 +577,14 @@ class Applet(object):
 		self.btnSetWall.set_sensitive(boolean)
 		self.spnInterval.set_sensitive(boolean)
 		self.btnDaemonize.set_sensitive(boolean)
-#		self.btnCancelDaemonize.set_sensitive(boolean)
-#		self.btnQuit.set_sensitive(boolean)
-#		self.btnHelp.set_sensitive(boolean)
-		self.btnAbout.set_sensitive(boolean)
+		if boolean:
+			self.btnCancelDaemonize.set_sensitive(False)
+		else:
+			self.btnCancelDaemonize.set_sensitive(True)
+#	  未実装ボタン
+		self.radXinerama.set_sensitive(False)
+		self.radTwinView.set_sensitive(False)
+		self.btnHelp.set_sensitive(False)
 
 	def _execute(self, *arguments):
 		self.window.show_all()
@@ -602,8 +596,7 @@ class Applet(object):
 		self.btnSetColor_clicked(None)
 
 	def _about(self, *arguments):
-#		print(arguments)
-		pass
+		self.btnAbout_clicked(None)
 
 	def _create_menu(self, applet):
 		menuxml="""
@@ -631,42 +624,37 @@ class Applet(object):
 			widget.emit_stop_by_name("button-press-event")
 			self._create_menu(applet)
 
-#	まだ未使用
-	def _setPanelDisableButton(self, applet):
-		iconOnPanel = gtk.gdk.pixbuf_new_from_file(
+	def _setPanelButton(self, applet, bCanceled):
+		if bCanceled:
+			iconFile = '/WallpaperOptimizer/wallopt_off.png'
+		else:
+			iconFile = '/WallpaperOptimizer/wallopt.png'
+		icon = gtk.gdk.pixbuf_new_from_file(
 			os.path.abspath(get_python_lib()
-			 + '/WallpaperOptimizer/wallopt.png'))
-		iconOnPanel2 = iconOnPanel.scale_simple(
-					iconOnPanel.get_width() - 3
-					, iconOnPanel.get_width() - 3
+			 + iconFile))
+		icon2 = icon.scale_simple(
+					icon.get_width() - 3
+					, icon.get_width() - 3
 					, gtk.gdk.INTERP_BILINEAR )
-		del iconOnPanel
-		image = gtk.Image()
-		image.set_from_pixbuf(iconOnPanel2)
-		btnOnPanelBar.set_image(image)
+		del icon
+		iconOnPanel = gtk.Image()
+		iconOnPanel.set_from_pixbuf(icon2)
+		self.btnOnPanelBar.set_image(iconOnPanel)
 
-	def _setPanelButton(self, applet):
-		iconOnPanel = gtk.gdk.pixbuf_new_from_file(
-			os.path.abspath(get_python_lib()
-			 + '/WallpaperOptimizer/wallopt.png'))
-		iconOnPanel2 = iconOnPanel.scale_simple(
-					iconOnPanel.get_width() - 3
-					, iconOnPanel.get_width() - 3
-					, gtk.gdk.INTERP_BILINEAR )
-		del iconOnPanel
-		image = gtk.Image()
-		image.set_from_pixbuf(iconOnPanel2)
-		btnOnPanelBar = gtk.Button()
-		btnOnPanelBar.set_relief(gtk.RELIEF_NONE)
-		btnOnPanelBar.set_image(image)
-		btnOnPanelBar.connect("button-press-event", self._setMenu, applet)
-		applet.add(btnOnPanelBar)
-		applet.show_all()
-
-	def __init__(self, applet, iid):
+	def __init__(self, applet, iid, logging):
 		self.applet = applet
+		self.logging = logging
+#	  initializeStatus
+		self.timeoutObject = None
+		self.bCanceled = True
+		self.bEntryPath = [False,False]
 #	  Panel initialize
-		self._setPanelButton(self.applet)
+		self.btnOnPanelBar = gtk.Button()
+		self.btnOnPanelBar.set_relief(gtk.RELIEF_NONE)
+		self._setPanelButton(self.applet, self.bCanceled)
+		self.btnOnPanelBar.connect("button-press-event", self._setMenu, self.applet)
+		self.applet.add(self.btnOnPanelBar)
+		self.applet.show_all()
 #!	  置いたけど、どう効いているか分かってない。元々のボタンに対する割り当てで足りていないか
 		self.applet.connect("destroy", gtk.main_quit)
 #	  AppletOption extends Options class
@@ -681,11 +669,7 @@ class Applet(object):
 		self.btnSave.set_sensitive(False)
 		self.btnSetWall.set_sensitive(False)
 		self.btnCancelDaemonize.set_sensitive(False)
-#	  initializeStatus
-		self.timeoutObject = None
-		self.bCanceled = True
 		self.cid_stat = self.statbar.get_context_id('status')
-		self.bEntryPath = [False,False]
 #	  bindCallbackFunction
 		dic = {
 			"on_tglBtn_pressed" : self.tglBtn_pressed,
@@ -702,6 +686,7 @@ class Applet(object):
 			"on_spnInterval_value_changed" : self.spnInterval_value_changed,
 			"on_btnDaemonize_clicked" : self.btnDaemonize_clicked,
 			"on_btnCancelDaemonize_clicked" : self.btnCancelDaemonize_clicked,
+			"on_btnAbout_clicked" : self.btnAbout_clicked,
 			"on_btnQuit_clicked" : gtk.main_quit,
 			"on_WallPosit_MainWindow_destroy" : gtk.main_quit
 			}
@@ -710,11 +695,6 @@ class Applet(object):
 		self.radXinerama.set_sensitive(False)
 		self.radTwinView.set_sensitive(False)
 		self.btnHelp.set_sensitive(False)
-		self.btnAbout.set_sensitive(False)
 #	  View
 		AppletUtil.writeStatusbar(self.statbar, self.cid_stat, 'Running ... applet mode.')
-#		self.applet.show_all()
-#		self.applet.hide()
 
-	def finalize(self):
-		gtk.main()

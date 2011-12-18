@@ -47,15 +47,15 @@ params = {
 	'scripts': ['wallpaperoptimizer','wallpaperoptimizerApplet'],
 	'packages': ['WallpaperOptimizer', 'WallpaperOptimizer/Imaging'],
 	'package_dir': {'WallpaperOptimizer': 'WallpaperOptimizer'},
-	'package_data': {'WallpaperOptimizer': ['glade/wallpositapplet.glade', 'wallopt.png']},
+	'package_data': {'WallpaperOptimizer': ['glade/wallpositapplet.glade', 'wallopt.png', 'wallopt_off.png']},
 	'data_files': [
 		('lib/bonobo/servers',
 			['wallpaperoptimizer.server'])],
-#	'license': 'GPL3',
+	'license': 'GPL3',
 #	'download_url': 'http://oggy.no-ip.info/blog/wallpaperoptimizer-%s.tar.gz' % (__VERSION__),
 	'classifiers': [
 		'Intended Audience :: End Users/Desktop',
-#		'License :: OSI Approved :: GNU General Public License (GPL)',
+		'License :: OSI Approved :: GNU General Public License (GPL)',
 		'Operating System :: POSIX :: Linux',
 		'Programming Language :: Python']
 }
