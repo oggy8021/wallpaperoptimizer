@@ -365,8 +365,7 @@ class Core(object):
 	def _saveImgfile(self, bkImg, tmpPath):
 		try:
 			if tmpPath == None:
-				tmpPath = '/tmp/wallopt'
-				 + datetime.datetime.now().strftime('%Y%m%d-%H%M%S') + '.jpg'
+				tmpPath = '/tmp/wallopt' + datetime.datetime.now().strftime('%Y%m%d-%H%M%S') + '.jpg'
 			bkImg.save(tmpPath)
 			logging.info('Save optimized wallpaper [%s].' % tmpPath)
 			return tmpPath
