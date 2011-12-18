@@ -330,7 +330,8 @@ class AppletOptions(OptionsBase):
 			self.size = [None,None]
 			self.bgcolor = 'black'
 			self.srcdir = ['','']
-			self.verbose = False
+#			self.verbose = False
+			self.verbose = True
 			self.save=None
 			self.setWall=False
 			self.daemonize=False
@@ -439,7 +440,7 @@ class Applet(object):
 			self.core.config.lDisplay.toIntAsSizeString(settingDialog.getSizeString()[0])
 			self.core.config.rDisplay.toIntAsSizeString(settingDialog.getSizeString()[1])
 			self.core.config.lDisplay.setSrcdir(settingDialog.getSrcdir()[0])
-			self.core.config.lDisplay.setSrcdir(settingDialog.getSrcdir()[1])
+			self.core.config.rDisplay.setSrcdir(settingDialog.getSrcdir()[1])
 		else:
 			pass
 
@@ -499,8 +500,10 @@ class Applet(object):
 
 	def btnDaemonize_clicked(self, widget):
 		self.bCanceled = False
+#		print "btnDaemonize_clicked " , self.bCanceled
 		self._switchWidget(False)
 		self.btnCancelDaemonize.set_sensitive(True)
+		self.window.hide()
 		self._presetCore()
 		self.timeoutObject = glibobj.timeout_add(self.option.opts.interval*1000
 				, self._timeout, self)
@@ -508,21 +511,23 @@ class Applet(object):
 		self._runChanger()
 
 	def btnCancelDaemonize_clicked(self, widget):
+		self.window.show_all()
 		self.bCanceled = True
+#		print "btnCancelDaemonize_clicked " , self.bCanceled
 		glibobj.source_remove(self.timeoutObject)
 		self.timeoutObject = None
 		AppletUtil.writeStatusbar(self.statbar, self.cid_stat, 'Cancel ... changer action.')
 		self._switchWidget(True)
 		self.btnCancelDaemonize.set_sensitive(False)
 
-	def _initWidget(self):
+	def _linkGladeTree(self):
 		self.tglPushLeftL = self.walkTree.get_widget('tglPushLeftL')
 		self.tglPushRightL = self.walkTree.get_widget('tglPushRightL')
 		self.tglUpperL = self.walkTree.get_widget('tglUpperL')
 		self.tglLowerL = self.walkTree.get_widget('tglLowerL')
 		self.btnGetImgL = self.walkTree.get_widget('btnGetImgL')
 		self.entPathL = self.walkTree.get_widget('entPathL')
-
+#
 		self.tglPushLeftR = self.walkTree.get_widget('tglPushLeftR')
 		self.tglPushRightR = self.walkTree.get_widget('tglPushRightR')
 		self.tglUpperR = self.walkTree.get_widget('tglUpperR')
@@ -538,7 +543,7 @@ class Applet(object):
 		self.radTwinView = self.walkTree.get_widget('radTwinView')
 		self.radFixed = self.walkTree.get_widget('radFixed')
 		self.radNoFixed = self.walkTree.get_widget('radNoFixed')
-
+#
 		self.btnSetting = self.walkTree.get_widget('btnSetting')
 		self.btnSetColor = self.walkTree.get_widget('btnSetColor')
 		self.btnSave = self.walkTree.get_widget('btnSave')
@@ -587,7 +592,47 @@ class Applet(object):
 #		self.btnHelp.set_sensitive(boolean)
 		self.btnAbout.set_sensitive(boolean)
 
-	def _setPanelButton(self):
+	def _execute(self, *arguments):
+		self.window.show_all()
+
+	def _preferences(self, *arguments):
+		self.btnSetting_clicked(None)
+
+	def _selectColor(self, *arguments):
+		self.btnSetColor_clicked(None)
+
+	def _about(self, *arguments):
+#		print(arguments)
+		pass
+
+	def _create_menu(self, applet):
+		menuxml="""
+			<popup name="button3">
+				<menuitem name="Item 2" verb="Execute" label="実行" pixtype="stock" pixname="gtk-execute"/>
+				<menuitem name="Item 3" verb="Preferences" label="設定" pixtype="stock" pixname="gtk-preferences"/>
+				<menuitem name="Item 4" verb="Color" label="色選択" pixtype="stock" pixname="gtk-select-color"/>
+				<menuitem name="Item 5" verb="About" label="情報" pixtype="stock" pixname="gtk-about"/>
+			</popup>"""
+#
+		verbs = [  ("Execute", self._execute )
+					, ("Preferences", self._preferences )
+					, ("Color", self._selectColor)
+					, ("About", self._about)
+				]
+		applet.setup_menu(menuxml, verbs, None)
+
+	def _setMenu(self, widget, event, applet):
+		if event.button == 1:
+			if self.bCanceled:
+				self.btnDaemonize_clicked(None)
+			else:
+				self.btnCancelDaemonize_clicked(None)
+		elif event.button == 3:
+			widget.emit_stop_by_name("button-press-event")
+			self._create_menu(applet)
+
+#	まだ未使用
+	def _setPanelDisableButton(self, applet):
 		iconOnPanel = gtk.gdk.pixbuf_new_from_file(
 			os.path.abspath(get_python_lib()
 			 + '/WallpaperOptimizer/wallopt.png'))
@@ -598,61 +643,50 @@ class Applet(object):
 		del iconOnPanel
 		image = gtk.Image()
 		image.set_from_pixbuf(iconOnPanel2)
-		self.btnOnPanelBar = gtk.Button()
-		self.btnOnPanelBar.set_relief(gtk.RELIEF_NONE)
-		self.btnOnPanelBar.set_image(image)
-#!		self.btnOnPanelBar.connect("button_press_event", self._showMenu, self.applet)
-		self.applet.add(self.btnOnPanelBar)
+		btnOnPanelBar.set_image(image)
 
-	def _preferences(self, *arguments):
-		print(arguments)
-
-	def _about(self, *arguments):
-		print(arguments)
-
-	def _create_menu(self, applet):
-		menuxml="""
-			<popup name="button3">
-				<menuitem name="Item 2" verb="preferences" label="設定" pixtype="stock" pixname="gtk-preferences"/>
-				<menuitem name="Item 3" verb="About" label="情報" pixtype="stock" pixname="gtk-about"/>
-			</popup>"""
-
-		verbs = [  ( "preferences", self._preferences ), ("About", self._about)]
-		self.applet.setup_menu(menuxml, verbs, None)
+	def _setPanelButton(self, applet):
+		iconOnPanel = gtk.gdk.pixbuf_new_from_file(
+			os.path.abspath(get_python_lib()
+			 + '/WallpaperOptimizer/wallopt.png'))
+		iconOnPanel2 = iconOnPanel.scale_simple(
+					iconOnPanel.get_width() - 3
+					, iconOnPanel.get_width() - 3
+					, gtk.gdk.INTERP_BILINEAR )
+		del iconOnPanel
+		image = gtk.Image()
+		image.set_from_pixbuf(iconOnPanel2)
+		btnOnPanelBar = gtk.Button()
+		btnOnPanelBar.set_relief(gtk.RELIEF_NONE)
+		btnOnPanelBar.set_image(image)
+		btnOnPanelBar.connect("button-press-event", self._setMenu, applet)
+		applet.add(btnOnPanelBar)
+		applet.show_all()
 
 	def __init__(self, applet, iid):
 		self.applet = applet
-
-#	Panel initialize
-		self.lblOnPanelBar = gtk.Label("wallopt")
-		self.applet.add(self.lblOnPanelBar)
-
-#! 		置いたけど、どう効いているか分かってない。元々のボタンに対する割り当てで足りていないか
+#	  Panel initialize
+		self._setPanelButton(self.applet)
+#!	  置いたけど、どう効いているか分かってない。元々のボタンに対する割り当てで足りていないか
 		self.applet.connect("destroy", gtk.main_quit)
-#		self.applet.show_all()
-		self._create_menu(self.applet)
-
-#	AppletOption extends Options class
+#	  AppletOption extends Options class
 		self.option = AppletOptions()
 		self.core = Core(self.option)
-
-#	Initialize Applet
+#	  Initialize Applet
 		self.gladefile = os.path.abspath(get_python_lib()
 				 + '/WallpaperOptimizer/glade/wallpositapplet.glade')
 		self.walkTree = gtk.glade.XML(self.gladefile, "WallPosit_MainWindow")
 		self.window = self.walkTree.get_widget("WallPosit_MainWindow")
-		self._initWidget()
+		self._linkGladeTree()
 		self.btnSave.set_sensitive(False)
 		self.btnSetWall.set_sensitive(False)
 		self.btnCancelDaemonize.set_sensitive(False)
-
+#	  initializeStatus
 		self.timeoutObject = None
-		self.bCanceled = False
+		self.bCanceled = True
 		self.cid_stat = self.statbar.get_context_id('status')
 		self.bEntryPath = [False,False]
-
-		AppletUtil.writeStatusbar(self.statbar, self.cid_stat, 'Running ... applet mode.')
-
+#	  bindCallbackFunction
 		dic = {
 			"on_tglBtn_pressed" : self.tglBtn_pressed,
 			"on_tglBtn_toggled" : self.tglBtn_toggled,
@@ -672,14 +706,15 @@ class Applet(object):
 			"on_WallPosit_MainWindow_destroy" : gtk.main_quit
 			}
 		self.walkTree.signal_autoconnect(dic)
-
-# 未実装ボタン
+#	  未実装ボタン
 		self.radXinerama.set_sensitive(False)
 		self.radTwinView.set_sensitive(False)
 		self.btnHelp.set_sensitive(False)
 		self.btnAbout.set_sensitive(False)
-
-		self.applet.show_all()
+#	  View
+		AppletUtil.writeStatusbar(self.statbar, self.cid_stat, 'Running ... applet mode.')
+#		self.applet.show_all()
+#		self.applet.hide()
 
 	def finalize(self):
 		gtk.main()

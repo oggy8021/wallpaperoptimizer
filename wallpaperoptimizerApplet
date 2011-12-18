@@ -23,11 +23,14 @@ def factory(applet, iid):
 if len(sys.argv) == 2 and sys.argv[1] == "-window":
 	main_window = gtk.Window(gtk.WINDOW_TOPLEVEL)
 	main_window.set_title("Wallpaperoptimizer Applet Window")
-	main_window.connect("destroy", gtk.main_quit) 
+	main_window.connect("destroy", gtk.main_quit)
 	app = gnomeapplet.Applet()
 	factory(app, None)
 	app.reparent(main_window)
 	main_window.show_all()
+#  Stopボタン押しやすく
+	wh = main_window.get_size()
+	main_window.resize(wh[0]*2, wh[1])
 	gtk.main()
 	sys.exit(0)
 
