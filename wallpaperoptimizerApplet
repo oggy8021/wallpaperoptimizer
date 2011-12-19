@@ -15,7 +15,7 @@ import gtk
 import gnomeapplet
 from WallpaperOptimizer.Applet import Applet
 
-def factory(applet, iid, logging):
+def factory(applet, iid):
 	Applet(applet, iid, logging)
 	return gtk.TRUE
 
@@ -28,8 +28,8 @@ def do_main():
 				, help="verbose")
 	parser.add_option("-W", "--window", dest="window", action="store_true"
 				, help="verbose")
-#	parser.add_option("--oaf-activate-iid", dest="iid", default=None)
-#	parser.add_option("--oaf-ior-fd", dest="fd", default=None)
+	parser.add_option("--oaf-activate-iid", dest="iid", default=None)
+	parser.add_option("--oaf-ior-fd", dest="fd", default=None)
 	(opts, args) = parser.parse_args()
 
 	if opts.verbose:
@@ -48,7 +48,7 @@ def do_main():
 		main_window.set_title("Wallpaperoptimizer Applet Window")
 		main_window.connect("destroy", gtk.main_quit)
 		app = gnomeapplet.Applet()
-		factory(app, None, logging)
+		factory(app, None)
 		app.reparent(main_window)
 		main_window.show_all()
 	#  Stopボタン押しやすく
@@ -62,7 +62,8 @@ def do_main():
 								, "wallpaper changer"
 								, "1.0"
 								, factory)
-		logging.debug('Quit ... wallpaperoptimizer.')
+
+	logging.debug('Quit ... wallpaperoptimizer.')
 
 if __name__ == "__main__":
 	do_main()
