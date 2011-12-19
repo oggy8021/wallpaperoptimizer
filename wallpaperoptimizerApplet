@@ -13,42 +13,57 @@ import pygtk
 pygtk.require("2.0")
 import gtk
 import gnomeapplet
-
 from WallpaperOptimizer.Applet import Applet
 
 def factory(applet, iid, logging):
 	Applet(applet, iid, logging)
 	return gtk.TRUE
 
-#loglevel = logging.INFO
-loglevel = logging.DEBUG
+def do_main():
+	from optparse import Option, OptionParser
 
-logging.basicConfig(level=loglevel
-					, format='%(asctime)s %(levelname)5s %(message)s'
-					, filename='/tmp/walloptApplet.log'
-					, filemode='w')
-logging.info('Starting ... wallpaperoptimizer.')
+	parser = OptionParser(usage="%prog [options]", version="%prog 0.1.0.0")
+	parser.set_defaults(verbose=False, window=False)
+	parser.add_option("-V", "--verbose", dest="verbose", action="store_true"
+				, help="verbose")
+	parser.add_option("-W", "--window", dest="window", action="store_true"
+				, help="verbose")
+#	parser.add_option("--oaf-activate-iid", dest="iid", default=None)
+#	parser.add_option("--oaf-ior-fd", dest="fd", default=None)
+	(opts, args) = parser.parse_args()
 
-if len(sys.argv) == 2 and sys.argv[1] == "-window":
-	main_window = gtk.Window(gtk.WINDOW_TOPLEVEL)
-	main_window.set_title("Wallpaperoptimizer Applet Window")
-	main_window.connect("destroy", gtk.main_quit)
-	app = gnomeapplet.Applet()
-	factory(app, None, logging)
-	app.reparent(main_window)
-	main_window.show_all()
-#  Stopボタン押しやすく
-	wh = main_window.get_size()
-	main_window.resize(wh[0]*2, wh[1])
-	gtk.main()
-	sys.exit(0)
+	if opts.verbose:
+		loglevel = logging.DEBUG
+	else:
+		loglevel = logging.INFO
+
+	logging.basicConfig(level=loglevel
+						, format='%(asctime)s %(levelname)5s %(message)s'
+						, filename='/tmp/walloptApplet.log'
+						, filemode='w')
+	logging.info('Starting ... wallpaperoptimizer.')
+
+	if opts.window:
+		main_window = gtk.Window(gtk.WINDOW_TOPLEVEL)
+		main_window.set_title("Wallpaperoptimizer Applet Window")
+		main_window.connect("destroy", gtk.main_quit)
+		app = gnomeapplet.Applet()
+		factory(app, None, logging)
+		app.reparent(main_window)
+		main_window.show_all()
+	#  Stopボタン押しやすく
+		wh = main_window.get_size()
+		main_window.resize(wh[0]*2, wh[1])
+		gtk.main()
+	else:
+		logging.debug('Running ... applet mode.')
+		gnomeapplet.bonobo_factory("OAFIID:wallpaperoptimizerApplet_Factory"
+								, gnomeapplet.Applet.__gtype__
+								, "wallpaper changer"
+								, "1.0"
+								, factory)
+		logging.debug('Quit ... wallpaperoptimizer.')
 
 if __name__ == "__main__":
-	logging.debug('Running ... applet mode.')
-	gnomeapplet.bonobo_factory("OAFIID:wallpaperoptimizerApplet_Factory"
-							, gnomeapplet.Applet.__gtype__
-							, "wallpaper changer"
-							, "1.0"
-							, factory)
-	logging.debug('Quit ... wallpaperoptimizer.')
+	do_main()
 	sys.exit(0)
