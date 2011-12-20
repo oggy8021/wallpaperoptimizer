@@ -19,6 +19,7 @@
   <property name="focus_on_map">True</property>
   <property name="urgency_hint">False</property>
   <signal name="destroy" handler="on_WallPosit_MainWindow_destroy" last_modification_time="Sat, 05 Nov 2011 13:35:47 GMT"/>
+  <signal name="window_state_event" handler="on_WallPosit_MainWindow_window_state_event" last_modification_time="Mon, 19 Dec 2011 22:01:17 GMT"/>
 
   <child>
     <widget class="GtkVBox" id="vbox1">

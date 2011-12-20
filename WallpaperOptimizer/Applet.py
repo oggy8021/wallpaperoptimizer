@@ -632,14 +632,17 @@ class Applet(object):
 		icon = gtk.gdk.pixbuf_new_from_file(
 			os.path.abspath(get_python_lib()
 			 + iconFile))
-		icon2 = icon.scale_simple(
-					icon.get_width() - 3
-					, icon.get_width() - 3
+		self.icon2 = icon.scale_simple(
+					icon.get_width() - 4
+					, icon.get_width() - 4
 					, gtk.gdk.INTERP_BILINEAR )
 		del icon
 		iconOnPanel = gtk.Image()
-		iconOnPanel.set_from_pixbuf(icon2)
+		iconOnPanel.set_from_pixbuf(self.icon2)
 		self.btnOnPanelBar.set_image(iconOnPanel)
+
+	def window_state_called(self, widget, event):
+		print type(event)
 
 	def __init__(self, applet, iid, logging):
 		self.applet = applet
@@ -665,6 +668,7 @@ class Applet(object):
 				 + '/WallpaperOptimizer/glade/wallpositapplet.glade')
 		self.walkTree = gtk.glade.XML(self.gladefile, "WallPosit_MainWindow")
 		self.window = self.walkTree.get_widget("WallPosit_MainWindow")
+		self.window.set_icon(self.icon2)
 		self._linkGladeTree()
 		self.btnSave.set_sensitive(False)
 		self.btnSetWall.set_sensitive(False)
@@ -688,6 +692,7 @@ class Applet(object):
 			"on_btnCancelDaemonize_clicked" : self.btnCancelDaemonize_clicked,
 			"on_btnAbout_clicked" : self.btnAbout_clicked,
 			"on_btnQuit_clicked" : gtk.main_quit,
+			"on_WallPosit_window_state_event" : self.window_state_called,
 			"on_WallPosit_MainWindow_destroy" : gtk.main_quit
 			}
 		self.walkTree.signal_autoconnect(dic)
