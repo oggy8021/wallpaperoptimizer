@@ -587,7 +587,12 @@ class Applet(object):
 		self.btnHelp.set_sensitive(False)
 
 	def _execute(self, *arguments):
-		self.window.show_all()
+		if self.bVisible:
+			self.window.hide()
+			self.bVisible = False
+		else:
+			self.window.show_all()
+			self.bVisible = True
 
 	def _preferences(self, *arguments):
 		self.btnSetting_clicked(None)
@@ -649,6 +654,7 @@ class Applet(object):
 		self.logging = logging
 #	  initializeStatus
 		self.timeoutObject = None
+		self.bVisible = True
 		self.bCanceled = True
 		self.bEntryPath = [False,False]
 #	  Panel initialize
