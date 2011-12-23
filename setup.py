@@ -10,7 +10,7 @@
 #<reinstall>
 #	$ sudo python setup.py uninstall ; sudo python setup.py install
 #<abort>
-# $ killall wallpaperoptimizerApplet
+# $ killall wallpaperoptimizer
 
 
 #<root> = /usr/local/bin
@@ -31,7 +31,6 @@
 #			WorkSpace.py
 #			__init__.py
 #		wallpaperoptimizer
-#		wallpaperoptimizerApplet
 #		setup.py
 
 __NAME__='wallpaperoptimizer'
@@ -44,7 +43,7 @@ params = {
 	'author': 'Katsuhiro Ogikubo',
 	'author_email': 'oggyist@gmail.com',
 	'url': 'http://oggy.no-ip.info/blog/',
-	'scripts': ['wallpaperoptimizer','wallpaperoptimizerApplet'],
+	'scripts': ['wallpaperoptimizer'],
 	'packages': ['WallpaperOptimizer', 'WallpaperOptimizer/Imaging'],
 	'package_dir': {'WallpaperOptimizer': 'WallpaperOptimizer'},
 	'package_data': {'WallpaperOptimizer': ['glade/wallpositapplet.glade', 'wallopt.png', 'wallopt_off.png']},
@@ -91,7 +90,6 @@ if __name__ == "__main__":
 	elif sys.argv[1] == 'uninstall':
 		print "*** uninstall action."
 		rmfile(PREFIX + '/bin/' + params['scripts'][0])
-		rmfile(PREFIX + '/bin/' + params['scripts'][1])
 		rmdir(get_python_lib() + '/' + params['packages'][0])
 		rmfile(PREFIX + '/' + params['data_files'][0][0] + '/' + params['data_files'][0][1][0])
 

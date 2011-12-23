@@ -8,6 +8,15 @@ from WallpaperOptimizer.OptionsBase import OptionsBase
 
 class Options(OptionsBase):
 
+	def getWindow(self):
+		return self.opts.window
+
+	def getIID(self):
+		return self.opts.iid
+
+	def getFD(self):
+		return self.opts.fd
+
 	def __init__(self):
 		class MultiargOption(Option):
 			ACTIONS = Option.ACTIONS + ("multistore", "quatrostore", "doublestore", )
@@ -56,6 +65,7 @@ class Options(OptionsBase):
 					, bgcolor="black"
 					, srcdir=['','']
 					, verbose=False
+					, window=False
 					, save=None
 					, setWall=False
 					, daemonize=False
@@ -86,10 +96,12 @@ class Options(OptionsBase):
 		actiongroup = OptionGroup(parser, 'Action Options')
 		actiongroup.add_option("-V", "--verbose", dest="verbose", action="store_true"
 					, help="verbose")
+		actiongroup.add_option("-W", "--window", dest="window", action="store_true"
+					, help="window mode")
 		actiongroup.add_option("-S", "--save", dest="save", action="store"
 					, metavar="PATH"
 					, help="Save Wallpaper to PATH")
-		actiongroup.add_option("-W", "--wall", dest="setWall", action="store_true"
+		actiongroup.add_option("-C", "--change", dest="setWall", action="store_true"
 					, help="Created wallpaper set to current WorkSpace")
 		actiongroup.add_option("-D", "--daemonize", dest="daemonize", action="store_true"
 					, help="daemonize (default: False)")
@@ -97,8 +109,13 @@ class Options(OptionsBase):
 					, metavar="sec"
 					, help="change wallpaper interval (default: 60sec)")
 
+		appletgroup = OptionGroup(parser, 'Applet Use Options')
+		appletgroup.add_option("--oaf-activate-iid", dest="iid", default=None)
+		appletgroup.add_option("--oaf-ior-fd", dest="fd", default=None)
+
 		parser.add_option_group(viewgroup)
 		parser.add_option_group(actiongroup)
+		parser.add_option_group(appletgroup)
 
 		(self.opts, self.args) = parser.parse_args()
 		if (len(self.args) < 2 and

@@ -27,7 +27,7 @@ def do_main():
 	parser.add_option("-V", "--verbose", dest="verbose", action="store_true"
 				, help="verbose")
 	parser.add_option("-W", "--window", dest="window", action="store_true"
-				, help="verbose")
+				, help="window")
 	parser.add_option("--oaf-activate-iid", dest="iid", default=None)
 	parser.add_option("--oaf-ior-fd", dest="fd", default=None)
 	(opts, args) = parser.parse_args()

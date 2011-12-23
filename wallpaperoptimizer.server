@@ -1,6 +1,6 @@
 <oaf_info>
 	<oaf_server iid="OAFIID:wallpaperoptimizerApplet_Factory"
-				type="exe" location="/usr/bin/wallpaperoptimizerApplet">
+				type="exe" location="/usr/bin/wallpaperoptimizer">
 
 			<oaf_attribute name="repo_ids" type="stringv">
 					<item value="IDL:Bonobo/GenericFactory:1.0"/>

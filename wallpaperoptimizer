@@ -2,47 +2,28 @@
 # -*- coding: utf-8 -*-
 
 # singlerun
-#	./wallpaperoptimizer  ../2560x1920.jpg ../1500x844.jpg -W
+#	./wallpaperoptimizer  ../2560x1920.jpg ../1500x844.jpg -C
 # background
 #	./wallpaperoptimizer -D -i 5
+# applet run-in-window
+#	./wallpaperoptimizer -window
 
 import sys
 import os.path
 import time
 import logging
 
+import pygtk
+pygtk.require("2.0")
+import gtk
+import gnomeapplet
+from optparse import Option, OptionValueError
+
 from WallpaperOptimizer.Options import Options
 from WallpaperOptimizer.Core import Core
-from optparse import OptionValueError
+from WallpaperOptimizer.Applet import Applet
 
-if __name__ == "__main__":
-
-#	analize commandline option
-	try:
-		option = Options()
-	except OptionValueError, msg:
-		logging.error('** OptionValueError: %s. ' % msg)
-		sys.exit(2)
-	Verbose = option.getVerbose()
-
-	if Verbose:
-		loglevel = logging.DEBUG
-	else:
-		loglevel = logging.INFO
-
-	logging.basicConfig(level=loglevel
-						, format='%(asctime)s %(levelname)5s %(message)s'
-						, filename='/tmp/wallopt.log'
-						, filemode='w')
-	logging.info('Starting ... wallpaperoptimizer.')
-
-	if Verbose:
-		console = logging.StreamHandler()
-		console.setLevel(logging.DEBUG)
-		formatter = logging.Formatter('%(name)-12s: %(levelname)-8s %(message)s')
-		console.setFormatter(formatter)
-		logging.getLogger('').addHandler(console)
-
+def putlogOption(option):
 	logging.debug('Command line option as.')
 	logging.debug('%20s [%s,%s].'
 		 % ( 'align', option.getLAlign(), option.getRAlign() ))
@@ -69,23 +50,81 @@ if __name__ == "__main__":
 	logging.debug('%20s [%s]'
 		 % ( 'interval', option.getInterval() ))
 
-	if option.getDaemonize():
-		core = Core(option)
-		logging.debug('Running ... daemonize mode.')
-		try:
-			core.background()
-		except Core.CoreRuntimeError, msg:
-			logging.error('** CoreRuntimeError: %s. ' % msg.value)
-			sys.exit(2)
+def factory(applet, iid):
+	Applet(applet, iid, logging)
+	return gtk.TRUE
+
+def do_main():
+#	analize commandline option
+	try:
+		option = Options()
+	except OptionValueError, msg:
+		logging.error('** OptionValueError: %s. ' % msg)
+		sys.exit(2)
+	Verbose = option.getVerbose()
+
+	if Verbose:
+		loglevel = logging.DEBUG
+	else:
+		loglevel = logging.INFO
+
+	logging.basicConfig(level=loglevel
+						, format='%(asctime)s %(levelname)5s %(message)s'
+						, filename='/tmp/wallopt.log'
+						, filemode='w')
+	logging.info('Starting ... wallpaperoptimizer.')
+
+	if option.getWindow():
+		main_window = gtk.Window(gtk.WINDOW_TOPLEVEL)
+		main_window.set_title("Wallpaperoptimizer Applet Window")
+		main_window.connect("destroy", gtk.main_quit)
+		app = gnomeapplet.Applet()
+		factory(app, None)
+		app.reparent(main_window)
+		main_window.show_all()
+#	  Stopボタン押しやすく
+		wh = main_window.get_size()
+		main_window.resize(wh[0]*2, wh[1])
+		gtk.main()
+
+	elif (option.getIID() == None and option.getFD() == None):
+		if Verbose:
+			console = logging.StreamHandler()
+			console.setLevel(logging.DEBUG)
+			formatter = logging.Formatter('%(name)-12s: %(levelname)-8s %(message)s')
+			console.setFormatter(formatter)
+			logging.getLogger('').addHandler(console)
+
+		putlogOption(option)
+
+		if option.getDaemonize():
+			core = Core(option)
+			logging.debug('Running ... daemonize mode.')
+			try:
+				core.background()
+			except Core.CoreRuntimeError, msg:
+				logging.error('** CoreRuntimeError: %s. ' % msg.value)
+				sys.exit(2)
+
+		else:
+			core = Core(option)
+			logging.debug('Running ... singlerun mode.')
+			try:
+				core.singlerun()
+			except Core.CoreRuntimeError, msg:
+				logging.error('** CoreRuntimeError: %s. ' % msg.value)
+				sys.exit(2)
 
 	else:
-		core = Core(option)
-		logging.debug('Running ... singlerun mode.')
-		try:
-			core.singlerun()
-		except Core.CoreRuntimeError, msg:
-			logging.error('** CoreRuntimeError: %s. ' % msg.value)
-			sys.exit(2)
+		logging.debug('Running ... applet mode.')
+		gnomeapplet.bonobo_factory("OAFIID:wallpaperoptimizerApplet_Factory"
+								, gnomeapplet.Applet.__gtype__
+								, "wallpaper changer"
+								, "1.0"
+								, factory)
 
 	logging.debug('Quit ... wallpaperoptimizer.')
+
+if __name__ == "__main__":
+	do_main()
 	sys.exit(0)
