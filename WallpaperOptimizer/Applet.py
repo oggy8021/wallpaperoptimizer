@@ -543,7 +543,6 @@ class Applet(object):
 		self.spnInterval = self.walkTree.get_widget('spnInterval')
 		self.btnDaemonize = self.walkTree.get_widget('btnDaemonize')
 		self.btnCancelDaemonize = self.walkTree.get_widget('btnCancelDaemonize')
-		self.btnQuit = self.walkTree.get_widget('btnQuit')
 		self.btnHelp = self.walkTree.get_widget('btnHelp')
 		self.btnAbout = self.walkTree.get_widget('btnAbout')
 		self.statbar = self.walkTree.get_widget('statusbar')
@@ -586,11 +585,12 @@ class Applet(object):
 		self.radTwinView.set_sensitive(False)
 		self.btnHelp.set_sensitive(False)
 
-	def _execute(self, *arguments):
+	def _visibleCtrl(self, *arguments):
 		if self.bVisible:
 			self.window.hide()
 			self.bVisible = False
 		else:
+			self.window.move(self.pos[0], self.pos[1])
 			self.window.show_all()
 			self.bVisible = True
 
@@ -606,13 +606,13 @@ class Applet(object):
 	def _create_menu(self, applet):
 		menuxml="""
 			<popup name="button3">
-				<menuitem name="Item 2" verb="Execute" label="実行" pixtype="stock" pixname="gtk-execute"/>
+				<menuitem name="Item 2" verb="Visible" label="表示／非表示" pixtype="stock" pixname="gtk-execute"/>
 				<menuitem name="Item 3" verb="Preferences" label="設定" pixtype="stock" pixname="gtk-preferences"/>
 				<menuitem name="Item 4" verb="Color" label="色選択" pixtype="stock" pixname="gtk-select-color"/>
 				<menuitem name="Item 5" verb="About" label="情報" pixtype="stock" pixname="gtk-about"/>
 			</popup>"""
 #
-		verbs = [  ("Execute", self._execute )
+		verbs = [  ("Visible", self._visibleCtrl )
 					, ("Preferences", self._preferences )
 					, ("Color", self._selectColor)
 					, ("About", self._about)
@@ -646,8 +646,10 @@ class Applet(object):
 		iconOnPanel.set_from_pixbuf(self.icon2)
 		self.btnOnPanelBar.set_image(iconOnPanel)
 
-	def window_state_called(self, widget, event):
-		print type(event)
+	def btnWindowClose_clicked(self, widget, event):
+		self.bVisible = False
+		self.pos = self.window.get_position()
+		return widget.hide_on_delete()
 
 	def __init__(self, applet, iid, logging):
 		self.applet = applet
@@ -664,7 +666,6 @@ class Applet(object):
 		self.btnOnPanelBar.connect("button-press-event", self._setMenu, self.applet)
 		self.applet.add(self.btnOnPanelBar)
 		self.applet.show_all()
-#!	  置いたけど、どう効いているか分かってない。元々のボタンに対する割り当てで足りていないか
 		self.applet.connect("destroy", gtk.main_quit)
 #	  AppletOption extends Options class
 		self.option = AppletOptions()
@@ -697,9 +698,7 @@ class Applet(object):
 			"on_btnDaemonize_clicked" : self.btnDaemonize_clicked,
 			"on_btnCancelDaemonize_clicked" : self.btnCancelDaemonize_clicked,
 			"on_btnAbout_clicked" : self.btnAbout_clicked,
-			"on_btnQuit_clicked" : gtk.main_quit,
-			"on_WallPosit_window_state_event" : self.window_state_called,
-			"on_WallPosit_MainWindow_destroy" : gtk.main_quit
+			"on_WallPosit_MainWindow_delete_event" : self.btnWindowClose_clicked
 			}
 		self.walkTree.signal_autoconnect(dic)
 #	  未実装ボタン
@@ -708,4 +707,6 @@ class Applet(object):
 		self.btnHelp.set_sensitive(False)
 #	  View
 		AppletUtil.writeStatusbar(self.statbar, self.cid_stat, 'Running ... applet mode.')
+#	  記憶
+		self.pos = self.window.get_position()
 
