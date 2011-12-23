@@ -4,6 +4,8 @@
 #1920x1080,left,srcdir
 #1280x1024,right,srcdir
 
+# console版では、~/.walloptrcは上書きしない
+
 import os.path
 
 class Config(object):
@@ -89,5 +91,3 @@ class Config(object):
 
 		else:
 			pass
-
-# console版では、~/.walloptrcは上書きしない

@@ -118,26 +118,28 @@ class Options(OptionsBase):
 		parser.add_option_group(appletgroup)
 
 		(self.opts, self.args) = parser.parse_args()
-		if (len(self.args) < 2 and
-				 (self.opts.save != None or self.opts.setWall == True)):
-			parser.error("Please set imgfile parameter.")
 
-		for m_align in self.opts.align:
-			if m_align in ("left", "center", "right"):
-				break
-			raise OptionValueError("align invalid")
+		if not self.opts.window:
+			if (len(self.args) < 2 and
+					 (self.opts.save != None or self.opts.setWall == True)):
+				parser.error("Please set imgfile parameter.")
 
-		for m_valign in self.opts.valign:
-			if m_valign in ("top", "middle", "bottom"):
-				break
-			raise OptionValueError("valign invalid")
+			for m_align in self.opts.align:
+				if m_align in ("left", "center", "right"):
+					break
+				raise OptionValueError("align invalid")
 
-		if (self.opts.srcdir[0] != '' and self.opts.srcdir[1] != ''):
-			for i in range(0,1):
-				if not os.path.exists(self.opts.srcdir[i]):
-					raise OptionValueError('No such srcdir [%s]' % self.opts.srcdir[i])
+			for m_valign in self.opts.valign:
+				if m_valign in ("top", "middle", "bottom"):
+					break
+				raise OptionValueError("valign invalid")
 
-		ptn = re.compile('^0x(.+)$')
-		if ptn.match(self.opts.bgcolor):
-			subStr = ptn.split(self.opts.bgcolor)
-			self.opts.bgcolor = '#%s' % subStr[1]
+			if (self.opts.srcdir[0] != '' and self.opts.srcdir[1] != ''):
+				for i in range(0,1):
+					if not os.path.exists(self.opts.srcdir[i]):
+						raise OptionValueError('No such srcdir [%s]' % self.opts.srcdir[i])
+
+			ptn = re.compile('^0x(.+)$')
+			if ptn.match(self.opts.bgcolor):
+				subStr = ptn.split(self.opts.bgcolor)
+				self.opts.bgcolor = '#%s' % subStr[1]

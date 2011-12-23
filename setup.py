@@ -46,10 +46,12 @@ params = {
 	'scripts': ['wallpaperoptimizer'],
 	'packages': ['WallpaperOptimizer', 'WallpaperOptimizer/Imaging'],
 	'package_dir': {'WallpaperOptimizer': 'WallpaperOptimizer'},
-	'package_data': {'WallpaperOptimizer': ['glade/wallpositapplet.glade', 'wallopt.png', 'wallopt_off.png']},
+	'package_data': {'WallpaperOptimizer': ['glade/wallpositapplet.glade']},
 	'data_files': [
 		('lib/bonobo/servers',
-			['wallpaperoptimizer.server'])],
+			['wallpaperoptimizer.server']),
+		('share/WallpaperOptimizer',
+			['wallopt.png', 'wallopt_off.png'])],
 	'license': 'GPL3',
 #	'download_url': 'http://oggy.no-ip.info/blog/wallpaperoptimizer-%s.tar.gz' % (__VERSION__),
 	'classifiers': [
@@ -92,6 +94,7 @@ if __name__ == "__main__":
 		rmfile(PREFIX + '/bin/' + params['scripts'][0])
 		rmdir(get_python_lib() + '/' + params['packages'][0])
 		rmfile(PREFIX + '/' + params['data_files'][0][0] + '/' + params['data_files'][0][1][0])
+		rmdir(PREFIX + '/' + params['data_files'][1][0])
 
 #	else:
 #		pass
@@ -102,5 +105,9 @@ if __name__ == "__main__":
 #		print params['package_data']
 #		print params['data_files'][0][0]
 #		print params['data_files'][0][1][0]
+#		print params['data_files']
+#		print params['data_files'][1][0]
+#		print params['data_files'][1][1][0]
+#		print params['data_files'][1][1][1]
 #		print params['scripts'][0]
 #		print params['scripts'][1]

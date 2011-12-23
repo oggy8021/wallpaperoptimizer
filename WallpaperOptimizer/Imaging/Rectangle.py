@@ -69,4 +69,3 @@ class Rectangle(Bounds):
 	def __init__(self):
 		self.Size = Rectangle.Size()
 		Bounds.__init__(self)
-

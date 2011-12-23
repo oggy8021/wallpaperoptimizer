@@ -330,7 +330,7 @@ class Core(object):
 				,"--get"
 				,"/desktop/gnome/background/picture_filename"]
 				, stdout=subprocess.PIPE).communicate()[0].rstrip()
-		logging.info('Current wallpaper [%s].' % removePath)
+		logging.debug('Current wallpaper [%s].' % removePath)
 		if removePath.find('wallopt') < 0:
 			removePath = None
 
@@ -354,13 +354,13 @@ class Core(object):
 		if removePath != None:
 			if os.path.exists(removePath):
 				os.remove(removePath)
-				logging.info('Delete wallpaper [%s].' % removePath)
+				logging.debug('Delete wallpaper [%s].' % removePath)
 			lstCleanFile = glob.glob('/tmp/wallopt*.jpg')
 			if len(lstCleanFile) > 1:
 				lstCleanFile.remove(tmpPath)
 				for x in lstCleanFile:
 					os.remove(x)
-					logging.info('Cleanup old wallpapaer [%s].' % x)
+					logging.debug('Cleanup old wallpapaer [%s].' % x)
 
 	def _saveImgfile(self, bkImg, tmpPath):
 		try:
@@ -436,6 +436,5 @@ class Core(object):
 
 	def __init__(self, Options):
 		self.option = Options
-
 		self.initializeConfig()
 		self.initializeWorkSpace()

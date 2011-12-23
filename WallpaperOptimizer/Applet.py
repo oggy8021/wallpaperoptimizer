@@ -499,9 +499,7 @@ class Applet(object):
 
 	def btnAbout_clicked(self, widget):
 		iconFile = '/WallpaperOptimizer/wallopt.png'
-		icon = gtk.gdk.pixbuf_new_from_file(
-			os.path.abspath(get_python_lib()
-			 + iconFile))
+		icon = gtk.gdk.pixbuf_new_from_file(os.path.abspath(PREFIX + '/share' + iconFile))
 		about = gnome.ui.About("WallpaperOptimizer"
 							,"0.1.0.0"	#version
 							,"GPLv3"		#copyright
@@ -634,9 +632,7 @@ class Applet(object):
 			iconFile = '/WallpaperOptimizer/wallopt_off.png'
 		else:
 			iconFile = '/WallpaperOptimizer/wallopt.png'
-		icon = gtk.gdk.pixbuf_new_from_file(
-			os.path.abspath(get_python_lib()
-			 + iconFile))
+		icon = gtk.gdk.pixbuf_new_from_file(os.path.abspath(PREFIX + '/share' + iconFile))
 		self.icon2 = icon.scale_simple(
 					icon.get_width() - 4
 					, icon.get_width() - 4
@@ -709,4 +705,3 @@ class Applet(object):
 		AppletUtil.writeStatusbar(self.statbar, self.cid_stat, 'Running ... applet mode.')
 #	  記憶
 		self.pos = self.window.get_position()
-

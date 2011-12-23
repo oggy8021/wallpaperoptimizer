@@ -5,6 +5,7 @@ try:
 	from PIL import Image
 except:
 	print 'not installed Python Imaging Library (PIL)'
+	print 'ex) sudo apt-get install python-imaging'
 	sys.exit(2)
 
 from WallpaperOptimizer.Imaging.Rectangle import Rectangle

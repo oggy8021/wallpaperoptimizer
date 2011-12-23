@@ -17,7 +17,7 @@ import pygtk
 pygtk.require("2.0")
 import gtk
 import gnomeapplet
-from optparse import Option, OptionValueError
+from optparse import OptionValueError
 
 from WallpaperOptimizer.Options import Options
 from WallpaperOptimizer.Core import Core
@@ -71,7 +71,7 @@ def do_main():
 	logging.basicConfig(level=loglevel
 						, format='%(asctime)s %(levelname)5s %(message)s'
 						, filename='/tmp/wallopt.log'
-						, filemode='w')
+						, filemode='a')
 	logging.info('Starting ... wallpaperoptimizer.')
 
 	if option.getWindow():
@@ -82,7 +82,6 @@ def do_main():
 		factory(app, None)
 		app.reparent(main_window)
 		main_window.show_all()
-#	  Stopボタン押しやすく
 		wh = main_window.get_size()
 		main_window.resize(wh[0]*2, wh[1])
 		gtk.main()
@@ -94,8 +93,7 @@ def do_main():
 			formatter = logging.Formatter('%(name)-12s: %(levelname)-8s %(message)s')
 			console.setFormatter(formatter)
 			logging.getLogger('').addHandler(console)
-
-		putlogOption(option)
+			putlogOption(option)
 
 		if option.getDaemonize():
 			core = Core(option)
