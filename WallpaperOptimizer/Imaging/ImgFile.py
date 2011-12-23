@@ -6,6 +6,7 @@ try:
 except:
 	print 'not installed Python Imaging Library (PIL)'
 	print 'ex) sudo apt-get install python-imaging'
+	print 'ex) sudo yum install python-imaging python-imaging-devel'
 	sys.exit(2)
 
 from WallpaperOptimizer.Imaging.Rectangle import Rectangle

@@ -23,7 +23,28 @@ from distutils.sysconfig import PREFIX, get_python_lib
 
 from WallpaperOptimizer.Core import Core
 from WallpaperOptimizer.OptionsBase import OptionsBase
-from WallpaperOptimizer.AppletUtil import AppletUtil
+
+class AppletUtil(object):
+	@staticmethod
+	def judgeLeftRight(wName):
+		if wName.rfind('L') == (len(wName) - 1):
+			idx = 0
+		elif wName.rfind('R') == (len(wName) - 1):
+			idx = 1
+		return idx
+
+	@staticmethod
+	def writeStatusbar(bar, cid, msg):
+		bar.push(cid, msg)
+
+	@staticmethod
+	def eraseStatusbar(bar, cid):
+		bar.pop(cid)
+
+	@staticmethod
+	def runErrorDialog(self, msg):
+		errorDialog = ErrorDialog(self.gladefile)
+		errorDialog.openDialog(msg)
 
 class ErrorDialog(object):
 
@@ -300,7 +321,6 @@ class SaveWallpaperDialog(object):
 class AppletOptions(OptionsBase):
 
 	class Opts(object):
-
 		def __init__(self):
 			self.align = ['center','center']
 			self.valign = ['middle','middle']
@@ -309,8 +329,7 @@ class AppletOptions(OptionsBase):
 			self.size = [None,None]
 			self.bgcolor = 'black'
 			self.srcdir = ['','']
-#			self.verbose = False
-			self.verbose = True
+			self.verbose = False
 			self.save=None
 			self.setWall=False
 			self.daemonize=False
@@ -397,12 +416,14 @@ class Applet(object):
 		entPath.set_text(os.path.basename(self.core.option.args[lr]))
 
 	def entPath_insert(self, widget, text, length, pos):
+#		btnGetImg_clickedでしか入力されない
 		lr = AppletUtil.judgeLeftRight(widget.get_name())
 		if length > 0:
 			self.bEntryPath[lr] = True
-		if (self.bEntryPath == [True, True]):
-			self.btnSave.set_sensitive(True)
+		if self.bEntryPath[0] == True:
 			self.btnSetWall.set_sensitive(True)
+		if self.bEntryPath == [True, True]:
+			self.btnSave.set_sensitive(True)
 
 	def btnSetting_clicked(self, widget):
 		settingDialog = SettingDialog(self.gladefile)

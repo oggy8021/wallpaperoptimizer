@@ -336,10 +336,6 @@ class Core(object):
 
 		if tmpPath == None:
 			tmpPath = self._saveImgfile(bkImg, tmpPath)
-		else:
-			# (, )だけだと、ちょっと間抜け
-			tmpPath = tmpPath.replace('(','\\(')
-			tmpPath = tmpPath.replace(')','\\)')
 
 		tmpPath = os.path.abspath(tmpPath)
 		ret = subprocess.call(
@@ -349,6 +345,13 @@ class Core(object):
 				,"--set"
 				,"/desktop/gnome/background/picture_filename"
 				,tmpPath])
+		retopt = subprocess.call(
+				["gconftool-2"
+				,"--type"
+				,"string"
+				,"--set"
+				,"/desktop/gnome/background/picture_options"
+				,"scaled"])
 		logging.info('Change wallpaper to current Workspace [%s].' % (tmpPath))
 
 		if removePath != None:
@@ -410,29 +413,37 @@ class Core(object):
 		except KeyboardInterrupt:
 			sys.exit(0)
 
-
 	def singlerun(self):
-		if len( self.option.getArgs() ) == 2:
-			try:
-				Img1 = ImgFile(self.option.getLArg())
-			except ImgFile.ImgFileIOError, msg:
-					raise Core.CoreRuntimeError(msg.value)
-			logging.info('Create Img1 object. [%s]' % self.option.getLArg())
-			logging.debug('%20s [%d,%d]' % ( 'Img1', Img1.getSize().w, Img1.getSize().h ))
+#		Img1, LArg
+		try:
+			Img1 = ImgFile(self.option.getLArg())
+		except ImgFile.ImgFileIOError, msg:
+				raise Core.CoreRuntimeError(msg.value)
+		logging.info('Create Img1 object. [%s]' % self.option.getLArg())
+		logging.debug('%20s [%d,%d]' % ( 'Img1', Img1.getSize().w, Img1.getSize().h ))
+
+		if self.option.lengthArgs() == 2:
+#			Img2, RArg
 			try:
 				Img2 = ImgFile(self.option.getRArg())
 			except ImgFile.ImgFileIOError, msg:
 					raise Core.CoreRuntimeError(msg.value)
 			logging.info('Create Img2 object. [%s]' % self.option.getRArg())
 			logging.debug('%20s [%s,%s]' % ( 'Img2', Img2.getSize().w, Img2.getSize().h ))
+
 			bkImg = self._optimizeWallpaper(self.option, self.config, self.Ws, Img1, Img2)
 
 			tmpPath = self.option.getSavePath()
 			if tmpPath <> None:
 				self._saveImgfile(bkImg, tmpPath)
 
-			if (self.option.getSetWall()):
+			if self.option.getSetWall():
 				self._setWall(bkImg, tmpPath)
+
+		else:
+			if self.option.getSetWall():
+				self._setWall(Img1, self.option.getLArg())
+
 
 	def __init__(self, Options):
 		self.option = Options

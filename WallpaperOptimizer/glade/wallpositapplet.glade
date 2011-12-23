@@ -222,6 +222,7 @@
 		      <child>
 			<widget class="GtkRadioButton" id="radXinerama">
 			  <property name="visible">True</property>
+			  <property name="tooltip" translatable="yes">Xinerama</property>
 			  <property name="can_focus">True</property>
 			  <property name="label" translatable="yes">左右独立</property>
 			  <property name="use_underline">True</property>
@@ -241,6 +242,8 @@
 		      <child>
 			<widget class="GtkRadioButton" id="radTwinView">
 			  <property name="visible">True</property>
+			  <property name="tooltip" translatable="yes">TwinView</property>
+			  <property name="has_default">True</property>
 			  <property name="can_focus">True</property>
 			  <property name="label" translatable="yes">ワークスペース全体</property>
 			  <property name="use_underline">True</property>

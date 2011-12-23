@@ -75,6 +75,7 @@ def do_main():
 	logging.info('Starting ... wallpaperoptimizer.')
 
 	if option.getWindow():
+		logging.debug('Running ... window mode.')
 		main_window = gtk.Window(gtk.WINDOW_TOPLEVEL)
 		main_window.set_title("Wallpaperoptimizer Applet Window")
 		main_window.connect("destroy", gtk.main_quit)

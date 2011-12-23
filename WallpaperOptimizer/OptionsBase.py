@@ -68,6 +68,9 @@ class OptionsBase(object):
 	def getArgs(self):
 		return self.args
 
+	def lengthArgs(self):
+		return len(self.args) - self.args.count('')
+
 	def __init__(self):
 		pass
 
