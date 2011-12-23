@@ -12,8 +12,12 @@
 #<abort>
 # $ killall wallpaperoptimizer
 
-
-#<root> = /usr/local/bin
+#	/usr/bin
+#			wallpaperoptimizer
+#	/usr/share
+#			wallopt.png
+#			wallopt_off.png
+#	/usr/lib/python2.4/site-packages
 #		WallpaperOptimizer/
 #			Imaging/
 #				Bounds.py
@@ -23,6 +27,7 @@
 #			glade/
 #				wallpositapplet.glade
 #			Applet.py
+#			AppletUtil.py
 #			ChangerDir.py
 #			Config.py
 #			Core.py
@@ -30,8 +35,6 @@
 #			OptionBase.py
 #			WorkSpace.py
 #			__init__.py
-#		wallpaperoptimizer
-#		setup.py
 
 __NAME__='wallpaperoptimizer'
 __VERSION__='0.1.0.0'

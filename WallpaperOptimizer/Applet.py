@@ -19,7 +19,7 @@ except:
 		sys.exit(2)
 import gnomeapplet
 import gnome.ui
-from distutils.sysconfig import PREFIX, EXEC_PREFIX, get_python_lib
+from distutils.sysconfig import PREFIX, get_python_lib
 
 from WallpaperOptimizer.Core import Core
 from WallpaperOptimizer.OptionsBase import OptionsBase
@@ -482,6 +482,7 @@ class Applet(object):
 		self._setPanelButton(self.applet, self.bCanceled)
 		self._switchWidget(False)
 		self.window.hide()
+		self.btnOnTooltip.set_tip(self.applet, 'changer on')
 		self._presetCore()
 		self.timeoutObject = glibobj.timeout_add(self.option.opts.interval*1000
 				, self._timeout, self)
@@ -492,6 +493,7 @@ class Applet(object):
 	def btnCancelDaemonize_clicked(self, widget):
 		self.bCanceled = True
 		self._setPanelButton(self.applet, self.bCanceled)
+		self.btnOnTooltip.set_tip(self.applet, 'changer off')
 		glibobj.source_remove(self.timeoutObject)
 		self.timeoutObject = None
 		AppletUtil.writeStatusbar(self.statbar, self.cid_stat, 'Cancel ... changer action.')
@@ -661,6 +663,8 @@ class Applet(object):
 		self._setPanelButton(self.applet, self.bCanceled)
 		self.btnOnPanelBar.connect("button-press-event", self._setMenu, self.applet)
 		self.applet.add(self.btnOnPanelBar)
+		self.btnOnTooltip = gtk.Tooltips()
+		self.btnOnTooltip.set_tip(self.applet, 'changer off')
 		self.applet.show_all()
 		self.applet.connect("destroy", gtk.main_quit)
 #	  AppletOption extends Options class
