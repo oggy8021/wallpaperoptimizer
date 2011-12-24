@@ -139,6 +139,7 @@ class SrcdirDialog(object):
 			return srcdir
 		else:
 			self.Dialog.destroy()
+			return None
 
 	def __init__(self, gladefile):
 		self.walkTree = gtk.glade.XML(gladefile, "SrcDirDialog")
@@ -170,10 +171,11 @@ class SettingDialog(object):
 		lr = AppletUtil.judgeLeftRight(widget.get_name())
 		srcdirDialog = SrcdirDialog(self.gladefile)
 		self.srcdirs[lr] = srcdirDialog.openDialog(self.srcdirs[lr])
-		if lr == 0:
-			self.walkTree.get_widget('entSrcdirL').set_text(self.srcdirs[lr])
-		else:
-			self.walkTree.get_widget('entSrcdirR').set_text(self.srcdirs[lr])
+		if self.srcdirs[lr] <> None:
+			if lr == 0:
+				self.walkTree.get_widget('entSrcdirL').set_text(self.srcdirs[lr])
+			else:
+				self.walkTree.get_widget('entSrcdirR').set_text(self.srcdirs[lr])
 
 	def btnSaveSetting_clicked(self, widget):
 		configfile='~/.walloptrc'
