@@ -243,7 +243,6 @@
 			<widget class="GtkRadioButton" id="radTwinView">
 			  <property name="visible">True</property>
 			  <property name="tooltip" translatable="yes">TwinView</property>
-			  <property name="has_default">True</property>
 			  <property name="can_focus">True</property>
 			  <property name="label" translatable="yes">ワークスペース全体</property>
 			  <property name="use_underline">True</property>
@@ -677,6 +676,7 @@
 		      <child>
 			<widget class="GtkRadioButton" id="radFixed">
 			  <property name="visible">True</property>
+			  <property name="tooltip" translatable="yes">Fixed</property>
 			  <property name="can_focus">True</property>
 			  <property name="label" translatable="yes">入替不可</property>
 			  <property name="use_underline">True</property>
@@ -697,6 +697,7 @@
 		      <child>
 			<widget class="GtkRadioButton" id="radNoFixed">
 			  <property name="visible">True</property>
+			  <property name="tooltip" translatable="yes">no Fixed</property>
 			  <property name="can_focus">True</property>
 			  <property name="label" translatable="yes">入替可</property>
 			  <property name="use_underline">True</property>

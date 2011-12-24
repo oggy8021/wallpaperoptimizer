@@ -27,13 +27,13 @@ class ChangerDir(object):
 		self.fIdx = 0
 
 		#http://www.python.jp/Zope/articles/tips/regex_howto/regex_howto_3 (sec 3.2)
-		Ext = re.compile(r"\.(gif|jpe?g|bmp|png)$", re.IGNORECASE)
-		srcdir = os.path.expanduser(srcdir)
+		Ext = re.compile(r"\.(gif|jpg|jpeg|bmp|png)$", re.IGNORECASE)
+		srcdir = os.path.abspath(os.path.expanduser(srcdir))
 		files = os.listdir(srcdir)
 		self.imgfiles = []
 		for file in files:
-			if (os.path.isfile(srcdir + file) and Ext.search(file)):
-				self.imgfiles.append(os.path.abspath(srcdir + file))
+			if (os.path.isfile(srcdir + '/' + file) and Ext.search(file)):
+				self.imgfiles.append(os.path.abspath(srcdir + '/' + file))
 		self.maxlen = len(self.imgfiles)
 
 		if (self.maxlen == 0):

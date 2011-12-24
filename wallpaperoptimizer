@@ -1,12 +1,19 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# singlerun
+""" wallpaperoptimizer start program
+
+wallpaperoptimizer is multi wallpaper changer (for NVIDIA).
+"""
+
+# <singlerun>
 #	./wallpaperoptimizer  ../2560x1920.jpg ../1500x844.jpg -C
-# background
+# <background>
 #	./wallpaperoptimizer -D -i 5
-# applet run-in-window
-#	./wallpaperoptimizer -window
+# <applet window mode>
+#	./wallpaperoptimizer -W
+# <applet>
+#	in GNOME panel
 
 import sys
 import os.path
@@ -23,7 +30,10 @@ from WallpaperOptimizer.Options import Options
 from WallpaperOptimizer.Core import Core
 from WallpaperOptimizer.Applet import Applet
 
-def putlogOption(option):
+def _putlogOption(option):
+	"""
+	option instance dump.
+	"""
 	logging.debug('Command line option as.')
 	logging.debug('%20s [%s,%s].'
 		 % ( 'align', option.getLAlign(), option.getRAlign() ))
@@ -51,6 +61,9 @@ def putlogOption(option):
 		 % ( 'interval', option.getInterval() ))
 
 def factory(applet, iid):
+	"""
+	for gnomeapplet factory method.
+	"""
 	Applet(applet, iid, logging)
 	return gtk.TRUE
 
@@ -61,8 +74,8 @@ def do_main():
 	except OptionValueError, msg:
 		logging.error('** OptionValueError: %s. ' % msg)
 		sys.exit(2)
-	Verbose = option.getVerbose()
 
+	Verbose = option.getVerbose()
 	if Verbose:
 		loglevel = logging.DEBUG
 	else:
@@ -94,7 +107,7 @@ def do_main():
 			formatter = logging.Formatter('%(name)-12s: %(levelname)-8s %(message)s')
 			console.setFormatter(formatter)
 			logging.getLogger('').addHandler(console)
-			putlogOption(option)
+			_putlogOption(option)
 
 		if option.getDaemonize():
 			core = Core(option)

@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 
+""" WallpaperOptimizer::Core
+
+wallpaperoptimizer core module.
+"""
+
 import sys
 import os.path
 import logging
@@ -22,7 +27,10 @@ class Core(object):
 		def __str__(self):
 			return repr(self.value)
 
-	def initializeConfig(self):
+	def _initializeConfig(self):
+		"""
+		config instance set from configfile or instance default.
+		"""
 		# config set from configfile
 		self.configfile = '~/.walloptrc'
 		self.configfile = os.path.expanduser(self.configfile)
@@ -80,7 +88,10 @@ class Core(object):
 				 , self.config.rDisplay.getConfig()['srcdir'] ))
 
 
-	def initializeWorkSpace(self):
+	def _initializeWorkSpace(self):
+		"""
+		WorkSpace instance and Screen instance initialize and compared Screen size.
+		"""
 		try:
 			self.Ws = WorkSpace()
 		except WorkSpace.WorkSpaceRuntimeError, msg:
@@ -122,6 +133,9 @@ class Core(object):
 
 
 	def _checkImgType(self, Ws, Img1, Img2):
+		"""
+		ImgFile square type decide by aspectratio.
+		"""
 		logging.info('Checking imgType as Imgfile.')
 
 		if ( Img1.getSize().w < Ws.lScreen.Size.w or Img1.getSize().w < Ws.rScreen.Size.w ):
@@ -151,7 +165,10 @@ class Core(object):
 
 
 	def _bindingImgToScreen(self, Fixed, Img1, Img2):
-		# バリエーションに対応できているか、見極められていない
+		"""
+		ImgFile is binding to Screen instance.
+		"""
+		#! 組み合わせバリエーションに対応しきれているか、見極められていない
 		logging.info('Binding Img to Screen.')
 
 		if Fixed:
@@ -179,6 +196,9 @@ class Core(object):
 
 
 	def _checkContain(self, Ws, Img, tmpMergin):
+		"""
+		ImgFile check that contains Screen.
+		"""
 		logging.info('Check Imgfile contain %s Screen.' % Img.posit)
 
 		if Img.posit == 'left':
@@ -196,6 +216,9 @@ class Core(object):
 
 
 	def _downsizeImg(self, Ws, Img, tmpMergin):
+		"""
+		ImgFile is fitting to Screen size.
+		"""
 		if Img.posit == 'left':
 			tmpScreen = Ws.lScreen
 		elif Img.posit == 'right':
@@ -220,7 +243,10 @@ class Core(object):
 		logging.debug('%20s [%d,%d]' % ( 'converted size', Img.getSize().w, Img.getSize().h) )
 
 
-	def _allocateInit(self, Ws, Img1, Img2):
+	def _allocateCenter(self, Ws, Img1, Img2):
+		"""
+		ImgFile and Screen calculate center position.
+		"""
 		logging.info('Calculate center position.')
 
 		Ws.lScreen.calcCenter()
@@ -244,6 +270,9 @@ class Core(object):
 
 
 	def _allocateImg(self, Option, Ws, Img):
+		"""
+		ImgFile calculate allocate position.
+		"""
 		if Img.posit == 'left':
 			tmpScreen = Ws.lScreen
 			tmpAlign = Option.getLAlign()
@@ -284,6 +313,9 @@ class Core(object):
 
 
 	def _mergeWallpaper(self, Ws, bkImg, Img):
+		"""
+		ImgFile paste to Wallpaper Img.
+		"""
 		logging.info('Merge Imgfile to %s Screen.' % Img.posit)
 
 		if Img.posit == 'right':
@@ -294,6 +326,9 @@ class Core(object):
 
 
 	def _optimizeWallpaper(self, Option, Config, Ws, Img1, Img2):
+		"""
+		2 ImgFile allocate Wallpaper Img.
+		"""
 		logging.info('Optimizing ... wallpapaer.')
 		self._checkImgType(Ws, Img1, Img2)
 
@@ -312,7 +347,7 @@ class Core(object):
 		if not self._checkContain(Ws, Img2, rMergin):
 			self._downsizeImg(Ws, Img2, rMergin)
 
-		self._allocateInit(Ws, Img1, Img2)
+		self._allocateCenter(Ws, Img1, Img2)
 		self._allocateImg(Option, Ws, Img1)
 		self._allocateImg(Option, Ws, Img2)
 
@@ -325,6 +360,9 @@ class Core(object):
 
 
 	def _setWall(self, bkImg, tmpPath=None):
+		"""
+		Wallpaper Img set to GNOME wallpaper.
+		"""
 		removePath = subprocess.Popen(
 				["gconftool-2"
 				,"--get"
@@ -381,7 +419,7 @@ class Core(object):
 			LChangerDir = ChangerDir(self.config.lDisplay.getConfig()['srcdir'])
 			RChangerDir = ChangerDir(self.config.rDisplay.getConfig()['srcdir'])
 		except ChangerDir.FileCountZeroError, msg:
-			raise
+			raise Core.CoreRuntimeError(msg.value)
 
 		Img1 = ImgFile(LChangerDir.getImgfileRnd())
 		Img2 = ImgFile(RChangerDir.getImgfileRnd())
@@ -447,5 +485,5 @@ class Core(object):
 
 	def __init__(self, Options):
 		self.option = Options
-		self.initializeConfig()
-		self.initializeWorkSpace()
+		self._initializeConfig()
+		self._initializeWorkSpace()

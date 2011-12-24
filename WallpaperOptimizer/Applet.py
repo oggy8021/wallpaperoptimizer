@@ -503,6 +503,7 @@ class Applet(object):
 		self._setPanelButton(self.applet, self.bCanceled)
 		self._switchWidget(False)
 		self.window.hide()
+		self.bVisible = False
 		self.btnOnTooltip.set_tip(self.applet, 'changer on')
 		self._presetCore()
 		self.timeoutObject = glibobj.timeout_add(self.option.opts.interval*1000
