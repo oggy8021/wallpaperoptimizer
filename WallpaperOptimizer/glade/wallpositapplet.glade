@@ -1022,7 +1022,7 @@
 	      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 	      <property name="snap_to_ticks">False</property>
 	      <property name="wrap">False</property>
-	      <property name="adjustment">60 1 999 1 10 10</property>
+	      <property name="adjustment">60 1 86400 1 10 10</property>
 	      <signal name="value_changed" handler="on_spnInterval_value_changed" last_modification_time="Sun, 13 Nov 2011 15:06:51 GMT"/>
 	    </widget>
 	    <packing>

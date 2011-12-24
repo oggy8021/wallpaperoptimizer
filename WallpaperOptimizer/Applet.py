@@ -158,12 +158,14 @@ class SettingDialog(object):
 	def getSettingDialog(self, lr):
 		if lr == 0:
 			lr = 'L'
+			pos = 'left'
 		else:
 			lr = 'R'
+			pos = 'right'
 		return [self.walkTree.get_widget('entDisplayW' + lr).get_text()
 				 + 'x'
 				 + self.walkTree.get_widget('entDisplayH' + lr).get_text()
-				 , 'left'
+				 , pos
 				 , self.walkTree.get_widget('entSrcdir' + lr).get_text()
 				 ]
 
