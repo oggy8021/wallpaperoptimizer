@@ -65,6 +65,18 @@ class Config(object):
 		subStr = size.split('x')
 		display.setConfig(int(subStr[0]), int(subStr[1]), p, s)
 
+	def checkBool(self):
+		if (((self.lDisplay.width <> 0
+				and self.lDisplay.height <> 0)
+				and self.lDisplay.srcdir <> '') and 
+			((self.rDisplay.width <> 0
+				and self.rDisplay.height <> 0)
+				and self.rDisplay.srcdir <> '')):
+			self.bSetting = True
+
+	def getBool(self):
+		return self.bSetting
+
 	def __init__(self
 						, configfile=None
 						, lsize=None
@@ -72,6 +84,7 @@ class Config(object):
 						, srcdir=['','']):
 		self.lDisplay = Config.Display()
 		self.rDisplay = Config.Display()
+		self.bSetting = False
 
 		if (configfile != None):
 			# config set from configfile
@@ -80,6 +93,7 @@ class Config(object):
 				for i, cfline in enumerate(cf):
 					subStr = cfline.rstrip().split(',')
 					self.setConfig(subStr[0], subStr[1], subStr[2])
+				self.checkBool()
 
 			except ValueError:
 				cf.close()
@@ -90,4 +104,6 @@ class Config(object):
 				raise Config.FormatError("Config require 2 records")
 
 		else:
-			pass
+			self.lDisplay.setPosit('left')
+			self.rDisplay.setPosit('right')
+			self.checkBool()

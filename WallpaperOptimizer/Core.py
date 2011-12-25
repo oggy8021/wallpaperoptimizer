@@ -55,7 +55,8 @@ class Core(object):
 			self.config.rDisplay.setSrcdir(self.option.getRSrcdir())
 			logging.info('Config "srcdir" update from commandline option.')
 
-		if ( self.config.lDisplay.getConfig()['width'] == 0 and 
+		if ( not self.option.getWindow() and
+			self.config.lDisplay.getConfig()['width'] == 0 and 
 			self.config.lDisplay.getConfig()['height'] == 0 and
 			self.config.rDisplay.getConfig()['width'] == 0 and 
 			self.config.rDisplay.getConfig()['height'] == 0 ):
@@ -63,6 +64,7 @@ class Core(object):
 			raise Core.CoreRuntimeError('No setting left/right display size.')
 
 		if ( self.option.getDaemonize() and 
+				not self.option.getWindow() and
 				self.config.lDisplay.getConfig()['srcdir'] == '' and 
 				self.config.rDisplay.getConfig()['srcdir'] == '' ):
 			logging.error('** Please setting srcdir in Daemonize mode.')
@@ -337,10 +339,10 @@ class Core(object):
 		logging.info('Calculate mergin.')
 		lMergin = [Option.getLMergin(), 0, Option.getTopMergin(), Option.getBtmMergin()]
 		logging.debug('%20s [%d,%d,%d,%d]'
-				 % ( 'left display mergin', lMergin[0], lMergin[1], lMergin[2], lMergin[3] ))
+				 % ( 'left Screen mergin', lMergin[0], lMergin[1], lMergin[2], lMergin[3] ))
 		rMergin = [0, Option.getRMergin(), Option.getTopMergin(), Option.getBtmMergin()]
 		logging.debug('%20s [%d,%d,%d,%d]'
-				 % ( 'right display mergin', rMergin[0], rMergin[1], rMergin[2], rMergin[3] ))
+				 % ( 'right Screen mergin', rMergin[0], rMergin[1], rMergin[2], rMergin[3] ))
 
 		if not self._checkContain(Ws, Img1, lMergin):
 			self._downsizeImg(Ws, Img1, lMergin)

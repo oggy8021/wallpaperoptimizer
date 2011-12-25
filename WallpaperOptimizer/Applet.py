@@ -155,19 +155,23 @@ class SrcdirDialog(object):
 
 class SettingDialog(object):
 
-	def getSettingDialog(self, lr):
-		if lr == 0:
-			lr = 'L'
-			pos = 'left'
-		else:
-			lr = 'R'
-			pos = 'right'
-		return [self.walkTree.get_widget('entDisplayW' + lr).get_text()
-				 + 'x'
-				 + self.walkTree.get_widget('entDisplayH' + lr).get_text()
+	def _setSize(self, strlr):
+		width = self.walkTree.get_widget('entDisplayW' + strlr).get_text()
+		height = self.walkTree.get_widget('entDisplayH' + strlr).get_text()
+		if width == '':
+			width = '0'
+		if height == '':
+			height = '0'
+		return [int(width), int(height)]
+
+	def _getSettingDialog(self, pos):
+		if pos == 'left':
+			strlr = 'L'
+		elif pos == 'right':
+			strlr = 'R'
+		return [str(self._setSize(strlr)[0]) + 'x' + str(self._setSize(strlr)[1])
 				 , pos
-				 , self.walkTree.get_widget('entSrcdir' + lr).get_text()
-				 ]
+				 , self.walkTree.get_widget('entSrcdir' + strlr).get_text()]
 
 	def btnOpenSrcdir_clicked(self, widget):
 		lr = AppletUtil.judgeLeftRight(widget.get_name())
@@ -175,27 +179,23 @@ class SettingDialog(object):
 		self.srcdirs[lr] = srcdirDialog.openDialog(self.srcdirs[lr])
 		if self.srcdirs[lr] <> None:
 			if lr == 0:
-				self.walkTree.get_widget('entSrcdirL').set_text(self.srcdirs[lr])
+				strlr == 'L'
 			else:
-				self.walkTree.get_widget('entSrcdirR').set_text(self.srcdirs[lr])
+				strlr == 'R'
+			self.walkTree.get_widget('entSrcdir' + strlr).set_text(self.srcdirs[lr])
 
 	def btnSaveSetting_clicked(self, widget):
 		configfile='~/.walloptrc'
 		try:
 			cf = csv.writer(file(os.path.expanduser(configfile), 'w'))
-			cf.writerow(self.getSettingDialog(0))
-			cf.writerow(self.getSettingDialog(1))
+			cf.writerow(self._getSettingDialog('left'))
+			cf.writerow(self._getSettingDialog('right'))
 		except IOError, msg:
 			self.logging.error('** CoreRuntimeError: %s. ' % msg)
 			AppletUtil.runErrorDialog(self, '** CoreRuntimeError: %s. ' % msg)
 
 	def btnClear_clicked(self, widget):
-		self.walkTree.get_widget('entDisplayWL').set_text('')
-		self.walkTree.get_widget('entDisplayHL').set_text('')
-		self.walkTree.get_widget('entDisplayWR').set_text('')
-		self.walkTree.get_widget('entDisplayHR').set_text('')
-		self.walkTree.get_widget('entSrcdirL').set_text('')
-		self.walkTree.get_widget('entSrcdirR').set_text('')
+		self._setSettingDialogWidget([0,0], [0,0], ['',''])
 
 	def btnOk_clicked(self, widget):
 		self.Dialog.response(gtk.RESPONSE_OK)
@@ -203,36 +203,44 @@ class SettingDialog(object):
 	def btnCancel_clicked(self, widget):
 		self.Dialog.response(gtk.RESPONSE_CANCEL)
 
-	def getSizeString(self):
-		return self.sizeString
+	def getSize(self, lr):
+		if lr == 0:
+			return self.lDisplaySize
+		else:
+			return self.rDisplaySize
 
-	def getSrcdir(self):
-		return self.srcdir
+	def getSrcdir(self, lr):
+		return self.srcdirs[lr]
 
-	def openDialog(self, lDisplay, rDisplay, srcdirs):
-		self.lDisplay = lDisplay
-		self.rDisplay = rDisplay
+	def _setSettingDialogWidget(self, lDisplaySize, rDisplaySize, srcdirs):
+		for lr in (0,1):
+			if lr == 0:
+				strlr = 'L'
+				displaySize = lDisplaySize
+			else:
+				strlr = 'R'
+				displaySize = rDisplaySize
+			for wh in (0,1):
+				if wh == 0:
+					strwh = 'W'
+				else:
+					strwh = 'H'
+				self.walkTree.get_widget('entDisplay' + strwh + strlr).set_text(str(displaySize[wh]))
+			self.walkTree.get_widget('entSrcdir' + strlr).set_text(self.srcdirs[lr])
+
+	def openDialog(self, lDisplaySize, rDisplaySize, srcdirs):
+		self.lDisplaySize = lDisplaySize
+		self.rDisplaySize = rDisplaySize
 		self.srcdirs = srcdirs
 
 		self.Dialog.show_all()
-		self.walkTree.get_widget('entDisplayWL').set_text(str(self.lDisplay[0]))
-		self.walkTree.get_widget('entDisplayHL').set_text(str(self.lDisplay[1]))
-		self.walkTree.get_widget('entDisplayWR').set_text(str(self.rDisplay[0]))
-		self.walkTree.get_widget('entDisplayHR').set_text(str(self.rDisplay[1]))
-		self.walkTree.get_widget('entSrcdirL').set_text(self.srcdirs[0])
-		self.walkTree.get_widget('entSrcdirR').set_text(self.srcdirs[1])
+		self._setSettingDialogWidget(self.lDisplaySize, self.rDisplaySize, self.srcdirs)
+
 		result = self.Dialog.run()
 		if result == gtk.RESPONSE_OK:
-			self.sizeString = [
-				self.walkTree.get_widget('entDisplayWL').get_text()
-				 + 'x' 
-				 + self.walkTree.get_widget('entDisplayHL').get_text()
-				 ,
-				self.walkTree.get_widget('entDisplayWR').get_text()
-				 + 'x' 
-				 + self.walkTree.get_widget('entDisplayHR').get_text()
-				 ]
-			self.srcdir = [
+			self.lDisplaySize = self._setSize('L')
+			self.rDisplaySize = self._setSize('R')
+			self.srcdirs = [
 				self.walkTree.get_widget('entSrcdirL').get_text()
 				 ,
 				self.walkTree.get_widget('entSrcdirR').get_text()
@@ -340,6 +348,9 @@ class AppletOptions(OptionsBase):
 			self.interval = 60
 			#TODO:左右独立、ワークスペース全体は未検討
 
+	def getWindow(self):
+		return True
+
 	def __init__(self):
 		self.opts = AppletOptions.Opts()
 		self.args = ['','']
@@ -441,10 +452,20 @@ class Applet(object):
 					self.core.config.lDisplay.getConfig()['srcdir']
 					, self.core.config.rDisplay.getConfig()['srcdir']
 					])):
-			self.core.config.lDisplay.toIntAsSizeString(settingDialog.getSizeString()[0])
-			self.core.config.rDisplay.toIntAsSizeString(settingDialog.getSizeString()[1])
-			self.core.config.lDisplay.setSrcdir(settingDialog.getSrcdir()[0])
-			self.core.config.rDisplay.setSrcdir(settingDialog.getSrcdir()[1])
+			for lr in (0,1):
+				if lr == 0:
+					display = self.core.config.lDisplay
+				else:
+					display = self.core.config.rDisplay
+				for wh in (0,1):
+					display.setWidth(settingDialog.getSize(lr)[wh])
+					display.setHeight(settingDialog.getSize(lr)[wh])
+				display.setSrcdir(settingDialog.getSrcdir(lr))
+			self.core.config.checkBool()
+			if self.core.config.getBool():
+				self.btnDaemonize.set_sensitive(True)
+			else:
+				self.btnDaemonize.set_sensitive(False)
 		else:
 			pass
 
@@ -647,10 +668,13 @@ class Applet(object):
 
 	def _setMenu(self, widget, event, applet):
 		if event.button == 1:
-			if self.bCanceled:
-				self.btnDaemonize_clicked(None)
+			if self.core.config.getBool():
+				if self.bCanceled:
+					self.btnDaemonize_clicked(None)
+				else:
+					self.btnCancelDaemonize_clicked(None)
 			else:
-				self.btnCancelDaemonize_clicked(None)
+				AppletUtil.writeStatusbar(self.statbar, self.cid_stat, 'Please set up Config.')
 		elif event.button == 3:
 			widget.emit_stop_by_name("button-press-event")
 			self._create_menu(applet)
@@ -705,6 +729,8 @@ class Applet(object):
 		self._linkGladeTree()
 		self.btnSave.set_sensitive(False)
 		self.btnSetWall.set_sensitive(False)
+		if not self.core.config.getBool():
+			self.btnDaemonize.set_sensitive(False)
 		self.btnCancelDaemonize.set_sensitive(False)
 		self.cid_stat = self.statbar.get_context_id('status')
 #	  bindCallbackFunction

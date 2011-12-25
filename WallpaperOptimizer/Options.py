@@ -69,7 +69,9 @@ class Options(OptionsBase):
 					, save=None
 					, setWall=False
 					, daemonize=False
-					, interval=60)
+					, interval=60
+					, iid = None
+					, fd = None)
 
 		viewgroup = OptionGroup(parser, 'View Options')
 		viewgroup.add_option("-a", "--align", dest="align", action="multistore"
@@ -110,8 +112,8 @@ class Options(OptionsBase):
 					, help="change wallpaper interval (default: 60sec)")
 
 		appletgroup = OptionGroup(parser, 'Applet Use Options')
-		appletgroup.add_option("--oaf-activate-iid", dest="iid", default=None)
-		appletgroup.add_option("--oaf-ior-fd", dest="fd", default=None)
+		appletgroup.add_option("--oaf-activate-iid", dest="iid")
+		appletgroup.add_option("--oaf-ior-fd", dest="fd")
 
 		parser.add_option_group(viewgroup)
 		parser.add_option_group(actiongroup)
@@ -120,7 +122,7 @@ class Options(OptionsBase):
 		(self.opts, self.args) = parser.parse_args()
 
 		if not self.opts.window:
-			if (len(self.args) == 2 and
+			if (len(self.args) < 2 and
 					 (self.opts.save != None or self.opts.setWall == True)):
 				parser.error("Please set imgfile parameter.")
 			elif (len(self.args) == 1 and self.opts.save != None):

@@ -47,6 +47,9 @@ class OptionsBase(object):
 	def getVerbose(self):
 		return self.opts.verbose
 
+	def getWindow(self):
+		return False
+
 	def getSavePath(self):
 		return self.opts.save
 
