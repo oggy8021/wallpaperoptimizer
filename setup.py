@@ -42,7 +42,7 @@ __VERSION__='0.1.0.0'
 params = {
 	'name': __NAME__,
 	'version': __VERSION__,
-	'description': 'wallpaperoptimizer is multi wallpaper changer (for NVIDIA).',
+	'description': 'wallpaperoptimizer is multi wallpaper changer.',
 	'author': 'Katsuhiro Ogikubo',
 	'author_email': 'oggyist@gmail.com',
 	'url': 'http://oggy.no-ip.info/blog/',

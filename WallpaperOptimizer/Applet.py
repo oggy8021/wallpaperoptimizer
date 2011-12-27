@@ -526,6 +526,7 @@ class Applet(object):
 	def btnDaemonize_clicked(self, widget):
 		self.bCanceled = False
 		self._setPanelButton(self.applet, self.bCanceled)
+		self.window.set_icon(self._select_icon(self.bCanceled))
 		self._switchWidget(False)
 		self.window.hide()
 		self.bVisible = False
@@ -540,6 +541,7 @@ class Applet(object):
 	def btnCancelDaemonize_clicked(self, widget):
 		self.bCanceled = True
 		self._setPanelButton(self.applet, self.bCanceled)
+		self.window.set_icon(self._select_icon(self.bCanceled))
 		self.btnOnTooltip.set_tip(self.applet, 'changer off')
 		glibobj.source_remove(self.timeoutObject)
 		self.timeoutObject = None
@@ -558,6 +560,11 @@ class Applet(object):
 							,"oggy"		#*translator_credits
 							,icon)			#gtk.gdk.Pixbuf
 		about.show_all()
+
+	def btnWindowClose_clicked(self, widget, event):
+		self.bVisible = False
+		self.pos = self.window.get_position()
+		return widget.hide_on_delete()
 
 	def _linkGladeTree(self):
 		self.tglPushLeftL = self.walkTree.get_widget('tglPushLeftL')
@@ -680,24 +687,28 @@ class Applet(object):
 			self._create_menu(applet)
 
 	def _setPanelButton(self, applet, bCanceled):
-		if bCanceled:
-			iconFile = '/WallpaperOptimizer/wallopt_off.png'
-		else:
-			iconFile = '/WallpaperOptimizer/wallopt.png'
-		icon = gtk.gdk.pixbuf_new_from_file(os.path.abspath(PREFIX + '/share' + iconFile))
-		self.icon2 = icon.scale_simple(
+		icon = self._select_icon(bCanceled)
+		icon2 = icon.scale_simple(
 					icon.get_width() - 4
 					, icon.get_width() - 4
 					, gtk.gdk.INTERP_BILINEAR )
-		del icon
+#!		del icon
 		iconOnPanel = gtk.Image()
-		iconOnPanel.set_from_pixbuf(self.icon2)
+		iconOnPanel.set_from_pixbuf(icon2)
 		self.btnOnPanelBar.set_image(iconOnPanel)
 
-	def btnWindowClose_clicked(self, widget, event):
-		self.bVisible = False
-		self.pos = self.window.get_position()
-		return widget.hide_on_delete()
+	def _select_icon(self,bCanceled):
+		if bCanceled:
+			icon = self.dis_icon
+		else:
+			icon = self.ena_icon
+		return icon
+
+	def _loadIcon(self):
+		self.dis_icon = gtk.gdk.pixbuf_new_from_file(os.path.abspath(
+				PREFIX + '/share' + '/WallpaperOptimizer/wallopt_off.png'))
+		self.ena_icon = gtk.gdk.pixbuf_new_from_file(os.path.abspath(
+				PREFIX + '/share' + '/WallpaperOptimizer/wallopt.png'))
 
 	def __init__(self, applet, iid, logging):
 		self.applet = applet
@@ -710,6 +721,7 @@ class Applet(object):
 #	  Panel initialize
 		self.btnOnPanelBar = gtk.Button()
 		self.btnOnPanelBar.set_relief(gtk.RELIEF_NONE)
+		self._loadIcon()
 		self._setPanelButton(self.applet, self.bCanceled)
 		self.btnOnPanelBar.connect("button-press-event", self._setMenu, self.applet)
 		self.applet.add(self.btnOnPanelBar)
@@ -725,7 +737,7 @@ class Applet(object):
 				 + '/WallpaperOptimizer/glade/wallpositapplet.glade')
 		self.walkTree = gtk.glade.XML(self.gladefile, "WallPosit_MainWindow")
 		self.window = self.walkTree.get_widget("WallPosit_MainWindow")
-		self.window.set_icon(self.icon2)
+		self.window.set_icon(self._select_icon(self.bCanceled))
 		self._linkGladeTree()
 		self.btnSave.set_sensitive(False)
 		self.btnSetWall.set_sensitive(False)
