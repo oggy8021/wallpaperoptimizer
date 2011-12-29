@@ -2,7 +2,6 @@
 
 import sys
 import os.path
-import csv
 import time
 import logging
 
@@ -23,312 +22,11 @@ from distutils.sysconfig import PREFIX, get_python_lib
 
 from WallpaperOptimizer.Core import Core
 from WallpaperOptimizer.OptionsBase import OptionsBase
-
-class AppletUtil(object):
-	@staticmethod
-	def judgeLeftRight(wName):
-		if wName.rfind('L') == (len(wName) - 1):
-			idx = 0
-		elif wName.rfind('R') == (len(wName) - 1):
-			idx = 1
-		return idx
-
-	@staticmethod
-	def writeStatusbar(bar, cid, msg):
-		bar.push(cid, msg)
-
-	@staticmethod
-	def eraseStatusbar(bar, cid):
-		bar.pop(cid)
-
-	@staticmethod
-	def runErrorDialog(self, msg):
-		errorDialog = ErrorDialog(self.gladefile)
-		errorDialog.openDialog(msg)
-
-class ErrorDialog(object):
-
-	def btnOk_clicked(self, widget):
-		self.Dialog.response(gtk.RESPONSE_OK)
-
-	def btnCancel_clicked(self, widget):
-		self.Dialog.response(gtk.RESPONSE_CANCEL)
-
-	def openDialog(self, msg):
-		self.Dialog.show_all()
-		self.walkTree.get_widget('tviewError').get_buffer().set_text(msg)
-		result = self.Dialog.run()
-		if result == gtk.RESPONSE_OK:
-			self.Dialog.destroy()
-		else:
-			self.Dialog.destroy()
-
-	def __init__(self, gladefile):
-		self.walkTree = gtk.glade.XML(gladefile, "ErrorDialog")
-		self.Dialog = self.walkTree.get_widget("ErrorDialog")
-
-		dic = {
-			"on_btnOk_clicked" : self.btnOk_clicked,
-			"on_ErrorDialog_destroy" : self.btnCancel_clicked
-			}
-		self.walkTree.signal_autoconnect(dic)
-
-
-class ImgOpenDialog(object):
-
-	def btnOpen_clicked(self, widget):
-		self.Dialog.response(gtk.RESPONSE_OK)
-
-	def btnCancel_clicked(self, widget):
-		self.Dialog.response(gtk.RESPONSE_CANCEL)
-
-	def openDialog(self):
-		self.Dialog.show_all()
-		result = self.Dialog.run()
-		if result == gtk.RESPONSE_OK:
-			imgfile = self.Dialog.get_filename()
-			self.Dialog.destroy()
-			return imgfile
-		else:
-			self.Dialog.destroy()
-			return ''
-
-	def __init__(self, gladefile):
-		self.walkTree = gtk.glade.XML(gladefile, "ImgOpenDialog")
-		self.Dialog = self.walkTree.get_widget("ImgOpenDialog")
-		imgFilter = gtk.FileFilter()
-		imgFilter.set_name("画像")
-# Changer的には、この４つ
-		imgFilter.add_mime_type("image/png")
-		imgFilter.add_mime_type("image/jpeg")
-		imgFilter.add_mime_type("image/bmp")
-		imgFilter.add_mime_type("image/gif")
-		imgFilter.add_pattern("*.png")
-		imgFilter.add_pattern("*.jpeg")
-		imgFilter.add_pattern("*.jpg")
-		imgFilter.add_pattern("*.bmp")
-		imgFilter.add_pattern("*.gif")
-		self.Dialog.add_filter(imgFilter)
-		allFile = gtk.FileFilter()
-		allFile.set_name("全て")
-		allFile.add_pattern("*")
-		self.Dialog.add_filter(allFile)
-
-		dic = {
-			"on_btnOpen_clicked" : self.btnOpen_clicked,
-			"on_btnCancel_clicked" : self.btnCancel_clicked,
-			"on_ImgOpenDialog_destroy" : self.btnCancel_clicked
-			}
-		self.walkTree.signal_autoconnect(dic)
-
-
-class SrcdirDialog(object):
-
-	def btnOpen_clicked(self, widget):
-		self.Dialog.response(gtk.RESPONSE_OK)
-
-	def btnCancel_clicked(self, widget):
-		self.Dialog.response(gtk.RESPONSE_CANCEL)
-
-	def openDialog(self, srcdir):
-		self.Dialog.show_all()
-		result = self.Dialog.run()
-		if result == gtk.RESPONSE_OK:
-			srcdir = self.Dialog.get_current_folder()
-			self.Dialog.destroy()
-			return srcdir
-		else:
-			self.Dialog.destroy()
-			return None
-
-	def __init__(self, gladefile):
-		self.walkTree = gtk.glade.XML(gladefile, "SrcDirDialog")
-		self.Dialog = self.walkTree.get_widget("SrcDirDialog")
-
-		dic = {
-			"on_btnOpen_clicked" : self.btnOpen_clicked,
-			"on_btnCancel_clicked" : self.btnCancel_clicked,
-			"on_SrcdirDialog_destroy" : self.btnCancel_clicked
-			}
-		self.walkTree.signal_autoconnect(dic)
-
-
-class SettingDialog(object):
-
-	def _setSize(self, strlr):
-		width = self.walkTree.get_widget('entDisplayW' + strlr).get_text()
-		height = self.walkTree.get_widget('entDisplayH' + strlr).get_text()
-		if width == '':
-			width = '0'
-		if height == '':
-			height = '0'
-		return [int(width), int(height)]
-
-	def _getSettingDialog(self, pos):
-		if pos == 'left':
-			strlr = 'L'
-		elif pos == 'right':
-			strlr = 'R'
-		return [str(self._setSize(strlr)[0]) + 'x' + str(self._setSize(strlr)[1])
-				 , pos
-				 , self.walkTree.get_widget('entSrcdir' + strlr).get_text()]
-
-	def btnOpenSrcdir_clicked(self, widget):
-		lr = AppletUtil.judgeLeftRight(widget.get_name())
-		srcdirDialog = SrcdirDialog(self.gladefile)
-		self.srcdirs[lr] = srcdirDialog.openDialog(self.srcdirs[lr])
-		if self.srcdirs[lr] <> None:
-			if lr == 0:
-				strlr == 'L'
-			else:
-				strlr == 'R'
-			self.walkTree.get_widget('entSrcdir' + strlr).set_text(self.srcdirs[lr])
-
-	def btnSaveSetting_clicked(self, widget):
-		configfile='~/.walloptrc'
-		try:
-			cf = csv.writer(file(os.path.expanduser(configfile), 'w'))
-			cf.writerow(self._getSettingDialog('left'))
-			cf.writerow(self._getSettingDialog('right'))
-		except IOError, msg:
-			self.logging.error('** CoreRuntimeError: %s. ' % msg)
-			AppletUtil.runErrorDialog(self, '** CoreRuntimeError: %s. ' % msg)
-
-	def btnClear_clicked(self, widget):
-		self._setSettingDialogWidget([0,0], [0,0], ['',''])
-
-	def btnOk_clicked(self, widget):
-		self.Dialog.response(gtk.RESPONSE_OK)
-
-	def btnCancel_clicked(self, widget):
-		self.Dialog.response(gtk.RESPONSE_CANCEL)
-
-	def getSize(self, lr):
-		if lr == 0:
-			return self.lDisplaySize
-		else:
-			return self.rDisplaySize
-
-	def getSrcdir(self, lr):
-		return self.srcdirs[lr]
-
-	def _setSettingDialogWidget(self, lDisplaySize, rDisplaySize, srcdirs):
-		for lr in (0,1):
-			if lr == 0:
-				strlr = 'L'
-				displaySize = lDisplaySize
-			else:
-				strlr = 'R'
-				displaySize = rDisplaySize
-			for wh in (0,1):
-				if wh == 0:
-					strwh = 'W'
-				else:
-					strwh = 'H'
-				self.walkTree.get_widget('entDisplay' + strwh + strlr).set_text(str(displaySize[wh]))
-			self.walkTree.get_widget('entSrcdir' + strlr).set_text(self.srcdirs[lr])
-
-	def openDialog(self, lDisplaySize, rDisplaySize, srcdirs):
-		self.lDisplaySize = lDisplaySize
-		self.rDisplaySize = rDisplaySize
-		self.srcdirs = srcdirs
-
-		self.Dialog.show_all()
-		self._setSettingDialogWidget(self.lDisplaySize, self.rDisplaySize, self.srcdirs)
-
-		result = self.Dialog.run()
-		if result == gtk.RESPONSE_OK:
-			self.lDisplaySize = self._setSize('L')
-			self.rDisplaySize = self._setSize('R')
-			self.srcdirs = [
-				self.walkTree.get_widget('entSrcdirL').get_text()
-				 ,
-				self.walkTree.get_widget('entSrcdirR').get_text()
-				 ]
-			self.Dialog.destroy()
-			return True
-		else:
-			self.Dialog.destroy()
-			return False
-
-	def __init__(self, gladefile):
-		self.gladefile = gladefile
-		self.walkTree = gtk.glade.XML(gladefile, "SettingDialog")
-		self.Dialog = self.walkTree.get_widget("SettingDialog")
-
-		dic = {
-			"on_btnOpenSrcdir_clicked" : self.btnOpenSrcdir_clicked,
-			"on_btnClear_clicked" : self.btnClear_clicked,
-			"on_btnSaveSetting_clicked" : self.btnSaveSetting_clicked,
-			"on_btnOk_clicked" : self.btnOk_clicked,
-			"on_btnCancel_clicked" : self.btnCancel_clicked,
-			"on_SettingDialog_destroy" : self.btnCancel_clicked
-			}
-		self.walkTree.signal_autoconnect(dic)
-
-
-class ColorSelectionDiag(object):
-
-	def btnOk_clicked(self, widget):
-		self.Dialog.response(gtk.RESPONSE_OK)
-
-	def btnCancel_clicked(self, widget):
-		self.Dialog.response(gtk.RESPONSE_CANCEL)
-
-	def openDialog(self, bgcolor):
-		self.Dialog.show_all()
-		gdkColor = gtk.gdk.Color()
-		gdkColor = gtk.color_selection_palette_from_string(bgcolor)
-		self.walkTree.get_widget('color_selection').set_current_color(gdkColor[0])
-		result = self.Dialog.run()
-		if result == gtk.RESPONSE_OK:
-			gtkColor = self.walkTree.get_widget('color_selection').get_current_color()
-			bgcolor = gtk.color_selection_palette_to_string([gtkColor])
-		self.Dialog.destroy()
-		return bgcolor
-
-	def __init__(self, gladefile):
-		self.walkTree = gtk.glade.XML(gladefile, "ColorSelectionDialog")
-		self.Dialog = self.walkTree.get_widget("ColorSelectionDialog")
-
-		dic = {
-			"on_btnOk_clicked" : self.btnOk_clicked,
-			"on_btnCancel_clicked" : self.btnCancel_clicked,
-			"on_ColorSelectionDialog_destroy" : self.btnCancel_clicked,
-			}
-		self.walkTree.signal_autoconnect(dic)
-
-
-class SaveWallpaperDialog(object):
-
-	def btnOpen_clicked(self, widget):
-		self.Dialog.response(gtk.RESPONSE_OK)
-
-	def btnCancel_clicked(self, widget):
-		self.Dialog.response(gtk.RESPONSE_CANCEL)
-
-	def openDialog(self):
-		self.Dialog.show_all()
-		result = self.Dialog.run()
-		if result == gtk.RESPONSE_OK:
-			savefilename = self.Dialog.get_filename()
-		else:
-			savefilename = None
-		self.Dialog.destroy()
-		return savefilename
-
-	def __init__(self, gladefile):
-		self.gladefile = gladefile
-		self.walkTree = gtk.glade.XML(gladefile, "SaveWallpaperDialog")
-		self.Dialog = self.walkTree.get_widget("SaveWallpaperDialog")
-
-		dic = {
-			"on_btnOpen_clicked" : self.btnOpen_clicked,
-			"on_btnCancel_clicked" : self.btnCancel_clicked,
-			"on_SaveWallpaperDialog_destroy" : self.btnCancel_clicked
-			}
-		self.walkTree.signal_autoconnect(dic)
-
+from WallpaperOptimizer.Widget.ErrorDialog import ErrorDialog
+from WallpaperOptimizer.Widget.ImgOpenDialog import ImgOpenDialog
+from WallpaperOptimizer.Widget.SettingDialog import SettingDialog
+from WallpaperOptimizer.Widget.ColorSelectionDialog import ColorSelectionDialog
+from WallpaperOptimizer.Widget.SaveWallpaperDialog import SaveWallpaperDialog
 
 class AppletOptions(OptionsBase):
 
@@ -368,7 +66,25 @@ class Applet(object):
 	tgldic['tglUpperR'] = 'tglLowerR'
 	tgldic['tglLowerR'] = 'tglUpperR'
 
-	def setConfigAttr(self, btnName, lr, val=None):
+	def _runErrorDialog(self, msg):
+		errorDialog = ErrorDialog(self.gladefile)
+		errorDialog.openDialog(msg)
+
+#utility group
+	def _judgeLeftRight(self, wName):
+		if wName.rfind('L') == (len(wName) - 1):
+			idx = 0
+		elif wName.rfind('R') == (len(wName) - 1):
+			idx = 1
+		return idx
+
+	def _writeStatusbar(self, bar, cid, msg):
+		bar.push(cid, msg)
+
+	def _eraseStatusbar(self, bar, cid):
+		bar.pop(cid)
+
+	def _setConfigAttr(self, btnName, lr, val=None):
 		if (btnName.find('PushLeft') > 0 or btnName.find('PushRight') > 0):
 			if val == None:
 				val = 'center'
@@ -378,6 +94,7 @@ class Applet(object):
 				val = 'middle'
 			self.option.opts.valign[lr] = val
 
+#button group
 	def tglBtn_pressed(self, widget):
 		vsName = Applet.tgldic[widget.get_name()]
 		if (self.walkTree.get_widget(vsName).get_active()):
@@ -394,16 +111,16 @@ class Applet(object):
 				val = 'top'
 			elif wName.find('Lower') > 0:
 				val = 'bottom'
-			lr = AppletUtil.judgeLeftRight(wName)
-			self.setConfigAttr(wName, lr, val)
+			lr = self._judgeLeftRight(wName)
+			self._setConfigAttr(wName, lr, val)
 
 	def tglBtn_released(self, widget):
 		vsName = Applet.tgldic[widget.get_name()]
 		if (widget.get_active() == False and 
 				self.walkTree.get_widget(vsName).get_active() == False):
 			wName = widget.get_name()
-			lr = AppletUtil.judgeLeftRight(wName)
-			self.setConfigAttr(wName, lr)
+			lr = self._judgeLeftRight(wName)
+			self._setConfigAttr(wName, lr)
 
 	def spnMergin_value_changed(self, widget):
 		wName = widget.get_name()
@@ -421,9 +138,11 @@ class Applet(object):
 		self.option.opts.fixed = self.walkTree.get_widget(widget.get_name()).get_active()
 
 	def btnGetImg_clicked(self, widget):
-		lr = AppletUtil.judgeLeftRight(widget.get_name())
 		imgopenDialog = ImgOpenDialog(self.gladefile)
-		self.core.option.args[lr] = imgopenDialog.openDialog()
+		lr = self._judgeLeftRight(widget.get_name())
+		path = imgopenDialog.openDialog(self.core.option.args[lr])
+		if not path == False:
+			self.core.option.args[lr] = path
 		if lr == 0:
 			entPath = self.entPathL
 		else:
@@ -432,7 +151,7 @@ class Applet(object):
 
 	def entPath_insert(self, widget, text, length, pos):
 #		btnGetImg_clickedでしか入力されない
-		lr = AppletUtil.judgeLeftRight(widget.get_name())
+		lr = self._judgeLeftRight(widget.get_name())
 		if length > 0:
 			self.bEntryPath[lr] = True
 		if self.bEntryPath[0] == True:
@@ -442,7 +161,7 @@ class Applet(object):
 
 	def btnSetting_clicked(self, widget):
 		settingDialog = SettingDialog(self.gladefile)
-		if (settingDialog.openDialog([
+		settingArgs = settingDialog.openDialog([
 					self.core.config.lDisplay.getConfig()['width']
 					, self.core.config.lDisplay.getConfig()['height']
 					],[
@@ -451,16 +170,19 @@ class Applet(object):
 					],[
 					self.core.config.lDisplay.getConfig()['srcdir']
 					, self.core.config.rDisplay.getConfig()['srcdir']
-					])):
+					])
+		if not settingArgs == [False, False, False]:
 			for lr in (0,1):
 				if lr == 0:
 					display = self.core.config.lDisplay
+					displaysize = settingArgs[0] #lDisplaySize
 				else:
 					display = self.core.config.rDisplay
+					displaysize = settingArgs[1] #rDisplaySize
 				for wh in (0,1):
-					display.setWidth(settingDialog.getSize(lr)[wh])
-					display.setHeight(settingDialog.getSize(lr)[wh])
-				display.setSrcdir(settingDialog.getSrcdir(lr))
+					display.setWidth(displaysize[wh])
+					display.setHeight(displaysize[wh])
+				display.setSrcdir(settingArgs[2][lr])
 			self.core.config.checkBool()
 			if self.core.config.getBool():
 				self.btnDaemonize.set_sensitive(True)
@@ -470,7 +192,7 @@ class Applet(object):
 			pass
 
 	def btnSetColor_clicked(self, widget):
-		colorselectionDialog = ColorSelectionDiag(self.gladefile)
+		colorselectionDialog = ColorSelectionDialog(self.gladefile)
 		self.option.opts.bgcolor = colorselectionDialog.openDialog(self.option.opts.bgcolor)
 
 	def btnSave_clicked(self, widget):
@@ -483,7 +205,7 @@ class Applet(object):
 				self.core.singlerun()
 			except self.core.CoreRuntimeError, msg:
 				logger.error('** CoreRuntimeError: %s. ' % msg.value)
-				AppletUtil.runErrorDialog(self, '** CoreRuntimeError: %s. ' % msg.value)
+				self._runErrorDialog(self, '** CoreRuntimeError: %s. ' % msg.value)
 		else:
 #TODO:エラーメッセージがあると良い
 			pass
@@ -495,12 +217,12 @@ class Applet(object):
 			self.core.singlerun()
 		except self.core.CoreRuntimeError, msg:
 			self.logging.error('** CoreRuntimeError: %s. ' % msg.value)
-			AppletUtil.runErrorDialog(self, '** CoreRuntimeError: %s. ' % msg.value)
+			self._runErrorDialog(self, '** CoreRuntimeError: %s. ' % msg.value)
 
 	def spnInterval_value_changed(self, widget):
 		self.option.opts.interval = self.spnInterval.get_value_as_int()
-		AppletUtil.eraseStatusbar(self.statbar, self.cid_stat)
-		AppletUtil.writeStatusbar(self.statbar
+		self._eraseStatusbar(self.statbar, self.cid_stat)
+		self._writeStatusbar(self.statbar
 				, self.cid_stat
 				, 'Change Interval ... %d sec.' % self.option.opts.interval)
 
@@ -509,12 +231,12 @@ class Applet(object):
 			self.core.timerRun()
 		except self.core.CoreRuntimeError, msg:
 			self.logging.error('** CoreRuntimeError: %s. ' % msg.value)
-			AppletUtil.runErrorDialog(self, '** CoreRuntimeError: %s. ' % msg.value)
+			self._runErrorDialog(self, '** CoreRuntimeError: %s. ' % msg.value)
 
 	def _timeout(self, applet):
 		self.logging.debug('%20s at %d sec.' % ('Timeout', self.option.opts.interval))
-		AppletUtil.eraseStatusbar(self.statbar, self.cid_stat)
-		AppletUtil.writeStatusbar(self.statbar
+		self._eraseStatusbar(self.statbar, self.cid_stat)
+		self._writeStatusbar(self.statbar
 				, self.cid_stat
 				, 'Timeout ... run changer.')
 		self._runChanger()
@@ -545,7 +267,7 @@ class Applet(object):
 		self.btnOnTooltip.set_tip(self.applet, 'changer off')
 		glibobj.source_remove(self.timeoutObject)
 		self.timeoutObject = None
-		AppletUtil.writeStatusbar(self.statbar, self.cid_stat, 'Cancel ... changer action.')
+		self._writeStatusbar(self.statbar, self.cid_stat, 'Cancel ... changer action.')
 		self._switchWidget(True)
 
 	def btnAbout_clicked(self, widget):
@@ -566,6 +288,7 @@ class Applet(object):
 		self.pos = self.window.get_position()
 		return widget.hide_on_delete()
 
+#initialize group
 	def _linkGladeTree(self):
 		self.tglPushLeftL = self.walkTree.get_widget('tglPushLeftL')
 		self.tglPushRightL = self.walkTree.get_widget('tglPushRightL')
@@ -639,6 +362,14 @@ class Applet(object):
 		self.radTwinView.set_sensitive(False)
 		self.btnHelp.set_sensitive(False)
 
+#panel control group
+	def _select_icon(self,bCanceled):
+		if bCanceled:
+			icon = self.dis_icon
+		else:
+			icon = self.ena_icon
+		return icon
+
 	def _visibleCtrl(self, *arguments):
 		if self.bVisible:
 			self.window.hide()
@@ -681,7 +412,7 @@ class Applet(object):
 				else:
 					self.btnCancelDaemonize_clicked(None)
 			else:
-				AppletUtil.writeStatusbar(self.statbar, self.cid_stat, 'Please set up Config.')
+				self._writeStatusbar(self.statbar, self.cid_stat, 'Please set up Config.')
 		elif event.button == 3:
 			widget.emit_stop_by_name("button-press-event")
 			self._create_menu(applet)
@@ -697,18 +428,12 @@ class Applet(object):
 		iconOnPanel.set_from_pixbuf(icon2)
 		self.btnOnPanelBar.set_image(iconOnPanel)
 
-	def _select_icon(self,bCanceled):
-		if bCanceled:
-			icon = self.dis_icon
-		else:
-			icon = self.ena_icon
-		return icon
-
 	def _loadIcon(self):
 		self.dis_icon = gtk.gdk.pixbuf_new_from_file(os.path.abspath(
 				PREFIX + '/share' + '/WallpaperOptimizer/wallopt_off.png'))
 		self.ena_icon = gtk.gdk.pixbuf_new_from_file(os.path.abspath(
 				PREFIX + '/share' + '/WallpaperOptimizer/wallopt.png'))
+
 
 	def __init__(self, applet, iid, logging):
 		self.applet = applet
@@ -733,7 +458,9 @@ class Applet(object):
 		self.option = AppletOptions()
 		self.core = Core(self.option)
 #	  Initialize Applet
-		self.gladefile = os.path.abspath(get_python_lib()
+#!		self.gladefile = os.path.abspath(get_python_lib()
+#!				 + '/WallpaperOptimizer/glade/wallpositapplet.glade')
+		self.gladefile = os.path.abspath('.'
 				 + '/WallpaperOptimizer/glade/wallpositapplet.glade')
 		self.walkTree = gtk.glade.XML(self.gladefile, "WallPosit_MainWindow")
 		self.window = self.walkTree.get_widget("WallPosit_MainWindow")
@@ -770,6 +497,6 @@ class Applet(object):
 		self.radTwinView.set_sensitive(False)
 		self.btnHelp.set_sensitive(False)
 #	  View
-		AppletUtil.writeStatusbar(self.statbar, self.cid_stat, 'Running ... applet mode.')
+		self._writeStatusbar(self.statbar, self.cid_stat, 'Running ... applet mode.')
 #	  記憶
 		self.pos = self.window.get_position()

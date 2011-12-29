@@ -1214,7 +1214,7 @@
   </child>
 </widget>
 
-<widget class="GtkFileChooserDialog" id="SrcDirDialog">
+<widget class="GtkFileChooserDialog" id="SrcdirDialog">
   <property name="visible">True</property>
   <property name="action">GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER</property>
   <property name="local_only">True</property>
