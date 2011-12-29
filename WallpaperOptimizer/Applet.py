@@ -458,10 +458,10 @@ class Applet(object):
 		self.option = AppletOptions()
 		self.core = Core(self.option)
 #	  Initialize Applet
-#!		self.gladefile = os.path.abspath(get_python_lib()
-#!				 + '/WallpaperOptimizer/glade/wallpositapplet.glade')
-		self.gladefile = os.path.abspath('.'
+		self.gladefile = os.path.abspath(get_python_lib()
 				 + '/WallpaperOptimizer/glade/wallpositapplet.glade')
+#!		self.gladefile = os.path.abspath('.'
+#!				 + '/WallpaperOptimizer/glade/wallpositapplet.glade')
 		self.walkTree = gtk.glade.XML(self.gladefile, "WallPosit_MainWindow")
 		self.window = self.walkTree.get_widget("WallPosit_MainWindow")
 		self.window.set_icon(self._select_icon(self.bCanceled))
