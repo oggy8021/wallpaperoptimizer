@@ -47,7 +47,7 @@ params = {
 	'author_email': 'oggyist@gmail.com',
 	'url': 'http://oggy.no-ip.info/blog/',
 	'scripts': ['wallpaperoptimizer'],
-	'packages': ['WallpaperOptimizer', 'WallpaperOptimizer/Imaging'],
+	'packages': ['WallpaperOptimizer', 'WallpaperOptimizer/Imaging', 'WallpaperOptimizer/Widget'],
 	'package_dir': {'WallpaperOptimizer': 'WallpaperOptimizer'},
 	'package_data': {'WallpaperOptimizer': ['glade/wallpositapplet.glade']},
 	'data_files': [
