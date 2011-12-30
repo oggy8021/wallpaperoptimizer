@@ -7,11 +7,11 @@ wallpaperoptimizer is multi wallpaper changer.
 """
 
 # <singlerun>
-#	./wallpaperoptimizer  ../2560x1920.jpg ../1500x844.jpg -C
+#	wallpaperoptimizer  ../2560x1920.jpg ../1500x844.jpg -C
 # <background>
-#	./wallpaperoptimizer -D -i 5
+#	wallpaperoptimizer -D -i 5
 # <applet window mode>
-#	./wallpaperoptimizer -W
+#	wallpaperoptimizer -W
 # <applet>
 #	in GNOME panel
 
