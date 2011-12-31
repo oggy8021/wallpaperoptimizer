@@ -272,7 +272,7 @@ class Applet(object):
 
 	def btnAbout_clicked(self, widget):
 		iconFile = '/WallpaperOptimizer/wallopt.png'
-		icon = gtk.gdk.pixbuf_new_from_file(os.path.abspath(PREFIX + '/share' + iconFile))
+		icon = gtk.gdk.pixbuf_new_from_file(os.path.abspath(os.path.join(PREFIX,'share',iconFile)))
 		about = gnome.ui.About("WallpaperOptimizer"
 							,"0.1.0.0"	#version
 							,"GPLv3"		#copyright
@@ -430,9 +430,9 @@ class Applet(object):
 
 	def _loadIcon(self):
 		self.dis_icon = gtk.gdk.pixbuf_new_from_file(os.path.abspath(
-				PREFIX + '/share' + '/WallpaperOptimizer/wallopt_off.png'))
+				os.path.join(PREFIX,'share','WallpaperOptimizer','wallopt_off.png')))
 		self.ena_icon = gtk.gdk.pixbuf_new_from_file(os.path.abspath(
-				PREFIX + '/share' + '/WallpaperOptimizer/wallopt.png'))
+				os.path.join(PREFIX,'share','WallpaperOptimizer','wallopt.png')))
 
 
 	def __init__(self, applet, iid, logging):
@@ -458,10 +458,10 @@ class Applet(object):
 		self.option = AppletOptions()
 		self.core = Core(self.option)
 #	  Initialize Applet
-		self.gladefile = os.path.abspath(get_python_lib()
-				 + '/WallpaperOptimizer/glade/wallpositapplet.glade')
-#!		self.gladefile = os.path.abspath('.'
-#!				 + '/WallpaperOptimizer/glade/wallpositapplet.glade')
+		self.gladefile = os.path.abspath(
+			os.path.join(get_python_lib(),'WallpaperOptimizer','glade','wallpositapplet.glade'))
+#!		self.gladefile = os.path.abspath(
+#!			os.path.join('.','WallpaperOptimizer','glade','wallpositapplet.glade'))
 		self.walkTree = gtk.glade.XML(self.gladefile, "WallPosit_MainWindow")
 		self.window = self.walkTree.get_widget("WallPosit_MainWindow")
 		self.window.set_icon(self._select_icon(self.bCanceled))

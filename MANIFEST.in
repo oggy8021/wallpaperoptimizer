@@ -1,0 +1,9 @@
+include COPYING
+include README.txt
+include setup.py
+include wallopt.png
+include wallopt_off.png
+include wallpaperoptimizer
+include wallpaperoptimizer.server
+
+#WallpaperOptimizer

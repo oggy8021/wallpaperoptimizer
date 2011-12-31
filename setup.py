@@ -88,16 +88,15 @@ def rmdir(path):
 
 
 if __name__ == "__main__":
-	if sys.argv[1] == 'install':
-		print "*** install action."
+	print "*** %s action." % sys.argv[1]
+	if sys.argv[1] == 'install' or sys.argv[1] == 'sdist' or sys.argv[1] == 'bdist':
 		setup(**params)
 
 	elif sys.argv[1] == 'uninstall':
-		print "*** uninstall action."
-		rmfile(PREFIX + '/bin/' + params['scripts'][0])
-		rmdir(get_python_lib() + '/' + params['packages'][0])
-		rmfile(PREFIX + '/' + params['data_files'][0][0] + '/' + params['data_files'][0][1][0])
-		rmdir(PREFIX + '/' + params['data_files'][1][0])
+		rmfile(os.path.join(PREFIX,'bin',params['scripts'][0]))
+		rmdir(os.path.join(get_python_lib(),params['packages'][0]))
+		rmfile(os.path.join(PREFIX,params['data_files'][0][0],params['data_files'][0][1][0]))
+		rmdir(os.path.join(PREFIX,params['data_files'][1][0]))
 
 #	else:
 #		pass
