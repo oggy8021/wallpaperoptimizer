@@ -17,9 +17,16 @@ class ImgOpenDialog(DialogBase):
 	def btnOk_clicked(self, widget):
 		pass
 
-	def openDialog(self, path):
-		if not path == '':
+	def openDialog(self, path, lr):
+		if path == '':
+			self.Dialog.set_filename(os.path.expanduser('~/.'))
+		else:
 			self.Dialog.set_filename(os.path.abspath(path))
+		if lr == 0:
+			addlr = '(左)'
+		else:
+			addlr = '(右)'
+		self.Dialog.set_title(self.Dialog.get_title() + addlr)
 		self.Dialog.show_all()
 		result = self.Dialog.run()
 		if result == gtk.RESPONSE_OK:

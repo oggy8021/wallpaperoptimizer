@@ -140,7 +140,7 @@ class Applet(object):
 	def btnGetImg_clicked(self, widget):
 		imgopenDialog = ImgOpenDialog(self.gladefile)
 		lr = self._judgeLeftRight(widget.get_name())
-		path = imgopenDialog.openDialog(self.core.option.args[lr])
+		path = imgopenDialog.openDialog(self.core.option.args[lr], lr)
 		if not path == False:
 			self.core.option.args[lr] = path
 		if lr == 0:

@@ -46,7 +46,7 @@ class SettingDialog(DialogBase):
 	def btnOpenSrcdir_clicked(self, widget):
 		lr = self._judgeLeftRight(widget.get_name())
 		srcdirDialog = SrcdirDialog(self.gladefile)
-		retdir = srcdirDialog.openDialog(self.srcdirs[lr])
+		retdir = srcdirDialog.openDialog(self.srcdirs[lr], lr)
 		if not retdir == False:
 			if lr == 0:
 				strlr = 'L'
