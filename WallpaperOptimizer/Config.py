@@ -86,7 +86,7 @@ class Config(object):
 		self.rDisplay = Config.Display()
 		self.bSetting = False
 
-		if (configfile != None):
+		if (configfile <> None):
 			# config set from configfile
 			cf = open(os.path.expanduser(configfile), 'r')
 			try:

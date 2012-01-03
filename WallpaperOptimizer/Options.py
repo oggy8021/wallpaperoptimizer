@@ -122,7 +122,7 @@ class Options(OptionsBase):
 		(self.opts, self.args) = parser.parse_args()
 
 		if not self.opts.window:
-			if (len(self.args) == 1 and self.opts.save != None):
+			if (len(self.args) == 1 and self.opts.save <> None):
 				parser.error("Please set imgfile2 parameter.")
 
 			for m_align in self.opts.align:
@@ -135,7 +135,7 @@ class Options(OptionsBase):
 					break
 				raise OptionValueError("valign invalid")
 
-			if (self.opts.srcdir[0] != '' and self.opts.srcdir[1] != ''):
+			if (self.opts.srcdir[0] <> '' and self.opts.srcdir[1] <> ''):
 				for i in range(0,1):
 					if not os.path.exists(self.opts.srcdir[i]):
 						raise OptionValueError('No such srcdir [%s]' % self.opts.srcdir[i])

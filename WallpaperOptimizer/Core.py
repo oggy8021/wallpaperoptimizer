@@ -45,12 +45,12 @@ class Core(object):
 			self.config = Config()
 
 		# config set/update from commandline option
-		if (self.option.getLSize() != None and self.option.getRSize() != None):
+		if (self.option.getLSize() <> None and self.option.getRSize() <> None):
 			self.config.lDisplay.toIntAsSizeString(self.option.getLSize())
 			self.config.rDisplay.toIntAsSizeString(self.option.getRSize())
 			logging.info('Config "display" update from commandline option.')
 
-		if (self.option.getLSrcdir() != '' and self.option.getRSrcdir() != ''):
+		if (self.option.getLSrcdir() <> '' and self.option.getRSrcdir() <> ''):
 			self.config.lDisplay.setSrcdir(self.option.getLSrcdir())
 			self.config.rDisplay.setSrcdir(self.option.getRSrcdir())
 			logging.info('Config "srcdir" update from commandline option.')
@@ -293,20 +293,20 @@ class Core(object):
 
 		# Imgはインスタンス化されたときに、x,y = 0,0 つまり align=left, valign=top
 		if tmpAlign == 'center':
-			if Img.center.x != tmpScreen.center.x:
+			if Img.center.x <> tmpScreen.center.x:
 				Img.start.x += centerDistance[0]
 				Img.end.x += centerDistance[0]
 		elif tmpAlign == 'right':
-			if Img.end.x != tmpScreen.end.x:
+			if Img.end.x <> tmpScreen.end.x:
 				Img.start.x += rightcornerDistance[0]
 				Img.end.x += rightcornerDistance[0]
 
 		if tmpValign == 'middle':
-			if Img.center.y != tmpScreen.center.y:
+			if Img.center.y <> tmpScreen.center.y:
 				Img.start.y += centerDistance[1]
 				Img.end.y += centerDistance[1]
 		elif tmpValign == 'bottom':
-			if Img.end.y != tmpScreen.end.y:
+			if Img.end.y <> tmpScreen.end.y:
 				Img.start.y += rightcornerDistance[1]
 				Img.end.y += rightcornerDistance[1]
 
@@ -394,7 +394,7 @@ class Core(object):
 				,"scaled"])
 		logging.info('Change wallpaper to current Workspace [%s].' % (tmpPath))
 
-		if removePath != None:
+		if removePath <> None:
 			if os.path.exists(removePath):
 				os.remove(removePath)
 				logging.debug('Delete wallpaper [%s].' % removePath)
@@ -455,7 +455,7 @@ class Core(object):
 
 	def _loadImgFile(self, path):
 #			Combine
-		if not path == '':
+		if path <> '':
 			try:
 				Img = ImgFile(path)
 			except ImgFile.ImgFileIOError, msg:

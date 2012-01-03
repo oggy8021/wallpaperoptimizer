@@ -153,7 +153,7 @@ class Applet(object):
 		else:
 			imgopenDialog = ImgOpenDialog(self.gladefile)
 			path = imgopenDialog.openDialog(self.core.option.args[lr], lr)
-		if not path == False:
+		if path <> False:
 			self.core.option.args[lr] = path
 			entPath.set_text(os.path.basename(path))
 
@@ -209,7 +209,7 @@ class Applet(object):
 	def btnSave_clicked(self, widget):
 		savewallpaperDialog = SaveWallpaperDialog(self.gladefile)
 		self.core.option.opts.save = savewallpaperDialog.openDialog()
-		if self.core.option.getSavePath() != None:
+		if self.core.option.getSavePath() <> None:
 #TODO:ホントは値あるなし,PATH有効かなど、チェックがいる
 			self._presetCore()
 			try:
