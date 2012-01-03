@@ -210,7 +210,6 @@ class Applet(object):
 		savewallpaperDialog = SaveWallpaperDialog(self.gladefile)
 		self.core.option.opts.save = savewallpaperDialog.openDialog()
 		if self.core.option.getSavePath() <> None:
-#TODO:ホントは値あるなし,PATH有効かなど、チェックがいる
 			self._presetCore()
 			try:
 				self.core.singlerun()
@@ -218,7 +217,6 @@ class Applet(object):
 				logger.error('** CoreRuntimeError: %s. ' % msg.value)
 				self._runErrorDialog(self, '** CoreRuntimeError: %s. ' % msg.value)
 		else:
-#TODO:エラーメッセージがあると良い
 			pass
 
 	def btnSetWall_clicked(self, widget):
@@ -368,8 +366,8 @@ class Applet(object):
 			self.btnCancelDaemonize.set_sensitive(False)
 		else:
 			self.btnCancelDaemonize.set_sensitive(True)
-		self.radXinerama.set_sensitive(False)
-		self.radTwinView.set_sensitive(False)
+		self.radCombine.set_sensitive(False)
+		self.radSeparate.set_sensitive(False)
 #	  未実装ボタン
 		self.btnHelp.set_sensitive(False)
 
