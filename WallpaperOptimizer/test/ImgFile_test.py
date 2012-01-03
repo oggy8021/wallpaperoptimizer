@@ -55,9 +55,9 @@ def ImgFile_reSize_test():
 	eq_(Img.getSize().h, 400)
 
 def ImgFile_paste_test():
-	Img1 = ImgFile('', 1000, 800, 'black')
-	Img2 = ImgFile('', 1000, 800, 'black')
-	Img3 = ImgFile('', 500, 400, 'white')
+	Img1 = ImgFile('', 'black', 1000, 800)
+	Img2 = ImgFile('', 'black', 1000, 800)
+	Img3 = ImgFile('', 'white', 500, 400)
 	Img3.start.x = 20
 	Img3.start.y = 16
 	Img3.end.x += Img3.start.x

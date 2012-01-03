@@ -44,7 +44,7 @@ class AppletOptions(OptionsBase):
 			self.setWall=False
 			self.daemonize=False
 			self.interval = 60
-			#TODO:左右独立、ワークスペース全体は未検討
+			self.combine = True
 
 	def getWindow(self):
 		return True
@@ -135,29 +135,40 @@ class Applet(object):
 		self.option.opts.mergin[idx] = int(self.walkTree.get_widget(wName).get_value_as_int())
 
 	def radFixed_toggled(self, widget):
-		self.option.opts.fixed = self.walkTree.get_widget(widget.get_name()).get_active()
+		if widget.get_name() == 'radFixed':
+			self.option.opts.fixed = self.walkTree.get_widget(widget.get_name()).get_active()
+
+	def radCombine_toggled(self, widget):
+		if widget.get_name() == 'radCombine':
+			self.option.opts.combine = self.walkTree.get_widget(widget.get_name()).get_active()
 
 	def btnGetImg_clicked(self, widget):
-		imgopenDialog = ImgOpenDialog(self.gladefile)
 		lr = self._judgeLeftRight(widget.get_name())
-		path = imgopenDialog.openDialog(self.core.option.args[lr], lr)
-		if not path == False:
-			self.core.option.args[lr] = path
 		if lr == 0:
 			entPath = self.entPathL
 		else:
 			entPath = self.entPathR
-		entPath.set_text(os.path.basename(self.core.option.args[lr]))
+		if widget.get_name().find('Clr') > 0:
+			path = ''
+		else:
+			imgopenDialog = ImgOpenDialog(self.gladefile)
+			path = imgopenDialog.openDialog(self.core.option.args[lr], lr)
+		if not path == False:
+			self.core.option.args[lr] = path
+			entPath.set_text(os.path.basename(path))
 
 	def entPath_insert(self, widget, text, length, pos):
-#		btnGetImg_clickedでしか入力されない
 		lr = self._judgeLeftRight(widget.get_name())
 		if length > 0:
 			self.bEntryPath[lr] = True
-		if self.bEntryPath[0] == True:
-			self.btnSetWall.set_sensitive(True)
+		else:
+			self.bEntryPath[lr] = False
 		if self.bEntryPath == [True, True]:
 			self.btnSave.set_sensitive(True)
+		elif self.bEntryPath == [True, False] or self.bEntryPath == [False, True]:
+			self.btnSetWall.set_sensitive(True)
+		else:
+			self.btnSetWall.set_sensitive(False)
 
 	def btnSetting_clicked(self, widget):
 		settingDialog = SettingDialog(self.gladefile)
@@ -308,8 +319,8 @@ class Applet(object):
 		self.spnRMergin = self.walkTree.get_widget('spnRMergin')
 		self.spnTopMergin = self.walkTree.get_widget('spnTopMergin')
 		self.spnBtmMergin = self.walkTree.get_widget('spnBtmMergin')
-		self.radXinerama = self.walkTree.get_widget('radXinerama')
-		self.radTwinView = self.walkTree.get_widget('radTwinView')
+		self.radCombine = self.walkTree.get_widget('radCombine')
+		self.radSeparate = self.walkTree.get_widget('radSeparate')
 		self.radFixed = self.walkTree.get_widget('radFixed')
 		self.radNoFixed = self.walkTree.get_widget('radNoFixed')
 #
@@ -357,9 +368,9 @@ class Applet(object):
 			self.btnCancelDaemonize.set_sensitive(False)
 		else:
 			self.btnCancelDaemonize.set_sensitive(True)
-#	  未実装ボタン
 		self.radXinerama.set_sensitive(False)
 		self.radTwinView.set_sensitive(False)
+#	  未実装ボタン
 		self.btnHelp.set_sensitive(False)
 
 #panel control group
@@ -479,8 +490,10 @@ class Applet(object):
 			"on_tglBtn_released" : self.tglBtn_released,
 			"on_spnMergin_value_changed" : self.spnMergin_value_changed,
 			"on_radFixed_toggled" : self.radFixed_toggled,
+			"on_radCombine_toggled" : self.radCombine_toggled,
 			"on_btnGetImg_clicked" : self.btnGetImg_clicked,
 			"on_entPath_insert_text" : self.entPath_insert,
+			"on_btnClrPath_clicked" : self.btnGetImg_clicked,
 			"on_btnSetting_clicked" : self.btnSetting_clicked,
 			"on_btnSetColor_clicked" : self.btnSetColor_clicked,
 			"on_btnSave_clicked" : self.btnSave_clicked,
@@ -493,8 +506,6 @@ class Applet(object):
 			}
 		self.walkTree.signal_autoconnect(dic)
 #	  未実装ボタン
-		self.radXinerama.set_sensitive(False)
-		self.radTwinView.set_sensitive(False)
 		self.btnHelp.set_sensitive(False)
 #	  View
 		self._writeStatusbar(self.statbar, self.cid_stat, 'Running ... applet mode.')

@@ -36,7 +36,7 @@ class ImgFile(Rectangle, Image.Image):
 		except IOError, msg:
 			raise ImgFile.ImgFileIOError('Cannot save Imgfile [%s]' % path)
 
-	def __init__(self, path='', w=5, h=5, color='black'):
+	def __init__(self, path='', color='black', w=5, h=5):
 		Rectangle.__init__(self)
 		if path == '':
 			mode = 'RGB'

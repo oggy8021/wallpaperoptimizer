@@ -74,6 +74,12 @@ class OptionsBase(object):
 	def lengthArgs(self):
 		return len(self.args) - self.args.count('')
 
+	def getCombine(self):
+		if hasattr(self.opts, 'combine'):
+			return self.opts.combine
+		else:
+			return True
+
 	def __init__(self):
 		pass
 

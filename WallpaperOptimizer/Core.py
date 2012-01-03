@@ -353,7 +353,7 @@ class Core(object):
 		self._allocateImg(Option, Ws, Img1)
 		self._allocateImg(Option, Ws, Img2)
 
-		bkImg = ImgFile('', Ws.Size.w, Ws.Size.h, Option.getBgcolor())
+		bkImg = ImgFile('', Option.getBgcolor(), Ws.Size.w, Ws.Size.h)
 
 		self._mergeWallpaper(Ws, bkImg, Img1)
 		self._mergeWallpaper(Ws, bkImg, Img2)
@@ -453,36 +453,43 @@ class Core(object):
 		except KeyboardInterrupt:
 			sys.exit(0)
 
-	def singlerun(self):
-#		Img1, LArg
-		try:
-			Img1 = ImgFile(self.option.getLArg())
-		except ImgFile.ImgFileIOError, msg:
-				raise Core.CoreRuntimeError(msg.value)
-		logging.info('Create Img1 object. [%s]' % self.option.getLArg())
-		logging.debug('%20s [%d,%d]' % ( 'Img1', Img1.getSize().w, Img1.getSize().h ))
-
-		if self.option.lengthArgs() == 2:
-#			Img2, RArg
+	def _loadImgFile(self, path):
+#			Combine
+		if not path == '':
 			try:
-				Img2 = ImgFile(self.option.getRArg())
+				Img = ImgFile(path)
 			except ImgFile.ImgFileIOError, msg:
 					raise Core.CoreRuntimeError(msg.value)
-			logging.info('Create Img2 object. [%s]' % self.option.getRArg())
-			logging.debug('%20s [%s,%s]' % ( 'Img2', Img2.getSize().w, Img2.getSize().h ))
+			logging.info('Create Img object. [%s]' % path)
+			logging.debug('%20s [%d,%d]' % ( 'Img', Img.getSize().w, Img.getSize().h ))
+			return Img
+		else:
+#			Separate
+			try:
+				dummyImg = ImgFile('', self.option.getBgcolor())
+			except ImgFile.ImgFileIOError, msg:
+					raise Core.CoreRuntimeError(msg.value)
+			logging.debug('Create Dummy Img object.')
+			return dummyImg
 
-			bkImg = self._optimizeWallpaper(self.option, self.config, self.Ws, Img1, Img2)
-
+	def singlerun(self):
+		if (self.option.lengthArgs() == 2 or 
+			( self.option.lengthArgs() == 1 and
+			 not self.option.getCombine() )):
+			Imgs = [self._loadImgFile(self.option.getLArg()), self._loadImgFile(self.option.getRArg())]
+			bkImg = self._optimizeWallpaper(self.option, self.config, self.Ws, Imgs[0], Imgs[1])
 			tmpPath = self.option.getSavePath()
 			if tmpPath <> None:
 				self._saveImgfile(bkImg, tmpPath)
-
 			if self.option.getSetWall():
 				self._setWall(bkImg, tmpPath)
 
-		else:
+		elif self.option.lengthArgs() == 1 and self.option.getCombine():
 			if self.option.getSetWall():
-				self._setWall(Img1, self.option.getLArg())
+				if self.option.getLArg() <> '':
+					self._setWall(None, self.option.getLArg())
+				else:
+					self._setWall(None, self.option.getRArg())
 
 
 	def __init__(self, Options):

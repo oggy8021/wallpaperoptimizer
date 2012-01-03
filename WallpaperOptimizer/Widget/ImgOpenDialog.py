@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os.path
+import os, pwd
 
 import pygtk
 pygtk.require("2.0")
@@ -19,7 +20,8 @@ class ImgOpenDialog(DialogBase):
 
 	def openDialog(self, path, lr):
 		if path == '':
-			self.Dialog.set_filename(os.path.expanduser('~/.'))
+			self.Dialog.set_filename(
+			 os.path.expanduser(os.path.join('~/',pwd.getpwuid(os.getuid())[0])) )
 		else:
 			self.Dialog.set_filename(os.path.abspath(path))
 		if lr == 0:
@@ -30,9 +32,9 @@ class ImgOpenDialog(DialogBase):
 		self.Dialog.show_all()
 		result = self.Dialog.run()
 		if result == gtk.RESPONSE_OK:
-			imgfile = self.Dialog.get_filename()
+			imgfilepath = self.Dialog.get_filename()
 			self.Dialog.destroy()
-			return imgfile
+			return imgfilepath
 		else:
 			self.Dialog.destroy()
 			return False
