@@ -54,7 +54,9 @@ params = {
 		('lib/bonobo/servers',
 			['wallpaperoptimizer.server']),
 		('share/WallpaperOptimizer',
-			['wallopt.png', 'wallopt_off.png'])],
+			['wallopt.png', 'wallopt_off.png']),
+		('/etc/logrotate.d',
+			['wallopt'])],
 	'license': 'GPL3',
 #	'download_url': 'http://oggy.no-ip.info/blog/wallpaperoptimizer-%s.tar.gz' % (__VERSION__),
 	'classifiers': [
@@ -97,19 +99,4 @@ if __name__ == "__main__":
 		rmdir(os.path.join(get_python_lib(),params['packages'][0]))
 		rmfile(os.path.join(PREFIX,params['data_files'][0][0],params['data_files'][0][1][0]))
 		rmdir(os.path.join(PREFIX,params['data_files'][1][0]))
-
-#	else:
-#		pass
-#		PREFIX='/usr/local'
-#		print PREFIX
-#		print EXEC_PREFIX
-#		print get_python_lib()
-#		print params['package_data']
-#		print params['data_files'][0][0]
-#		print params['data_files'][0][1][0]
-#		print params['data_files']
-#		print params['data_files'][1][0]
-#		print params['data_files'][1][1][0]
-#		print params['data_files'][1][1][1]
-#		print params['scripts'][0]
-#		print params['scripts'][1]
+		rmfile(os.path.join(params['data_files'][2][0],params['data_files'][2][1][0]))

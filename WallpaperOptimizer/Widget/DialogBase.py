@@ -16,6 +16,3 @@ class DialogBase(object):
 	def loadGladeTree(self, gladefile, name):
 		walkTree = gtk.glade.XML(gladefile, name)
 		return [walkTree, walkTree.get_widget(name)]
-
-	def closeDialog(self):
-		self.Dialog.destroy()

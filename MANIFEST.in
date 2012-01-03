@@ -5,5 +5,6 @@ include wallopt.png
 include wallopt_off.png
 include wallpaperoptimizer
 include wallpaperoptimizer.server
+include wallopt
 
 #WallpaperOptimizer

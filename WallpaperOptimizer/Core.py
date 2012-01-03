@@ -170,7 +170,7 @@ class Core(object):
 		"""
 		ImgFile is binding to Screen instance.
 		"""
-		#! 組み合わせバリエーションに対応しきれているか、見極められていない
+#! 		組み合わせバリエーションに対応しきれているか、見極められていない
 		logging.info('Binding Img to Screen.')
 
 		if Fixed:

@@ -255,13 +255,13 @@ class Applet(object):
 			return True
 
 	def btnDaemonize_clicked(self, widget):
-		self.bCanceled = False
-		self._setPanelButton(self.applet, self.bCanceled)
-		self.window.set_icon(self._select_icon(self.bCanceled))
-		self._switchWidget(False)
 		self.window.hide()
-		self.bVisible = False
+		self.window.set_icon(self._select_icon(self.bCanceled))
 		self.btnOnTooltip.set_tip(self.applet, 'changer on')
+		self.bCanceled = False
+		self.bVisible = False
+		self._setPanelButton(self.applet, self.bCanceled)
+		self._switchWidget(False)
 		self._presetCore()
 		self.timeoutObject = glibobj.timeout_add(self.option.opts.interval*1000
 				, self._timeout, self)
@@ -283,7 +283,7 @@ class Applet(object):
 		iconFile = '/WallpaperOptimizer/wallopt.png'
 		icon = gtk.gdk.pixbuf_new_from_file(os.path.abspath(os.path.join(PREFIX,'share',iconFile)))
 		about = gnome.ui.About("WallpaperOptimizer"
-							,"0.1.0.0"	#version
+							,"0.2.0.0"	#version
 							,"GPLv3"		#copyright
 							,"wallpaperoptimizer is multi wallpaper changer."	#comments
 							,["oggy"]		#**authors
@@ -354,6 +354,8 @@ class Applet(object):
 		self.spnRMergin.set_sensitive(boolean)
 		self.spnTopMergin.set_sensitive(boolean)
 		self.spnBtmMergin.set_sensitive(boolean)
+		self.radCombine.set_sensitive(Boolean)
+		self.radSeparate.set_sensitive(bolean)
 		self.radFixed.set_sensitive(boolean)
 		self.radNoFixed.set_sensitive(boolean)
 		self.btnSetting.set_sensitive(boolean)
@@ -366,10 +368,8 @@ class Applet(object):
 			self.btnCancelDaemonize.set_sensitive(False)
 		else:
 			self.btnCancelDaemonize.set_sensitive(True)
-		self.radCombine.set_sensitive(False)
-		self.radSeparate.set_sensitive(False)
 #	  未実装ボタン
-		self.btnHelp.set_sensitive(False)
+#		self.btnHelp.set_sensitive(False)
 
 #panel control group
 	def _select_icon(self,bCanceled):

@@ -25,8 +25,6 @@ class ChangerDir(object):
 
 	def __init__(self, srcdir='.'):
 		self.fIdx = 0
-
-		#http://www.python.jp/Zope/articles/tips/regex_howto/regex_howto_3 (sec 3.2)
 		Ext = re.compile(r"\.(gif|jpg|jpeg|bmp|png)$", re.IGNORECASE)
 		srcdir = os.path.abspath(os.path.expanduser(srcdir))
 		files = os.listdir(srcdir)

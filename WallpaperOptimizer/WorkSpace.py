@@ -75,5 +75,5 @@ class WorkSpace(Rectangle):
 		subStr = ptn.split( depth )
 		self.depth = int(subStr[9])
 
-# lScreen, rScreenには作用していない
+# lScreen, rScreenはいじっていない
 

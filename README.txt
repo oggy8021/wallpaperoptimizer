@@ -1,6 +1,6 @@
 
 【wallpaper optimizer】
-　～wallpaperoptimizer is multi wallpaper changer～
+　～wallpaperoptimizer is wallpaper changer for multi screen.～
 
 1.はじめに
 　wallpaper optimizerは、マルチモニタ使用下において壁紙を最適に配置する
