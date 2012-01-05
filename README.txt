@@ -77,8 +77,10 @@
 	python-daemon-1.5.2-3.el5
 	gnome-python2-applet-2.16.0-3.el5
 
+8.ライセンス
+　GPLv3
 
-8.変更履歴
+9.変更履歴
 2012.1.xx	v0.x.0.0	初版リリース
 
 
