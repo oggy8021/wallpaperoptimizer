@@ -21,6 +21,7 @@ import gnome.ui
 from distutils.sysconfig import PREFIX, get_python_lib
 
 from WallpaperOptimizer.Core import Core
+from WallpaperOptimizer.Position import Position
 from WallpaperOptimizer.OptionsBase import OptionsBase
 from WallpaperOptimizer.Widget.ErrorDialog import ErrorDialog
 from WallpaperOptimizer.Widget.ImgOpenDialog import ImgOpenDialog
@@ -71,20 +72,13 @@ class Applet(object):
 		errorDialog.openDialog(msg)
 
 #utility group
-	def _judgeLeftRight(self, wName):
-		if wName.rfind('L') == (len(wName) - 1):
-			idx = 0
-		elif wName.rfind('R') == (len(wName) - 1):
-			idx = 1
-		return idx
-
 	def _writeStatusbar(self, bar, cid, msg):
 		bar.push(cid, msg)
 
 	def _eraseStatusbar(self, bar, cid):
 		bar.pop(cid)
 
-	def _setConfigAttr(self, btnName, lr, val=None):
+	def _setOptionValueFromBtn(self, btnName, lr, val=None):
 		if (btnName.find('PushLeft') > 0 or btnName.find('PushRight') > 0):
 			if val == None:
 				val = 'center'
@@ -93,6 +87,12 @@ class Applet(object):
 			if val == None:
 				val = 'middle'
 			self.option.opts.valign[lr] = val
+
+	def _addPos(self, wName, label=False):
+		retNode = self.walkTree.get_widget(wName)
+		pos = Position(wName, label)
+		setattr(retNode, 'posit', pos)
+		return retNode
 
 #button group
 	def tglBtn_pressed(self, widget):
@@ -111,16 +111,14 @@ class Applet(object):
 				val = 'top'
 			elif wName.find('Lower') > 0:
 				val = 'bottom'
-			lr = self._judgeLeftRight(wName)
-			self._setConfigAttr(wName, lr, val)
+			self._setOptionValueFromBtn(wName, widget.posit.idx, val)
 
 	def tglBtn_released(self, widget):
-		vsName = Applet.tgldic[widget.get_name()]
+		wName = widget.get_name()
+		vsName = Applet.tgldic[wName]
 		if (widget.get_active() == False and 
 				self.walkTree.get_widget(vsName).get_active() == False):
-			wName = widget.get_name()
-			lr = self._judgeLeftRight(wName)
-			self._setConfigAttr(wName, lr)
+			self._setOptionValueFromBtn(wName, widget.posit.idx)
 
 	def spnMergin_value_changed(self, widget):
 		wName = widget.get_name()
@@ -143,8 +141,7 @@ class Applet(object):
 			self.option.opts.combine = self.walkTree.get_widget(widget.get_name()).get_active()
 
 	def btnGetImg_clicked(self, widget):
-		lr = self._judgeLeftRight(widget.get_name())
-		if lr == 0:
+		if widget.posit.idx == 0:
 			entPath = self.entPathL
 		else:
 			entPath = self.entPathR
@@ -152,17 +149,16 @@ class Applet(object):
 			path = ''
 		else:
 			imgopenDialog = ImgOpenDialog(self.gladefile)
-			path = imgopenDialog.openDialog(self.core.option.args[lr], lr)
+			path = imgopenDialog.openDialog(self.core.option.args[widget.posit.idx], widget.posit.Kanji)
 		if path <> False:
-			self.core.option.args[lr] = path
+			self.core.option.args[widget.posit.idx] = path
 			entPath.set_text(os.path.basename(path))
 
 	def entPath_insert(self, widget, text, length, pos):
-		lr = self._judgeLeftRight(widget.get_name())
 		if length > 0:
-			self.bEntryPath[lr] = True
+			self.bEntryPath[widget.posit.idx] = True
 		else:
-			self.bEntryPath[lr] = False
+			self.bEntryPath[widget.posit.idx] = False
 		if self.bEntryPath == [True, True]:
 			self.btnSave.set_sensitive(True)
 		elif self.bEntryPath == [True, False] or self.bEntryPath == [False, True]:
@@ -299,20 +295,22 @@ class Applet(object):
 
 #initialize group
 	def _linkGladeTree(self):
-		self.tglPushLeftL = self.walkTree.get_widget('tglPushLeftL')
-		self.tglPushRightL = self.walkTree.get_widget('tglPushRightL')
-		self.tglUpperL = self.walkTree.get_widget('tglUpperL')
-		self.tglLowerL = self.walkTree.get_widget('tglLowerL')
-		self.btnGetImgL = self.walkTree.get_widget('btnGetImgL')
-		self.entPathL = self.walkTree.get_widget('entPathL')
+		self.tglPushLeftL = self._addPos('tglPushLeftL')
+		self.tglPushRightL = self._addPos('tglPushRightL')
+		self.tglUpperL = self._addPos('tglUpperL')
+		self.tglLowerL = self._addPos('tglLowerL')
+		self.btnGetImgL = self._addPos('btnGetImgL', True)
+		self.entPathL = self._addPos('entPathL')
+		self.btnClrPathL = self._addPos('btnClrPathL')
 #
-		self.tglPushLeftR = self.walkTree.get_widget('tglPushLeftR')
-		self.tglPushRightR = self.walkTree.get_widget('tglPushRightR')
-		self.tglUpperR = self.walkTree.get_widget('tglUpperR')
-		self.tglLowerR = self.walkTree.get_widget('tglLowerR')
-		self.btnGetImgR = self.walkTree.get_widget('btnGetImgR')
-		self.entPathR = self.walkTree.get_widget('entPathR')
-
+		self.tglPushLeftR = self._addPos('tglPushLeftR')
+		self.tglPushRightR = self._addPos('tglPushRightR')
+		self.tglUpperR = self._addPos('tglUpperR')
+		self.tglLowerR = self._addPos('tglLowerR')
+		self.btnGetImgR = self._addPos('btnGetImgR', True)
+		self.entPathR = self._addPos('entPathR')
+		self.btnClrPathR = self._addPos('btnClrPathR')
+#
 		self.spnLMergin = self.walkTree.get_widget('spnLMergin')
 		self.spnRMergin = self.walkTree.get_widget('spnRMergin')
 		self.spnTopMergin = self.walkTree.get_widget('spnTopMergin')
@@ -447,23 +445,24 @@ class Applet(object):
 	def __init__(self, applet, iid, logging):
 		self.applet = applet
 		self.logging = logging
-#	  initializeStatus
+#	  Initialize Status
 		self.timeoutObject = None
 		self.bVisible = True
 		self.bCanceled = True
 		self.bEntryPath = [False,False]
-#	  Panel initialize
+#	  Initialize Panel
+		self._loadIcon()
 		self.btnOnPanelBar = gtk.Button()
 		self.btnOnPanelBar.set_relief(gtk.RELIEF_NONE)
-		self._loadIcon()
 		self._setPanelButton(self.applet, self.bCanceled)
 		self.btnOnPanelBar.connect("button-press-event", self._setMenu, self.applet)
 		self.applet.add(self.btnOnPanelBar)
+#	  add Tooltips
 		self.btnOnTooltip = gtk.Tooltips()
 		self.btnOnTooltip.set_tip(self.applet, 'changer off')
 		self.applet.show_all()
 		self.applet.connect("destroy", gtk.main_quit)
-#	  AppletOption extends Options class
+#	  AppletOptions extends Options class
 		self.option = AppletOptions()
 		self.core = Core(self.option)
 #	  Initialize Applet

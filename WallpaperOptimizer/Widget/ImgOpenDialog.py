@@ -6,7 +6,6 @@ import os, pwd
 import pygtk
 pygtk.require("2.0")
 import gtk
-import gtk.glade
 
 from WallpaperOptimizer.Widget.DialogBase import DialogBase
 
@@ -18,17 +17,13 @@ class ImgOpenDialog(DialogBase):
 	def btnOk_clicked(self, widget):
 		pass
 
-	def openDialog(self, path, lr):
+	def openDialog(self, path, addlr):
 		if path == '':
 			self.Dialog.set_filename(
 			 os.path.expanduser(os.path.join('~/',pwd.getpwuid(os.getuid())[0])) )
 		else:
 			self.Dialog.set_filename(os.path.abspath(path))
-		if lr == 0:
-			addlr = '(左)'
-		else:
-			addlr = '(右)'
-		self.Dialog.set_title(self.Dialog.get_title() + addlr)
+		self.Dialog.set_title(self.Dialog.get_title() + '(' + addlr + ')')
 		self.Dialog.show_all()
 		result = self.Dialog.run()
 		if result == gtk.RESPONSE_OK:

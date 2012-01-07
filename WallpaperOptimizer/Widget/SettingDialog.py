@@ -6,8 +6,8 @@ import os.path
 import pygtk
 pygtk.require("2.0")
 import gtk
-import gtk.glade
 
+from WallpaperOptimizer.Position import Position
 from WallpaperOptimizer.Widget.DialogBase import DialogBase
 from WallpaperOptimizer.Widget.ErrorDialog import ErrorDialog
 from WallpaperOptimizer.Widget.SrcdirDialog import SrcdirDialog
@@ -17,13 +17,6 @@ class SettingDialog(DialogBase):
 	def _runErrorDialog(self, msg):
 		errorDialog = ErrorDialog(self.gladefile)
 		errorDialog.openDialog(msg)
-
-	def _judgeLeftRight(self, wName):
-		if wName.rfind('L') == (len(wName) - 1):
-			idx = 0
-		elif wName.rfind('R') == (len(wName) - 1):
-			idx = 1
-		return idx
 
 	def _setSize(self, strlr):
 		width = self.walkTree.get_widget('entDisplayW' + strlr).get_text()
@@ -44,23 +37,19 @@ class SettingDialog(DialogBase):
 				 , self.walkTree.get_widget('entSrcdir' + strlr).get_text()]
 
 	def btnOpenSrcdir_clicked(self, widget):
-		lr = self._judgeLeftRight(widget.get_name())
 		srcdirDialog = SrcdirDialog(self.gladefile)
-		retdir = srcdirDialog.openDialog(self.srcdirs[lr], lr)
+		retdir = srcdirDialog.openDialog(self.srcdirs[widget.posit.idx], widget.posit.Kanji)
 		if not retdir == False:
-			if lr == 0:
-				strlr = 'L'
-			else:
-				strlr = 'R'
-			self.srcdirs[lr] = retdir
-			self.walkTree.get_widget('entSrcdir' + strlr).set_text(self.srcdirs[lr])
+			self.srcdirs[widget.posit.idx] = retdir
+			self.walkTree.get_widget(
+			'entSrcdir' + widget.posit.Caps).set_text(self.srcdirs[widget.posit.idx])
 
 	def btnSaveSetting_clicked(self, widget):
 		configfile='~/.walloptrc'
 		try:
 			cf = csv.writer(file(os.path.abspath(os.path.expanduser(configfile)), 'w'))
-			cf.writerow(self._createCsvRecord('left'))
-			cf.writerow(self._createCsvRecord('right'))
+			for lr in ('left', 'right'):
+				cf.writerow(self._createCsvRecord(lr))
 		except IOError, msg:
 			self._runErrorDialog('** CoreRuntimeError: %s. ' % msg)
 
@@ -96,9 +85,9 @@ class SettingDialog(DialogBase):
 			self.lDisplaySize = self._setSize('L')
 			self.rDisplaySize = self._setSize('R')
 			self.srcdirs = [
-				self.walkTree.get_widget('entSrcdirL').get_text()
+				self.entSrcdirL.get_text()
 				 ,
-				self.walkTree.get_widget('entSrcdirR').get_text()
+				self.entSrcdirR.get_text()
 				 ]
 			self.Dialog.destroy()
 			return [self.lDisplaySize, self.rDisplaySize, self.srcdirs]
@@ -106,9 +95,22 @@ class SettingDialog(DialogBase):
 			self.Dialog.destroy()
 			return [False, False, False]
 
+	def _addPos(self, wName, label=False):
+		retNode = self.walkTree.get_widget(wName)
+		pos = Position(wName, label)
+		setattr(retNode, 'posit', pos)
+		return retNode
+
+	def _linkGladeTree(self):
+		self.entSrcdirL = self.walkTree.get_widget('entSrcdirL')
+		self.btnOpenSrcdirL = self._addPos('btnOpenSrcdirL', True)
+		self.entSrcdirR = self.walkTree.get_widget('entSrcdirR')
+		self.btnOpenSrcdirR = self._addPos('btnOpenSrcdirR', True)
+
 	def __init__(self, gladefile):
 		self.gladefile = gladefile
 		[self.walkTree, self.Dialog] = self.loadGladeTree(self.gladefile, "SettingDialog")
+		self._linkGladeTree()
 
 		dic = {
 			"on_btnOpenSrcdir_clicked" : self.btnOpenSrcdir_clicked,

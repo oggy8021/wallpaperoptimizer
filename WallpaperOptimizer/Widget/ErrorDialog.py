@@ -3,7 +3,6 @@
 import pygtk
 pygtk.require("2.0")
 import gtk
-import gtk.glade
 
 from WallpaperOptimizer.Widget.DialogBase import DialogBase
 

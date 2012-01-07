@@ -5,7 +5,6 @@ import os.path
 import pygtk
 pygtk.require("2.0")
 import gtk
-import gtk.glade
 
 from WallpaperOptimizer.Widget.DialogBase import DialogBase
 
@@ -17,12 +16,8 @@ class SrcdirDialog(DialogBase):
 	def btnOk_clicked(self, widget):
 		pass
 
-	def openDialog(self, srcdir, lr):
-		if lr == 0:
-			addlr = '(左)'
-		else:
-			addlr = '(右)'
-		self.Dialog.set_title(self.Dialog.get_title() + addlr)
+	def openDialog(self, srcdir, addlr):
+		self.Dialog.set_title(self.Dialog.get_title() + '(' + addlr + ')')
 		self.Dialog.set_current_folder(os.path.expanduser(srcdir))
 		self.Dialog.show_all()
 		result = self.Dialog.run()
