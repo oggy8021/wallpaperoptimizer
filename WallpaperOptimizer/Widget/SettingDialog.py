@@ -34,7 +34,7 @@ class SettingDialog(DialogBase):
 			height = '0'
 		return [int(width), int(height)]
 
-	def _getSettingDialog(self, pos):
+	def _createCsvRecord(self, pos):
 		if pos == 'left':
 			strlr = 'L'
 		elif pos == 'right':
@@ -59,8 +59,8 @@ class SettingDialog(DialogBase):
 		configfile='~/.walloptrc'
 		try:
 			cf = csv.writer(file(os.path.abspath(os.path.expanduser(configfile)), 'w'))
-			cf.writerow(self._getSettingDialog('left'))
-			cf.writerow(self._getSettingDialog('right'))
+			cf.writerow(self._createCsvRecord('left'))
+			cf.writerow(self._createCsvRecord('right'))
 		except IOError, msg:
 			self._runErrorDialog('** CoreRuntimeError: %s. ' % msg)
 
