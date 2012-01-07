@@ -276,8 +276,8 @@ class Applet(object):
 		self._switchWidget(True)
 
 	def btnAbout_clicked(self, widget):
-		iconFile = '/WallpaperOptimizer/wallopt.png'
-		icon = gtk.gdk.pixbuf_new_from_file(os.path.abspath(os.path.join(PREFIX,'share',iconFile)))
+		icon = gtk.gdk.pixbuf_new_from_file(os.path.abspath(
+			os.path.join(PREFIX,'share','WallpaperOptimizer','wallopt.png')))
 		about = gnome.ui.About("WallpaperOptimizer"
 							,"0.2.0.0"	#version
 							,"GPLv3"		#copyright
@@ -352,8 +352,8 @@ class Applet(object):
 		self.spnRMergin.set_sensitive(boolean)
 		self.spnTopMergin.set_sensitive(boolean)
 		self.spnBtmMergin.set_sensitive(boolean)
-		self.radCombine.set_sensitive(Boolean)
-		self.radSeparate.set_sensitive(bolean)
+		self.radCombine.set_sensitive(boolean)
+		self.radSeparate.set_sensitive(boolean)
 		self.radFixed.set_sensitive(boolean)
 		self.radNoFixed.set_sensitive(boolean)
 		self.btnSetting.set_sensitive(boolean)
