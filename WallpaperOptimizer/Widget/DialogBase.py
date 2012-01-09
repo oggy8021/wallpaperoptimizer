@@ -3,7 +3,8 @@
 import pygtk
 pygtk.require("2.0")
 import gtk
-import gtk.glade
+
+from WallpaperOptimizer.Glade import Glade
 
 class DialogBase(object):
 
@@ -14,5 +15,5 @@ class DialogBase(object):
 		self.Dialog.response(gtk.RESPONSE_CANCEL)
 
 	def loadGladeTree(self, gladefile, name):
-		walkTree = gtk.glade.XML(gladefile, name)
+		walkTree = Glade(gladefile, name)
 		return [walkTree, walkTree.get_widget(name)]

@@ -8,7 +8,6 @@ import logging
 import pygtk
 pygtk.require("2.0")
 import gtk
-import gtk.glade
 try:
 	import glib as glibobj
 except:
@@ -21,7 +20,7 @@ import gnome.ui
 from distutils.sysconfig import PREFIX, get_python_lib
 
 from WallpaperOptimizer.Core import Core
-from WallpaperOptimizer.Position import Position
+from WallpaperOptimizer.Glade import Glade
 from WallpaperOptimizer.OptionsBase import OptionsBase
 from WallpaperOptimizer.Widget.ErrorDialog import ErrorDialog
 from WallpaperOptimizer.Widget.ImgOpenDialog import ImgOpenDialog
@@ -87,12 +86,6 @@ class Applet(object):
 			if val == None:
 				val = 'middle'
 			self.option.opts.valign[lr] = val
-
-	def _addPos(self, wName, label=False):
-		retNode = self.walkTree.get_widget(wName)
-		pos = Position(wName, label)
-		setattr(retNode, 'posit', pos)
-		return retNode
 
 #button group
 	def tglBtn_pressed(self, widget):
@@ -295,21 +288,21 @@ class Applet(object):
 
 #initialize group
 	def _linkGladeTree(self):
-		self.tglPushLeftL = self._addPos('tglPushLeftL')
-		self.tglPushRightL = self._addPos('tglPushRightL')
-		self.tglUpperL = self._addPos('tglUpperL')
-		self.tglLowerL = self._addPos('tglLowerL')
-		self.btnGetImgL = self._addPos('btnGetImgL', True)
-		self.entPathL = self._addPos('entPathL')
-		self.btnClrPathL = self._addPos('btnClrPathL')
+		self.tglPushLeftL = self.walkTree.addPos('tglPushLeftL')
+		self.tglPushRightL = self.walkTree.addPos('tglPushRightL')
+		self.tglUpperL = self.walkTree.addPos('tglUpperL')
+		self.tglLowerL = self.walkTree.addPos('tglLowerL')
+		self.btnGetImgL = self.walkTree.addPos('btnGetImgL', True)
+		self.entPathL = self.walkTree.addPos('entPathL')
+		self.btnClrPathL = self.walkTree.addPos('btnClrPathL')
 #
-		self.tglPushLeftR = self._addPos('tglPushLeftR')
-		self.tglPushRightR = self._addPos('tglPushRightR')
-		self.tglUpperR = self._addPos('tglUpperR')
-		self.tglLowerR = self._addPos('tglLowerR')
-		self.btnGetImgR = self._addPos('btnGetImgR', True)
-		self.entPathR = self._addPos('entPathR')
-		self.btnClrPathR = self._addPos('btnClrPathR')
+		self.tglPushLeftR = self.walkTree.addPos('tglPushLeftR')
+		self.tglPushRightR = self.walkTree.addPos('tglPushRightR')
+		self.tglUpperR = self.walkTree.addPos('tglUpperR')
+		self.tglLowerR = self.walkTree.addPos('tglLowerR')
+		self.btnGetImgR = self.walkTree.addPos('btnGetImgR', True)
+		self.entPathR = self.walkTree.addPos('entPathR')
+		self.btnClrPathR = self.walkTree.addPos('btnClrPathR')
 #
 		self.spnLMergin = self.walkTree.get_widget('spnLMergin')
 		self.spnRMergin = self.walkTree.get_widget('spnRMergin')
@@ -470,7 +463,7 @@ class Applet(object):
 			os.path.join(get_python_lib(),'WallpaperOptimizer','glade','wallpositapplet.glade'))
 #!		self.gladefile = os.path.abspath(
 #!			os.path.join('.','WallpaperOptimizer','glade','wallpositapplet.glade'))
-		self.walkTree = gtk.glade.XML(self.gladefile, "WallPosit_MainWindow")
+		self.walkTree = Glade(self.gladefile, "WallPosit_MainWindow")
 		self.window = self.walkTree.get_widget("WallPosit_MainWindow")
 		self.window.set_icon(self._select_icon(self.bCanceled))
 		self._linkGladeTree()
@@ -502,6 +495,7 @@ class Applet(object):
 			"on_WallPosit_MainWindow_delete_event" : self.btnWindowClose_clicked
 			}
 		self.walkTree.signal_autoconnect(dic)
+		print '6:', time.clock()
 #	  未実装ボタン
 		self.btnHelp.set_sensitive(False)
 #	  View

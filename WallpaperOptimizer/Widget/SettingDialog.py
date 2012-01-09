@@ -7,7 +7,6 @@ import pygtk
 pygtk.require("2.0")
 import gtk
 
-from WallpaperOptimizer.Position import Position
 from WallpaperOptimizer.Widget.DialogBase import DialogBase
 from WallpaperOptimizer.Widget.ErrorDialog import ErrorDialog
 from WallpaperOptimizer.Widget.SrcdirDialog import SrcdirDialog
@@ -95,17 +94,11 @@ class SettingDialog(DialogBase):
 			self.Dialog.destroy()
 			return [False, False, False]
 
-	def _addPos(self, wName, label=False):
-		retNode = self.walkTree.get_widget(wName)
-		pos = Position(wName, label)
-		setattr(retNode, 'posit', pos)
-		return retNode
-
 	def _linkGladeTree(self):
 		self.entSrcdirL = self.walkTree.get_widget('entSrcdirL')
-		self.btnOpenSrcdirL = self._addPos('btnOpenSrcdirL', True)
+		self.btnOpenSrcdirL = self.walkTree.addPos('btnOpenSrcdirL', True)
 		self.entSrcdirR = self.walkTree.get_widget('entSrcdirR')
-		self.btnOpenSrcdirR = self._addPos('btnOpenSrcdirR', True)
+		self.btnOpenSrcdirR = self.walkTree.addPos('btnOpenSrcdirR', True)
 
 	def __init__(self, gladefile):
 		self.gladefile = gladefile
