@@ -21,7 +21,7 @@ class ColorSelectionDialog(DialogBase):
 		return bgcolor
 
 	def __init__(self, gladefile):
-		[self.walkTree, self.Dialog] = self.loadGladeTree(gladefile, "ColorSelectionDialog")
+		(self.walkTree, self.Dialog) = self.loadGladeTree(gladefile, "ColorSelectionDialog")
 
 		dic = {
 			"on_btnOk_clicked" : self.btnOk_clicked,

@@ -30,7 +30,7 @@ class SrcdirDialog(DialogBase):
 			return False
 
 	def __init__(self, gladefile):
-		[self.walkTree, self.Dialog] = self.loadGladeTree(gladefile, "SrcdirDialog")
+		(self.walkTree, self.Dialog) = self.loadGladeTree(gladefile, "SrcdirDialog")
 
 		dic = {
 			"on_btnOpen_clicked" : self.btnOpen_clicked,

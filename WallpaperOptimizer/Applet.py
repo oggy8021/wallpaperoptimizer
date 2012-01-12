@@ -162,16 +162,16 @@ class Applet(object):
 	def btnSetting_clicked(self, widget):
 		settingDialog = SettingDialog(self.gladefile)
 		settingArgs = settingDialog.openDialog([
-					self.core.config.lDisplay.getConfig()['width']
-					, self.core.config.lDisplay.getConfig()['height']
+					self.core.config.lDisplay.width
+					, self.core.config.lDisplay.height
 					],[
-					self.core.config.rDisplay.getConfig()['width']
-					, self.core.config.rDisplay.getConfig()['height']
+					self.core.config.rDisplay.width
+					, self.core.config.rDisplay.height
 					],[
-					self.core.config.lDisplay.getConfig()['srcdir']
-					, self.core.config.rDisplay.getConfig()['srcdir']
+					self.core.config.lDisplay.srcdir
+					, self.core.config.rDisplay.srcdir
 					])
-		if not settingArgs == [False, False, False]:
+		if not settingArgs == (False, False, False):
 			for lr in (0,1):
 				if lr == 0:
 					display = self.core.config.lDisplay
@@ -434,7 +434,6 @@ class Applet(object):
 		self.ena_icon = gtk.gdk.pixbuf_new_from_file(os.path.abspath(
 				os.path.join(PREFIX,'share','WallpaperOptimizer','wallopt.png')))
 
-
 	def __init__(self, applet, iid, logging):
 		self.applet = applet
 		self.logging = logging
@@ -495,7 +494,6 @@ class Applet(object):
 			"on_WallPosit_MainWindow_delete_event" : self.btnWindowClose_clicked
 			}
 		self.walkTree.signal_autoconnect(dic)
-		print '6:', time.clock()
 #	  未実装ボタン
 		self.btnHelp.set_sensitive(False)
 #	  View

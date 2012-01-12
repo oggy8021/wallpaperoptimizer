@@ -15,8 +15,8 @@ class WorkSpace(Rectangle):
 			return repr(self.value)
 
 	def getScreenSize(self):
-		return [[self.lScreen.Size.w, self.lScreen.Size.h]
-			, [self.rScreen.Size.w, self.rScreen.Size.h]]
+		return ((self.lScreen.Size.w, self.lScreen.Size.h)
+				, (self.rScreen.Size.w, self.rScreen.Size.h))
 
 	def getDepth(self):
 		return self.depth

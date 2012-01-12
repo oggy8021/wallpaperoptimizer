@@ -16,4 +16,4 @@ class DialogBase(object):
 
 	def loadGladeTree(self, gladefile, name):
 		walkTree = Glade(gladefile, name)
-		return [walkTree, walkTree.get_widget(name)]
+		return (walkTree, walkTree.get_widget(name))

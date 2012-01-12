@@ -25,7 +25,7 @@ class SaveWallpaperDialog(DialogBase):
 		return savefilename
 
 	def __init__(self, gladefile):
-		[self.walkTree, self.Dialog] = self.loadGladeTree(gladefile, "SaveWallpaperDialog")
+		(self.walkTree, self.Dialog) = self.loadGladeTree(gladefile, "SaveWallpaperDialog")
 
 		dic = {
 			"on_btnOpen_clicked" : self.btnOpen_clicked,

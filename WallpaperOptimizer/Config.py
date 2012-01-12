@@ -18,13 +18,13 @@ class Config(object):
 
 	class Display(object):
 
-		def getConfig(self):
-			config = dict()
-			config['width'] = self.width
-			config['height'] = self.height
-			config['posit'] = self.posit
-			config['srcdir'] = self.srcdir
-			return config
+#		def getConfig(self):
+#			config = dict()
+#			config['width'] = self.width
+#			config['height'] = self.height
+#			config['posit'] = self.posit
+#			config['srcdir'] = self.srcdir
+#			return config
 
 		def toIntAsSizeString(self, val):
 			wh = val.split('x')

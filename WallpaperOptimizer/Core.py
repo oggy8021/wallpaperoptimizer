@@ -56,38 +56,38 @@ class Core(object):
 			logging.info('Config "srcdir" update from commandline option.')
 
 		if ( not self.option.getWindow() and
-			self.config.lDisplay.getConfig()['width'] == 0 and 
-			self.config.lDisplay.getConfig()['height'] == 0 and
-			self.config.rDisplay.getConfig()['width'] == 0 and 
-			self.config.rDisplay.getConfig()['height'] == 0 ):
+			self.config.lDisplay.width == 0 and 
+			self.config.lDisplay.height == 0 and
+			self.config.rDisplay.width == 0 and 
+			self.config.rDisplay.height == 0 ):
 			logging.error('** Please setting left/right display size.')
 			raise Core.CoreRuntimeError('No setting left/right display size.')
 
 		if ( self.option.getDaemonize() and 
 				not self.option.getWindow() and
-				self.config.lDisplay.getConfig()['srcdir'] == '' and 
-				self.config.rDisplay.getConfig()['srcdir'] == '' ):
+				self.config.lDisplay.srcdir == '' and 
+				self.config.rDisplay.srcdir == '' ):
 			logging.error('** Please setting srcdir in Daemonize mode.')
 			raise Core.CoreRuntimeError('No setting srcdir ind Daemonize mode.')
 
 		logging.debug('%20s [%d,%d]'
 				 % ( 'left display size'
-				 , self.config.lDisplay.getConfig()['width']
-				 , self.config.rDisplay.getConfig()['width'] ))
+				 , self.config.lDisplay.width
+				 , self.config.rDisplay.width ))
 		logging.debug('%20s [%d,%d]'
 				 % ( 'right display size'
-				 , self.config.lDisplay.getConfig()['height']
-				 , self.config.rDisplay.getConfig()['height'] ))
+				 , self.config.lDisplay.height
+				 , self.config.rDisplay.height ))
 		logging.debug('%20s [%s,%s]'
 				 % ( 'position'
-				 , self.config.lDisplay.getConfig()['posit']
-				 , self.config.rDisplay.getConfig()['posit'] ))
+				 , self.config.lDisplay.posit
+				 , self.config.rDisplay.posit ))
 		logging.debug('%20s [%s]'
 				 % ( 'srcdir to left'
-				 , self.config.lDisplay.getConfig()['srcdir'] ))
+				 , self.config.lDisplay.srcdir ))
 		logging.debug('%20s [%s]'
 				 % ( 'srcdir to right'
-				 , self.config.rDisplay.getConfig()['srcdir'] ))
+				 , self.config.rDisplay.srcdir ))
 
 
 	def _initializeWorkSpace(self):
@@ -102,15 +102,15 @@ class Core(object):
 
 		logging.info('Current WorkSpace setting as.')
 		logging.debug('%20s [%d,%d]'
-			 % ( 'WorkSpace Size', self.Ws.getSize().w, self.Ws.getSize().h ))
+			 % ( 'WorkSpace Size', self.Ws.Size.w, self.Ws.Size.h ))
 		logging.debug('%20s [%s]'
 			 % ( 'WorkSpace depth', self.Ws.getDepth() ))
 
 		logging.debug('Config Setting To WorkSpace().')
-		self.Ws.setScreenSize([self.config.lDisplay.getConfig()['width']
-								, self.config.lDisplay.getConfig()['height']]
-								, [self.config.rDisplay.getConfig()['width']
-								, self.config.rDisplay.getConfig()['height']])
+		self.Ws.setScreenSize((self.config.lDisplay.width
+								, self.config.lDisplay.height)
+								, (self.config.rDisplay.width
+								, self.config.rDisplay.height))
 
 		if not self.Ws.compareToScreen():
 			logging.error(
@@ -140,10 +140,10 @@ class Core(object):
 		"""
 		logging.info('Checking imgType as Imgfile.')
 
-		if ( Img1.getSize().w < Ws.lScreen.Size.w or Img1.getSize().w < Ws.rScreen.Size.w ):
+		if ( Img1.Size.w < Ws.lScreen.Size.w or Img1.Size.w < Ws.rScreen.Size.w ):
 			if Img1.isDual():
 				setattr(Img1, 'imgType', 'dual')
-		if ( Img2.getSize().w < Ws.lScreen.Size.w or Img2.getSize().w < Ws.rScreen.Size.w ):
+		if ( Img2.Size.w < Ws.lScreen.Size.w or Img2.Size.w < Ws.rScreen.Size.w ):
 			if Img2.isDual():
 				setattr(Img2, 'imgType', 'dual')
 
@@ -232,17 +232,17 @@ class Core(object):
 		tmpMerginH = tmpMergin[2] + tmpMergin[3]
 		logging.debug('%20s [%s]' % ( 'height mergin', tmpMerginH) )
 
-		if Img.getSize().w > tmpScreen.getSize().w:
-			Img.setSize( (tmpScreen.getSize().w - tmpMerginW), 
-					int(max( Img.getSize().h
-					 * (tmpScreen.getSize().w - tmpMerginW) / Img.getSize().w, 1 )) )
-		if Img.getSize().h > tmpScreen.getSize().h:
-			Img.setSize( int(max( Img.getSize().w
-					 * (tmpScreen.getSize().h - tmpMerginH) / Img.getSize().h , 1 )), 
-					(tmpScreen.getSize().h - tmpMerginH) )
+		if Img.Size.w > tmpScreen.Size.w:
+			Img.setSize( (tmpScreen.Size.w - tmpMerginW), 
+					int(max( Img.Size.h
+					 * (tmpScreen.Size.w - tmpMerginW) / Img.Size.w, 1 )) )
+		if Img.Size.h > tmpScreen.Size.h:
+			Img.setSize( int(max( Img.Size.w
+					 * (tmpScreen.Size.h - tmpMerginH) / Img.Size.h , 1 )), 
+					(tmpScreen.Size.h - tmpMerginH) )
 
-		Img.reSize( Img.getSize().w, Img.getSize().h)
-		logging.debug('%20s [%d,%d]' % ( 'converted size', Img.getSize().w, Img.getSize().h) )
+		Img.reSize( Img.Size.w, Img.Size.h)
+		logging.debug('%20s [%d,%d]' % ( 'converted size', Img.Size.w, Img.Size.h) )
 
 
 	def _allocateCenter(self, Ws, Img1, Img2):
@@ -337,10 +337,10 @@ class Core(object):
 		self._bindingImgToScreen(Option.getFixed, Img1, Img2)
 
 		logging.info('Calculate mergin.')
-		lMergin = [Option.getLMergin(), 0, Option.getTopMergin(), Option.getBtmMergin()]
+		lMergin = (Option.getLMergin(), 0, Option.getTopMergin(), Option.getBtmMergin())
 		logging.debug('%20s [%d,%d,%d,%d]'
 				 % ( 'left Screen mergin', lMergin[0], lMergin[1], lMergin[2], lMergin[3] ))
-		rMergin = [0, Option.getRMergin(), Option.getTopMergin(), Option.getBtmMergin()]
+		rMergin = (0, Option.getRMergin(), Option.getTopMergin(), Option.getBtmMergin())
 		logging.debug('%20s [%d,%d,%d,%d]'
 				 % ( 'right Screen mergin', rMergin[0], rMergin[1], rMergin[2], rMergin[3] ))
 
@@ -418,8 +418,8 @@ class Core(object):
 
 	def timerRun(self):
 		try:
-			LChangerDir = ChangerDir(self.config.lDisplay.getConfig()['srcdir'])
-			RChangerDir = ChangerDir(self.config.rDisplay.getConfig()['srcdir'])
+			LChangerDir = ChangerDir(self.config.lDisplay.srcdir)
+			RChangerDir = ChangerDir(self.config.rDisplay.srcdir)
 		except ChangerDir.FileCountZeroError, msg:
 			raise Core.CoreRuntimeError(msg.value)
 
@@ -432,8 +432,8 @@ class Core(object):
 
 	def background(self):
 		try:
-			LChangerDir = ChangerDir(self.config.lDisplay.getConfig()['srcdir'])
-			RChangerDir = ChangerDir(self.config.rDisplay.getConfig()['srcdir'])
+			LChangerDir = ChangerDir(self.config.lDisplay.srcdir)
+			RChangerDir = ChangerDir(self.config.rDisplay.srcdir)
 		except ChangerDir.FileCountZeroError, msg:
 			logging.error('** %s.' % msg)
 			sys.exit(2)
@@ -461,7 +461,7 @@ class Core(object):
 			except ImgFile.ImgFileIOError, msg:
 					raise Core.CoreRuntimeError(msg.value)
 			logging.info('Create Img object. [%s]' % path)
-			logging.debug('%20s [%d,%d]' % ( 'Img', Img.getSize().w, Img.getSize().h ))
+			logging.debug('%20s [%d,%d]' % ( 'Img', Img.Size.w, Img.Size.h ))
 			return Img
 		else:
 #			Separate
@@ -476,7 +476,7 @@ class Core(object):
 		if (self.option.lengthArgs() == 2 or 
 			( self.option.lengthArgs() == 1 and
 			 not self.option.getCombine() )):
-			Imgs = [self._loadImgFile(self.option.getLArg()), self._loadImgFile(self.option.getRArg())]
+			Imgs = (self._loadImgFile(self.option.getLArg()), self._loadImgFile(self.option.getRArg()))
 			bkImg = self._optimizeWallpaper(self.option, self.config, self.Ws, Imgs[0], Imgs[1])
 			tmpPath = self.option.getSavePath()
 			if tmpPath <> None:
@@ -490,7 +490,6 @@ class Core(object):
 					self._setWall(None, self.option.getLArg())
 				else:
 					self._setWall(None, self.option.getRArg())
-
 
 	def __init__(self, Options):
 		self.option = Options

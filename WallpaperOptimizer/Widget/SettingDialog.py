@@ -24,13 +24,14 @@ class SettingDialog(DialogBase):
 			width = '0'
 		if height == '':
 			height = '0'
-		return [int(width), int(height)]
+		return (int(width), int(height))
 
 	def _createCsvRecord(self, pos):
 		if pos == 'left':
 			strlr = 'L'
 		elif pos == 'right':
 			strlr = 'R'
+		# cf.writenow
 		return [str(self._setSize(strlr)[0]) + 'x' + str(self._setSize(strlr)[1])
 				 , pos
 				 , self.walkTree.get_widget('entSrcdir' + strlr).get_text()]
@@ -53,7 +54,7 @@ class SettingDialog(DialogBase):
 			self._runErrorDialog('** CoreRuntimeError: %s. ' % msg)
 
 	def btnClear_clicked(self, widget):
-		self._setSettingDialogWidget([0,0], [0,0], ['',''])
+		self._setSettingDialogWidget((0,0), (0,0), ('',''))
 
 	def _setSettingDialogWidget(self, lDisplaySize, rDisplaySize, srcdirs):
 		for lr in (0,1):
@@ -89,10 +90,10 @@ class SettingDialog(DialogBase):
 				self.entSrcdirR.get_text()
 				 ]
 			self.Dialog.destroy()
-			return [self.lDisplaySize, self.rDisplaySize, self.srcdirs]
+			return (self.lDisplaySize, self.rDisplaySize, self.srcdirs)
 		else:
 			self.Dialog.destroy()
-			return [False, False, False]
+			return (False, False, False)
 
 	def _linkGladeTree(self):
 		self.entSrcdirL = self.walkTree.get_widget('entSrcdirL')
@@ -102,7 +103,7 @@ class SettingDialog(DialogBase):
 
 	def __init__(self, gladefile):
 		self.gladefile = gladefile
-		[self.walkTree, self.Dialog] = self.loadGladeTree(self.gladefile, "SettingDialog")
+		(self.walkTree, self.Dialog) = self.loadGladeTree(self.gladefile, "SettingDialog")
 		self._linkGladeTree()
 
 		dic = {

@@ -26,16 +26,21 @@ def WorkSpace_Inner_Screen_test():
 	eq_(ws.rScreen.isSquare(), True)
 	eq_(ws.rScreen.isWide(), False)
 
-	eq_(ws.getScreenSize(), [[1920,1080], [1024,768]])
+	eq_(ws.getScreenSize(), ((1920,1080), (1024,768)))
 
 def WorkSpace_marugoto_Screen_test():
 	ws = WorkSpace()
 	ws.setScreenSize([1920,1080], [1280,1024])
-	eq_(ws.getScreenSize(), [[1920,1080], [1280,1024]])
+	eq_(ws.getScreenSize(), ((1920,1080), (1280,1024)))
 
-def WorkSpace_compareToScreen1_test():
+def WorkSpace_compareToScreen1_list_test():
 	ws = WorkSpace()
 	ws.setScreenSize([1920, 1080], [1280,1024])
+	eq_(ws.compareToScreen(), True)
+
+def WorkSpace_compareToScreen1_tuple_test():
+	ws = WorkSpace()
+	ws.setScreenSize((1920, 1080), (1280,1024))
 	eq_(ws.compareToScreen(), True)
 
 def WorkSpace_compareToScreen2_test():
@@ -43,10 +48,10 @@ def WorkSpace_compareToScreen2_test():
 	ws.setScreenSize([1920, 1080], [1920,1080])
 	eq_(ws.compareToScreen(), False)
 
-def WorkSpace_setScreenType_test():
+def WorkSpace_setAttrScreenType_test():
 	ws = WorkSpace()
 	ws.setScreenSize([1920, 1080], [1280,1024])
-	ws.setScreenType()
+	ws.setAttrScreenType()
 	eq_(ws.lScreen.displayType, 'wide')
 	eq_(ws.rScreen.displayType, 'square')
 

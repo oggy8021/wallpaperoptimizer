@@ -54,6 +54,11 @@ def extends_Bounds_test():
 	eq_(rect2.getWidth(), 1920)
 	eq_(rect2.getHeight(), 1080)
 
+	eq_(rect1.Size.w, 1024)
+	eq_(rect1.Size.h, 768)
+	eq_(rect2.Size.w, 1920)
+	eq_(rect2.Size.h, 1080)
+
 	rect1.calcCenter()
 	eq_(rect1.center.x, 512)
 	eq_(rect1.center.y, 384)
@@ -78,5 +83,5 @@ def Rectangle_containsPlusMergin_test():
 	rect1.setSize(1910,1070)
 	rect2.setSize(1920,1080)
 
-	ok_( rect2.containsPlusMergin(rect1, [5,5,5,5]) )
-	ok_( not rect1.containsPlusMergin(rect2, [10,10,0,0]) )
+	ok_( rect2.containsPlusMergin(rect1, (5,5,5,5)) )
+	ok_( not rect1.containsPlusMergin(rect2, (10,10,0,0)) )

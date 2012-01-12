@@ -35,7 +35,7 @@ class ImgOpenDialog(DialogBase):
 			return False
 
 	def __init__(self, gladefile):
-		[self.walkTree, self.Dialog] = self.loadGladeTree(gladefile, "ImgOpenDialog")
+		(self.walkTree, self.Dialog) = self.loadGladeTree(gladefile, "ImgOpenDialog")
 		imgFilter = gtk.FileFilter()
 		imgFilter.set_name("画像")
 # Changer的には、この４つ
