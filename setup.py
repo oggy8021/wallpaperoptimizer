@@ -100,3 +100,4 @@ if __name__ == "__main__":
 		rmfile(os.path.join(PREFIX,params['data_files'][0][0],params['data_files'][0][1][0]))
 		rmdir(os.path.join(PREFIX,params['data_files'][1][0]))
 		rmfile(os.path.join(params['data_files'][2][0],params['data_files'][2][1][0]))
+

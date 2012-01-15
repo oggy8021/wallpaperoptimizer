@@ -135,7 +135,7 @@ def do_main():
 								, "1.0"
 								, factory)
 
-	logging.debug('Quit ... wallpaperoptimizer.')
+	logging.info('Quit ... wallpaperoptimizer.')
 
 if __name__ == "__main__":
 	do_main()
