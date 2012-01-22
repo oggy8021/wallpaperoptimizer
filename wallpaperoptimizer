@@ -68,7 +68,6 @@ def factory(applet, iid):
 	return gtk.TRUE
 
 def do_main():
-#	analize commandline option
 	try:
 		option = Options()
 	except OptionValueError, msg:
