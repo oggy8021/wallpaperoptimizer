@@ -2,6 +2,9 @@
 【wallpaper optimizer】
   ～wallpaperoptimizer is wallpaper changer for multi screen.～
 
+													Katsuhiro Ogikubo
+													oggyist@gmail.com
+
 1.はじめに
   wallpaper optimizerは、マルチモニタ使用下において壁紙を最適に配置する
   プログラムです。以下の動作モードと機能を備えます。
@@ -86,7 +89,7 @@ The Python Imaging Library is:
     Copyright © 1995-2005 by Fredrik Lundh
 
 10.変更履歴
-2012.1.xx	v0.x.0.0	初版リリース
+2012.2.1	v0.2.0.0	初版(人柱版)リリース
 
 
 
