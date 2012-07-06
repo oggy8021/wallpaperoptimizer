@@ -13,7 +13,7 @@
 # $ killall wallpaperoptimizer
 
 #	/usr/bin
-#			wallpaperoptimizer
+#			wallpaperoptimiz
 #	/usr/share
 #			wallopt.png
 #			wallopt_off.png
@@ -46,7 +46,7 @@ params = {
 	'author': 'Katsuhiro Ogikubo',
 	'author_email': 'oggyist@gmail.com',
 	'url': 'http://oggy.no-ip.info/blog/',
-	'scripts': ['wallpaperoptimizer'],
+	'scripts': ['wallpaperoptimiz'],
 	'packages': ['WallpaperOptimizer', 'WallpaperOptimizer/Imaging', 'WallpaperOptimizer/Widget'],
 	'package_dir': {'WallpaperOptimizer': 'WallpaperOptimizer'},
 	'package_data': {'WallpaperOptimizer': ['glade/wallpositapplet.glade']},
