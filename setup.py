@@ -37,7 +37,7 @@
 #			__init__.py
 
 __NAME__='wallpaperoptimizer'
-__VERSION__='0.2.0.0'
+__VERSION__='0.3.0.0'
 
 params = {
 	'name': __NAME__,
@@ -50,13 +50,6 @@ params = {
 	'packages': ['WallpaperOptimizer', 'WallpaperOptimizer/Imaging', 'WallpaperOptimizer/Widget'],
 	'package_dir': {'WallpaperOptimizer': 'WallpaperOptimizer'},
 	'package_data': {'WallpaperOptimizer': ['glade/wallpositapplet.glade']},
-	'data_files': [
-		('lib/bonobo/servers',
-			['wallpaperoptimizer.server']),
-		('share/WallpaperOptimizer',
-			['wallopt.png', 'wallopt_off.png']),
-		('/etc/logrotate.d',
-			['wallopt'])],
 	'license': 'GPL3',
 #	'download_url': 'http://oggy.no-ip.info/blog/wallpaperoptimizer-%s.tar.gz' % (__VERSION__),
 	'classifiers': [
@@ -91,6 +84,24 @@ def rmdir(path):
 
 if __name__ == "__main__":
 	print "*** %s action." % sys.argv[1]
+	if os.uname()[4] == 'x86_64':
+		params['data_files'] = [
+			('lib64/bonobo/servers',
+				['wallpaperoptimizer.server']),
+			('share/WallpaperOptimizer',
+				['wallopt.png', 'wallopt_off.png']),
+			('/etc/logrotate.d',
+				['wallopt'])]
+	else:
+		params['data_files'] = [
+			('lib/bonobo/servers',
+				['wallpaperoptimizer.server']),
+			('share/WallpaperOptimizer',
+				['wallopt.png', 'wallopt_off.png']),
+			('/etc/logrotate.d',
+				['wallopt'])]
+
+
 	if sys.argv[1] == 'install' or sys.argv[1] == 'sdist' or sys.argv[1] == 'bdist':
 		setup(**params)
 
@@ -100,4 +111,8 @@ if __name__ == "__main__":
 		rmfile(os.path.join(PREFIX,params['data_files'][0][0],params['data_files'][0][1][0]))
 		rmdir(os.path.join(PREFIX,params['data_files'][1][0]))
 		rmfile(os.path.join(params['data_files'][2][0],params['data_files'][2][1][0]))
+
+#	elif sys.argv[1] == 'dump':
+#		print type(params)
+#		print params['data_files'][0][0]
 
