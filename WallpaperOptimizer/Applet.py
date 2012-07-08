@@ -246,7 +246,7 @@ class Applet(object):
 	def btnDaemonize_clicked(self, widget):
 		self.window.hide()
 		self.window.set_icon(self._select_icon(self.bCanceled))
-		self.btnOnTooltip.set_tip(self.applet, 'changer on')
+		self.btnOnTooltip.set_text('changer on')
 		self.bCanceled = False
 		self.bVisible = False
 		self._setPanelButton(self.applet, self.bCanceled)
@@ -262,7 +262,7 @@ class Applet(object):
 		self.bCanceled = True
 		self._setPanelButton(self.applet, self.bCanceled)
 		self.window.set_icon(self._select_icon(self.bCanceled))
-		self.btnOnTooltip.set_tip(self.applet, 'changer off')
+		self.btnOnTooltip.set_text('changer off')
 		glibobj.source_remove(self.timeoutObject)
 		self.timeoutObject = None
 		self._writeStatusbar(self.statbar, self.cid_stat, 'Cancel ... changer action.')
@@ -450,8 +450,8 @@ class Applet(object):
 		self.btnOnPanelBar.connect("button-press-event", self._setMenu, self.applet)
 		self.applet.add(self.btnOnPanelBar)
 #	  add Tooltips
-		self.btnOnTooltip = gtk.Tooltips()
-		self.btnOnTooltip.set_tip(self.applet, 'changer off')
+		self.btnOnTooltip = gtk.Tooltip()
+		self.btnOnTooltip.set_text('changer off')
 		self.applet.show_all()
 		self.applet.connect("destroy", gtk.main_quit)
 #	  AppletOptions extends Options class
