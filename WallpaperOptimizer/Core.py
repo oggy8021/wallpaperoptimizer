@@ -73,10 +73,10 @@ class Core(object):
 		logging.debug('%20s [%d,%d]'
 				 % ( 'left display size'
 				 , self.config.lDisplay.width
-				 , self.config.rDisplay.width ))
+				 , self.config.lDisplay.height ))
 		logging.debug('%20s [%d,%d]'
 				 % ( 'right display size'
-				 , self.config.lDisplay.height
+				 , self.config.rDisplay.width
 				 , self.config.rDisplay.height ))
 		logging.debug('%20s [%s,%s]'
 				 % ( 'position'
@@ -107,10 +107,12 @@ class Core(object):
 			 % ( 'WorkSpace depth', self.Ws.getDepth() ))
 
 		logging.debug('Config Setting To WorkSpace().')
+
 		self.Ws.setScreenSize((self.config.lDisplay.width
 								, self.config.lDisplay.height)
 								, (self.config.rDisplay.width
 								, self.config.rDisplay.height))
+		self.Ws.setBool(self.config.lDisplay.getBool(), self.config.rDisplay.getBool())
 
 		if not self.Ws.compareToScreen():
 			logging.error(
@@ -130,8 +132,18 @@ class Core(object):
 				 % (self.Ws.Size.h, self.Ws.rScreen.Size.h ))
 
 		self.Ws.setAttrScreenType()
-		logging.debug('%20s [%s,%s]'
-			 	 % ( 'display type' , self.Ws.lScreen.displayType, self.Ws.rScreen.displayType ))
+		if (hasattr(self.Ws.lScreen, 'displayType')) and (hasattr(self.Ws.rScreen, 'displayType')):
+			logging.debug('%20s [%s,%s]'
+				 	 % ( 'display type' , self.Ws.lScreen.displayType, self.Ws.rScreen.displayType ))
+		elif (not hasattr(self.Ws.lScreen, 'displayType')) and hasattr(self.Ws.rScreen, 'displayType'):
+			logging.debug('%20s [%s,%s]'
+				 	 % ( 'display type' , "undefined", self.Ws.rScreen.displayType ))
+		elif hasattr(self.Ws.lScreen, 'displayType') and (not hasattr(self.Ws.rScreen, 'displayType')):
+			logging.debug('%20s [%s,%s]'
+				 	 % ( 'display type' , self.Ws.lScreen.displayType, "undefined"))
+		elif (not hasattr(self.Ws.lScreen, 'displayType')) and (not hasattr(self.Ws.rScreen, 'displayType')):
+			logging.debug('%20s [%s,%s]'
+				 	 % ( 'display type' , "undefined", "undefined" ))
 
 
 	def _checkImgType(self, Ws, Img1, Img2):

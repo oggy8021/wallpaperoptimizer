@@ -37,15 +37,25 @@ class WorkSpace(Rectangle):
 		return True
 
 	def setAttrScreenType(self):
-		if self.lScreen.isSquare():
-			setattr(self.lScreen, 'displayType', 'square')
-		if self.lScreen.isWide():
-			setattr(self.lScreen, 'displayType', 'wide')
+		if self.lScreen.bSetting:
+			if self.lScreen.isSquare():
+				setattr(self.lScreen, 'displayType', 'square')
+			if self.lScreen.isWide():
+				setattr(self.lScreen, 'displayType', 'wide')
+		else:
+			return False
 
-		if self.rScreen.isSquare():
-			setattr(self.rScreen, 'displayType', 'square')
-		if self.rScreen.isWide():
-			setattr(self.rScreen, 'displayType', 'wide')
+		if self.rScreen.bSetting:
+			if self.rScreen.isSquare():
+				setattr(self.rScreen, 'displayType', 'square')
+			if self.rScreen.isWide():
+				setattr(self.rScreen, 'displayType', 'wide')
+		else:
+			return False
+
+	def setBool(self, lBool, rBool):
+		setattr(self.lScreen, 'bSetting', lBool)
+		setattr(self.rScreen, 'bSetting', rBool)
 
 	def __init__(self):
 		self.depth = 24

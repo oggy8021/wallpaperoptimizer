@@ -183,8 +183,10 @@ class Applet(object):
 					display.setWidth(displaysize[wh])
 					display.setHeight(displaysize[wh])
 				display.setSrcdir(settingArgs[2][lr])
-			self.core.config.checkBool()
-			if self.core.config.getBool():
+#			self.core.config.checkBool()
+			self.core.config.lDisplay.checkBool()
+			self.core.config.rDisplay.checkBool()
+			if self.core.config.lDisplay.getBool():
 				self.btnDaemonize.set_sensitive(True)
 			else:
 				self.btnDaemonize.set_sensitive(False)
@@ -406,7 +408,7 @@ class Applet(object):
 
 	def _setMenu(self, widget, event, applet):
 		if event.button == 1:
-			if self.core.config.getBool():
+			if self.core.config.lDisplay.getBool():
 				if self.bCanceled:
 					self.btnDaemonize_clicked(None)
 				else:
@@ -468,7 +470,7 @@ class Applet(object):
 		self._linkGladeTree()
 		self.btnSave.set_sensitive(False)
 		self.btnSetWall.set_sensitive(False)
-		if not self.core.config.getBool():
+		if not self.core.config.lDisplay.getBool():
 			self.btnDaemonize.set_sensitive(False)
 		self.btnCancelDaemonize.set_sensitive(False)
 		self.cid_stat = self.statbar.get_context_id('status')

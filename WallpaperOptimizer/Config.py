@@ -41,11 +41,19 @@ class Config(object):
 			self.posit = p
 			self.srcdir = s
 
+		def checkBool(self):
+			if (self.width <> 0 and self.height <> 0 and self.srcdir <> ''):
+				self.bSetting = True
+
+		def getBool(self):
+			return self.bSetting
+
 		def __init__(self):
 			self.width = 0
 			self.height = 0
 			self.posit = None
 			self.srcdir = ''
+			self.bSetting = False
 
 	def setConfig(self, size, p, s):
 		if p == 'left':
@@ -57,17 +65,18 @@ class Config(object):
 		subStr = size.split('x')
 		display.setConfig(int(subStr[0]), int(subStr[1]), p, s)
 
-	def checkBool(self):
-		if (((self.lDisplay.width <> 0
-				and self.lDisplay.height <> 0)
-				and self.lDisplay.srcdir <> '') and 
-			((self.rDisplay.width <> 0
-				and self.rDisplay.height <> 0)
-				and self.rDisplay.srcdir <> '')):
-			self.bSetting = True
+#	def checkBool(self):
+#		if (((self.lDisplay.width <> 0
+#				and self.lDisplay.height <> 0)
+#				and self.lDisplay.srcdir <> '')
+#			 or ((self.rDisplay.width <> 0
+#				and self.rDisplay.height <> 0)
+#				and self.rDisplay.srcdir <> '')
+#			):
+#			self.bSetting = True
 
-	def getBool(self):
-		return self.bSetting
+#	def getBool(self):
+#		return self.bSetting
 
 	def __init__(self
 						, configfile=None
@@ -85,7 +94,9 @@ class Config(object):
 				for i, cfline in enumerate(cf):
 					subStr = cfline.rstrip().split(',')
 					self.setConfig(subStr[0], subStr[1], subStr[2])
-				self.checkBool()
+#				self.checkBool()
+				self.lDisplay.checkBool()
+				self.rDisplay.checkBool()
 
 			except ValueError:
 				cf.close()
@@ -98,4 +109,7 @@ class Config(object):
 		else:
 			self.lDisplay.setPosit('left')
 			self.rDisplay.setPosit('right')
-			self.checkBool()
+#			self.checkBool()
+			self.lDisplay.checkBool()
+			self.rDisplay.checkBool()
+

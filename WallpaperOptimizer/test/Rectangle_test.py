@@ -85,3 +85,4 @@ def Rectangle_containsPlusMergin_test():
 
 	ok_( rect2.containsPlusMergin(rect1, (5,5,5,5)) )
 	ok_( not rect1.containsPlusMergin(rect2, (10,10,0,0)) )
+

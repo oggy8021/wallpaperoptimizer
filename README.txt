@@ -89,6 +89,9 @@ The Python Imaging Library is:
     Copyright © 1995-2005 by Fredrik Lundh
 
 10.変更履歴
+2012.x.x	v0.3.0.0	0.3版リリース
+						python2.6下での開発に移行
+						x86_64インストレーションに対応
 2012.2.1	v0.2.0.0	初版(人柱版)リリース
 
 
