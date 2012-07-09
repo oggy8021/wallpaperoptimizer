@@ -132,18 +132,19 @@ class Core(object):
 				 % (self.Ws.Size.h, self.Ws.rScreen.Size.h ))
 
 		self.Ws.setAttrScreenType()
-		if (hasattr(self.Ws.lScreen, 'displayType')) and (hasattr(self.Ws.rScreen, 'displayType')):
-			logging.debug('%20s [%s,%s]'
-				 	 % ( 'display type' , self.Ws.lScreen.displayType, self.Ws.rScreen.displayType ))
-		elif (not hasattr(self.Ws.lScreen, 'displayType')) and hasattr(self.Ws.rScreen, 'displayType'):
-			logging.debug('%20s [%s,%s]'
-				 	 % ( 'display type' , "undefined", self.Ws.rScreen.displayType ))
-		elif hasattr(self.Ws.lScreen, 'displayType') and (not hasattr(self.Ws.rScreen, 'displayType')):
-			logging.debug('%20s [%s,%s]'
-				 	 % ( 'display type' , self.Ws.lScreen.displayType, "undefined"))
-		elif (not hasattr(self.Ws.lScreen, 'displayType')) and (not hasattr(self.Ws.rScreen, 'displayType')):
-			logging.debug('%20s [%s,%s]'
-				 	 % ( 'display type' , "undefined", "undefined" ))
+
+
+		if (hasattr(self.Ws.lScreen, 'displayType')):
+			tmpDisplayType1 = self.Ws.lScreen.displayType
+		else:
+			tmpDisplayType1 = "undefined"
+		if (hasattr(self.Ws.rScreen, 'displayType')):
+			tmpDisplayType2 = self.Ws.rScreen.displayType
+		else:
+			tmpDisplayType2 = "undefined"
+
+		logging.debug('%20s [%s,%s]'
+			 	 % ( 'display type' , tmpDisplayType1, tmpDisplayType2))
 
 
 	def _checkImgType(self, Ws, Img1, Img2):
