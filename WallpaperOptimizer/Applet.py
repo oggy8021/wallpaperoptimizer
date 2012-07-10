@@ -183,7 +183,6 @@ class Applet(object):
 					display.setWidth(displaysize[wh])
 					display.setHeight(displaysize[wh])
 				display.setSrcdir(settingArgs[2][lr])
-#			self.core.config.checkBool()
 			self.core.config.lDisplay.checkBool()
 			self.core.config.rDisplay.checkBool()
 			if self.core.config.lDisplay.getBool():

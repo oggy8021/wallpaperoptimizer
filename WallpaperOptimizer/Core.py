@@ -356,22 +356,25 @@ class Core(object):
 		rMergin = (0, Option.getRMergin(), Option.getTopMergin(), Option.getBtmMergin())
 		logging.debug('%20s [%d,%d,%d,%d]'
 				 % ( 'right Screen mergin', rMergin[0], rMergin[1], rMergin[2], rMergin[3] ))
+		if self.Ws.lScreen.bSetting and self.Ws.rScreen.bSetting:
+			if not self._checkContain(Ws, Img1, lMergin):
+				self._downsizeImg(Ws, Img1, lMergin)
+			if not self._checkContain(Ws, Img2, rMergin):
+				self._downsizeImg(Ws, Img2, rMergin)
 
-		if not self._checkContain(Ws, Img1, lMergin):
-			self._downsizeImg(Ws, Img1, lMergin)
-		if not self._checkContain(Ws, Img2, rMergin):
-			self._downsizeImg(Ws, Img2, rMergin)
+			self._allocateCenter(Ws, Img1, Img2)
+			self._allocateImg(Option, Ws, Img1)
+			self._allocateImg(Option, Ws, Img2)
 
-		self._allocateCenter(Ws, Img1, Img2)
-		self._allocateImg(Option, Ws, Img1)
-		self._allocateImg(Option, Ws, Img2)
+			bkImg = ImgFile('', Option.getBgcolor(), Ws.Size.w, Ws.Size.h)
 
-		bkImg = ImgFile('', Option.getBgcolor(), Ws.Size.w, Ws.Size.h)
-
-		self._mergeWallpaper(Ws, bkImg, Img1)
-		self._mergeWallpaper(Ws, bkImg, Img2)
-
-		return bkImg
+			self._mergeWallpaper(Ws, bkImg, Img1)
+			self._mergeWallpaper(Ws, bkImg, Img2)
+			return bkImg
+		elif self.Ws.lScreen.bSetting and not self.Ws.rScreen.bSetting:
+			return Img1
+		elif not self.Ws.lScreen.bSetting and self.Ws.rScreen.bSetting:
+			return Img2
 
 
 	def _setWall(self, bkImg, tmpPath=None):
