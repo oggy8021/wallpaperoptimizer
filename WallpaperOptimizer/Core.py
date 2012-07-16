@@ -470,7 +470,6 @@ class Core(object):
 			sys.exit(0)
 
 	def _loadImgFile(self, path):
-#			Combine
 		if path <> '':
 			try:
 				Img = ImgFile(path)
@@ -480,7 +479,6 @@ class Core(object):
 			logging.debug('%20s [%d,%d]' % ( 'Img', Img.Size.w, Img.Size.h ))
 			return Img
 		else:
-#			Separate
 			try:
 				dummyImg = ImgFile('', self.option.getBgcolor())
 			except ImgFile.ImgFileIOError, msg:
