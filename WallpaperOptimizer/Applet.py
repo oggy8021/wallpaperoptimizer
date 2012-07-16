@@ -161,16 +161,16 @@ class Applet(object):
 
 	def btnSetting_clicked(self, widget):
 		settingDialog = SettingDialog(self.gladefile)
-		settingArgs = settingDialog.openDialog((
+		settingArgs = settingDialog.openDialog([
 					self.core.config.lDisplay.width
 					, self.core.config.lDisplay.height
-					),(
+					],[
 					self.core.config.rDisplay.width
 					, self.core.config.rDisplay.height
-					),(
+					],[
 					self.core.config.lDisplay.srcdir
 					, self.core.config.rDisplay.srcdir
-					))
+					])
 		if not settingArgs == (False, False, False):
 			for lr in (0,1):
 				if lr == 0:
