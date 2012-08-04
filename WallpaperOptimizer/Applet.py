@@ -346,8 +346,6 @@ class Applet(object):
 		self.spnRMergin.set_sensitive(boolean)
 		self.spnTopMergin.set_sensitive(boolean)
 		self.spnBtmMergin.set_sensitive(boolean)
-		self.radCombine.set_sensitive(boolean)
-		self.radSeparate.set_sensitive(boolean)
 		self.radFixed.set_sensitive(boolean)
 		self.radNoFixed.set_sensitive(boolean)
 		self.btnSetting.set_sensitive(boolean)
@@ -361,7 +359,9 @@ class Applet(object):
 		else:
 			self.btnCancelDaemonize.set_sensitive(True)
 #	  未実装ボタン
-#		self.btnHelp.set_sensitive(False)
+#		self.radCombine.set_sensitive(boolean)
+#		self.radSeparate.set_sensitive(boolean)
+#		self.btnHelp.set_sensitive(boolean)
 
 #panel control group
 	def _select_icon(self,bCanceled):
@@ -496,6 +496,8 @@ class Applet(object):
 			}
 		self.walkTree.signal_autoconnect(dic)
 #	  未実装ボタン
+		self.radCombine.set_sensitive(False)
+		self.radSeparate.set_sensitive(False)
 		self.btnHelp.set_sensitive(False)
 #	  View
 		self._writeStatusbar(self.statbar, self.cid_stat, 'Running ... applet mode.')
