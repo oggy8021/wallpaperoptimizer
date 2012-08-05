@@ -4,11 +4,18 @@ from nose.tools import ok_, eq_
 
 from WallpaperOptimizer.WorkSpace import WorkSpace
 
-def WorkSpace_init_test():
+def WorkSpace_now_left_screen_test():
+	ws = WorkSpace()
+	eq_(ws.Size.w, 1920)
+	eq_(ws.Size.h, 1080)
+	eq_(ws.isSeparate(), True)
+	eq_(ws.getDepth(), 16)
+
+def WorkSpace_under_nVIDIA_Twinview_test():
 	ws = WorkSpace()
 	eq_(ws.Size.w, 3200)
 	eq_(ws.Size.h, 1080)
-	eq_(ws.depth, 24)
+#	eq_(ws.depth, 24)
 	eq_(ws.getDepth(), 24)
 
 def WorkSpace_Inner_Screen_test():
@@ -36,12 +43,12 @@ def WorkSpace_marugoto_Screen_test():
 def WorkSpace_compareToScreen1_list_test():
 	ws = WorkSpace()
 	ws.setScreenSize([1920, 1080], [1280,1024])
-	eq_(ws.compareToScreen(), True)
+	eq_(ws.compareToScreen(), False)
 
 def WorkSpace_compareToScreen1_tuple_test():
 	ws = WorkSpace()
 	ws.setScreenSize((1920, 1080), (1280,1024))
-	eq_(ws.compareToScreen(), True)
+	eq_(ws.compareToScreen(), False)
 
 def WorkSpace_compareToScreen2_test():
 	ws = WorkSpace()
@@ -64,5 +71,4 @@ def WorkSpace_Screen_undefine_test():
 	ws.setAttrScreenType()
 	ok_(hasattr(ws.lScreen, 'displayType'))
 	ok_(not hasattr(ws.rScreen, 'displayType'))
-
 

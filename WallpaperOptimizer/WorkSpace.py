@@ -24,6 +24,7 @@ class WorkSpace(Rectangle):
 	def isSeparate(self):
 		return self.separate
 
+#!	Twinview時に、各スクリーンサイズがxdyinfoでは取れないのでやはり必要
 	def setScreenSize(self, lDisplay, rDisplay):
 		self.lScreen.setSize(lDisplay[0], lDisplay[1])
 		self.rScreen.setSize(rDisplay[0], rDisplay[1])

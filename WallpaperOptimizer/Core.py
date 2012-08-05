@@ -108,17 +108,19 @@ class Core(object):
 
 		logging.debug('Config Setting To WorkSpace().')
 
-		self.Ws.setScreenSize((self.config.lDisplay.width
-								, self.config.lDisplay.height)
-								, (self.config.rDisplay.width
-								, self.config.rDisplay.height))
+#!		Separate時は、.walloptrcをどう書いても反映されない。
+		if not self.Ws.isSeparate():
+			self.Ws.setScreenSize((self.config.lDisplay.width
+									, self.config.lDisplay.height)
+									, (self.config.rDisplay.width
+									, self.config.rDisplay.height))
+			if not self.Ws.compareToScreen():
+				logging.error(
+					'** WorkSpace width[%d] < sum(left display size, right display size) [%d, %d].'
+					 % ( self.Ws.Size.w, self.Ws.lScreen.Size.w, self.Ws.rScreen.Size.w ))
+				raise Core.CoreRuntimeError('WorkSpace width over left/right display size summing')
+#!		ただし、妥当性だけは見られる
 		self.Ws.setBool(self.config.lDisplay.getBool(), self.config.rDisplay.getBool())
-
-		if not self.Ws.compareToScreen():
-			logging.error(
-				'** WorkSpace width[%d] < sum(left display size, right display size) [%d, %d].'
-				 % ( self.Ws.Size.w, self.Ws.lScreen.Size.w, self.Ws.rScreen.Size.w ))
-			raise Core.CoreRuntimeError('WorkSpace width over left/right display size summing')
 
 		if (hasattr(self.Ws.lScreen.Size, 'islessThanWorkSpaceHeight')
 		 and self.Ws.lScreen.Size.islessThanWorkSpaceHeight):
@@ -134,49 +136,44 @@ class Core(object):
 		self.Ws.setAttrScreenType()
 
 
-		if (hasattr(self.Ws.lScreen, 'displayType')):
-			tmpDisplayType1 = self.Ws.lScreen.displayType
-		else:
-			tmpDisplayType1 = "undefined"
-		if (hasattr(self.Ws.rScreen, 'displayType')):
-			tmpDisplayType2 = self.Ws.rScreen.displayType
-		else:
-			tmpDisplayType2 = "undefined"
+		if (not hasattr(self.Ws.lScreen, 'displayType')):
+			setattr(self.Ws.lScreen, 'displayType', 'undefined')
+		tmpDisplayType1 = self.Ws.lScreen.displayType
+		if (not hasattr(self.Ws.rScreen, 'displayType')):
+			setattr(self.Ws.rScreen, 'displayType', 'undefined')
+		tmpDisplayType2 = self.Ws.rScreen.displayType
 
 		logging.debug('%20s [%s,%s]'
 			 	 % ( 'display type' , tmpDisplayType1, tmpDisplayType2))
 
+		logging.info('Calculate center position to WorkSpace.')
+		self.Ws.lScreen.calcCenter()
+		self.Ws.rScreen.calcCenter()
+		logging.debug('%20s [%d,%d]'
+			 % ( 'left screen', self.Ws.lScreen.center.x, self.Ws.lScreen.center.y) )
+		logging.debug('%20s [%d,%d]'
+			 % ( 'right screen', self.Ws.rScreen.center.x, self.Ws.rScreen.center.y) )
 
-	def _checkImgType(self, Ws, Img1, Img2):
+
+	def _checkImgType(self, Ws, Img, line):
 		"""
 		ImgFile square type decide by aspectratio.
 		"""
 		logging.info('Checking imgType as Imgfile.')
 
-		if ( Img1.Size.w < Ws.lScreen.Size.w or Img1.Size.w < Ws.rScreen.Size.w ):
-			if Img1.isDual():
-				setattr(Img1, 'imgType', 'dual')
-		if ( Img2.Size.w < Ws.lScreen.Size.w or Img2.Size.w < Ws.rScreen.Size.w ):
-			if Img2.isDual():
-				setattr(Img2, 'imgType', 'dual')
+		if ( Img.Size.w < Ws.lScreen.Size.w or Img.Size.w < Ws.rScreen.Size.w ):
+			if Img.isDual():
+				setattr(Img, 'imgType', 'dual')
 
-		if Img1.isSquare():
-			setattr(Img1, 'imgType', 'square')
-		if Img1.isWide():
-			setattr(Img1, 'imgType', 'wide')
+		if Img.isSquare():
+			setattr(Img, 'imgType', 'square')
+		if Img.isWide():
+			setattr(Img, 'imgType', 'wide')
 
-		if Img2.isSquare():
-			setattr(Img2, 'imgType', 'square')
-		if Img2.isWide():
-			setattr(Img2, 'imgType', 'wide')
+		if not hasattr(Img, 'imgType'):
+			setattr(Img, 'imgType', 'other')
 
-		if not hasattr(Img1, 'imgType'):
-			setattr(Img1, 'imgType', 'other')
-		if not hasattr(Img2, 'imgType'):
-			setattr(Img2, 'imgType', 'other')
-
-		logging.debug('%20s [%s]' % ( 'imgType as Img1', Img1.imgType) )
-		logging.debug('%20s [%s]' % ( 'imgType as Img2', Img2.imgType) )
+		logging.debug('%20s%d [%s]' % ( 'imgType as Img', line, Img.imgType) )
 
 
 	def _bindingImgToScreen(self, Fixed, Img1, Img2):
@@ -193,12 +190,12 @@ class Core(object):
 			logging.debug('%20s [%s]' % ( 'Img2 fixed binding', Img2.posit) )
 		else:
 			# アスペクト比見て、ディスプレイのタイプに応じて優先的に割り当てる
-			if Img1.imgType == Ws.lScreen.displayType:
+			if Img1.imgType == self.Ws.lScreen.displayType:
 				setattr(Img1, 'posit', 'left')
 				logging.debug('%20s [%s]' % ( 'Img1 binding', Img1.posit) )
 				setattr(Img2, 'posit', 'right')
 				logging.debug('%20s [%s]' % ( 'Img2 binding', Img2.posit) )
-			elif Img1.imgType == Ws.rScreen.displayType:
+			elif Img1.imgType == self.Ws.rScreen.displayType:
 				setattr(Img1, 'posit', 'right')
 				logging.debug('%20s [%s]' % ( 'Img1 binding', Img1.posit) )
 				setattr(Img2, 'posit', 'left')
@@ -258,30 +255,13 @@ class Core(object):
 		logging.debug('%20s [%d,%d]' % ( 'converted size', Img.Size.w, Img.Size.h) )
 
 
-	def _allocateCenter(self, Ws, Img1, Img2):
+	def _allocateCenter(self, Ws, Img, line):
 		"""
 		ImgFile and Screen calculate center position.
 		"""
 		logging.info('Calculate center position.')
-
-		Ws.lScreen.calcCenter()
-		Ws.rScreen.calcCenter()
-		Img1.calcCenter()
-		Img2.calcCenter()
-
-		logging.debug('%20s [%d,%d]'
-			 % ( 'left screen', Ws.lScreen.center.x, Ws.lScreen.center.y) )
-		if Img1.posit == 'left':
-			logging.debug('%20s [%d,%d]' % ( 'Img1', Img1.center.x, Img1.center.y) )
-		else:
-			logging.debug('%20s [%d,%d]' % ( 'Img2', Img2.center.x, Img2.center.y) )
-
-		logging.debug('%20s [%d,%d]'
-			 % ( 'right screen', Ws.rScreen.center.x, Ws.rScreen.center.y) )
-		if Img1.posit == 'right':
-			logging.debug('%20s [%d,%d]' % ( 'Img1', Img1.center.x, Img1.center.y) )
-		else:
-			logging.debug('%20s [%d,%d]' % ( 'Img2', Img2.center.x, Img2.center.y) )
+		Img.calcCenter()
+		logging.debug('%20s%d [%d,%d]' % ( 'Img', line, Img.center.x, Img.center.y) )
 
 
 	def _allocateImg(self, Option, Ws, Img):
@@ -340,14 +320,15 @@ class Core(object):
 		bkImg.paste( Img, (Img.start.x, Img.start.y, Img.end.x, Img.end.y) )
 
 
-	def _optimizeWallpaper(self, Option, Config, Ws, Img1, Img2):
+	def _optimizeWallpapers(self, Option, Config, Ws, Img1, Img2):
 		"""
 		2 ImgFile allocate Wallpaper Img.
 		"""
-		logging.info('Optimizing ... wallpapaer.')
-		self._checkImgType(Ws, Img1, Img2)
+		logging.info('Optimizing ... wallpapaers.')
+		self._checkImgType(Ws, Img1, 1)
+		self._checkImgType(Ws, Img2, 2)
 
-		self._bindingImgToScreen(Option.getFixed, Img1, Img2)
+		self._bindingImgToScreen(Option.getFixed(), Img1, Img2)
 
 		logging.info('Calculate mergin.')
 		lMergin = (Option.getLMergin(), 0, Option.getTopMergin(), Option.getBtmMergin())
@@ -356,25 +337,55 @@ class Core(object):
 		rMergin = (0, Option.getRMergin(), Option.getTopMergin(), Option.getBtmMergin())
 		logging.debug('%20s [%d,%d,%d,%d]'
 				 % ( 'right Screen mergin', rMergin[0], rMergin[1], rMergin[2], rMergin[3] ))
-		if self.Ws.lScreen.bSetting and self.Ws.rScreen.bSetting:
-			if not self._checkContain(Ws, Img1, lMergin):
-				self._downsizeImg(Ws, Img1, lMergin)
-			if not self._checkContain(Ws, Img2, rMergin):
-				self._downsizeImg(Ws, Img2, rMergin)
 
-			self._allocateCenter(Ws, Img1, Img2)
-			self._allocateImg(Option, Ws, Img1)
-			self._allocateImg(Option, Ws, Img2)
+		if not self._checkContain(Ws, Img1, lMergin):
+			self._downsizeImg(Ws, Img1, lMergin)
+		if not self._checkContain(Ws, Img2, rMergin):
+			self._downsizeImg(Ws, Img2, rMergin)
 
-			bkImg = ImgFile('', Option.getBgcolor(), Ws.Size.w, Ws.Size.h)
+		self._allocateCenter(Ws, Img1, 1)
+		self._allocateCenter(Ws, Img2, 2)
+		self._allocateImg(Option, Ws, Img1)
+		self._allocateImg(Option, Ws, Img2)
 
-			self._mergeWallpaper(Ws, bkImg, Img1)
-			self._mergeWallpaper(Ws, bkImg, Img2)
-			return bkImg
-		elif self.Ws.lScreen.bSetting and not self.Ws.rScreen.bSetting:
-			return Img1
-		elif not self.Ws.lScreen.bSetting and self.Ws.rScreen.bSetting:
-			return Img2
+		bkImg = ImgFile('', Option.getBgcolor(), Ws.Size.w, Ws.Size.h)
+
+		self._mergeWallpaper(Ws, bkImg, Img1)
+		self._mergeWallpaper(Ws, bkImg, Img2)
+		return bkImg
+
+#		if self.Ws.lScreen.bSetting and self.Ws.rScreen.bSetting:
+#		elif self.Ws.lScreen.bSetting and not self.Ws.rScreen.bSetting:
+#			return Img1
+#		elif not self.Ws.lScreen.bSetting and self.Ws.rScreen.bSetting:
+#			return Img2
+
+
+	def _optimizeWallpaper(self, Option, Config, Ws, Img):
+		"""
+		1 ImgFile allocate Wallpaper Img.
+		"""
+		logging.info('Optimizing ... wallpapaer.')
+		self._checkImgType(Ws, Img, 1)
+
+#代		self._bindingImgToScreen(Option.getFixed(), Img1, Img2)
+		setattr(Img, 'posit', 'left')
+
+		logging.info('Calculate mergin.')
+		Mergin = (Option.getLMergin(), Option.getRMergin(), Option.getTopMergin(), Option.getBtmMergin())
+		logging.debug('%20s [%d,%d,%d,%d]'
+				 % ( 'Screen mergin', Mergin[0], Mergin[1], Mergin[2], Mergin[3] ))
+
+		if not self._checkContain(Ws, Img, Mergin):
+			self._downsizeImg(Ws, Img, Mergin)
+
+		self._allocateCenter(Ws, Img, 1)
+		self._allocateImg(Option, Ws, Img)
+
+		bkImg = ImgFile('', Option.getBgcolor(), Ws.Size.w, Ws.Size.h)
+
+		self._mergeWallpaper(Ws, bkImg, Img)
+		return bkImg
 
 
 	def _setWall(self, bkImg, tmpPath=None):
@@ -442,7 +453,7 @@ class Core(object):
 		Img1 = ImgFile(LChangerDir.getImgfileRnd())
 		Img2 = ImgFile(RChangerDir.getImgfileRnd())
 
-		bkImg = self._optimizeWallpaper(self.option, self.config, self.Ws, Img1, Img2)
+		bkImg = self._optimizeWallpapers(self.option, self.config, self.Ws, Img1, Img2)
 		self._setWall(bkImg)
 
 
@@ -462,7 +473,7 @@ class Core(object):
 				except ImgFile.ImgFileIOError, msg:
 					raise Core.CoreRuntimeError(msg.value)
 
-				bkImg = self._optimizeWallpaper(self.option, self.config, self.Ws, Img1, Img2)
+				bkImg = self._optimizeWallpapers(self.option, self.config, self.Ws, Img1, Img2)
 				self._setWall(bkImg)
 				interval = self.option.getInterval()
 				time.sleep(interval)
@@ -475,7 +486,7 @@ class Core(object):
 				Img = ImgFile(path)
 			except ImgFile.ImgFileIOError, msg:
 					raise Core.CoreRuntimeError(msg.value)
-			logging.info('Create Img object. [%s]' % path)
+			logging.info('Load ImgFile. [%s]' % path)
 			logging.debug('%20s [%d,%d]' % ( 'Img', Img.Size.w, Img.Size.h ))
 			return Img
 		else:
@@ -488,22 +499,25 @@ class Core(object):
 
 	def singlerun(self):
 		if (self.option.lengthArgs() == 2 or 
-			( self.option.lengthArgs() == 1 and
-			 not self.option.getCombine() )):
+			( self.option.lengthArgs() == 1 and not self.Ws.isSeparate() )):
 			Imgs = (self._loadImgFile(self.option.getLArg()), self._loadImgFile(self.option.getRArg()))
-			bkImg = self._optimizeWallpaper(self.option, self.config, self.Ws, Imgs[0], Imgs[1])
-			tmpPath = self.option.getSavePath()
-			if tmpPath <> None:
-				self._saveImgfile(bkImg, tmpPath)
-			if self.option.getSetWall():
-				self._setWall(bkImg, tmpPath)
+			bkImg = self._optimizeWallpapers(self.option, self.config, self.Ws, Imgs[0], Imgs[1])
 
-		elif self.option.lengthArgs() == 1 and self.option.getCombine():
+		elif self.option.lengthArgs() == 1 and self.Ws.isSeparate():
 			if self.option.getSetWall():
 				if self.option.getLArg() <> '':
-					self._setWall(None, self.option.getLArg())
+					Img = self._loadImgFile(self.option.getLArg())
 				else:
-					self._setWall(None, self.option.getRArg())
+					Img = self._loadImgFile(self.option.getRArg())
+			bkImg = self._optimizeWallpaper(self.option, self.config, self.Ws, Img)
+
+		tmpPath = self.option.getSavePath()
+		if tmpPath <> None:
+			self._saveImgfile(bkImg, tmpPath)
+		if self.option.getSetWall():
+			self._setWall(bkImg, tmpPath)
+
+
 
 	def __init__(self, Options):
 		self.option = Options
