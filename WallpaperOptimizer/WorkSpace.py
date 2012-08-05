@@ -19,7 +19,10 @@ class WorkSpace(Rectangle):
 				, (self.rScreen.Size.w, self.rScreen.Size.h))
 
 	def getDepth(self):
-		return self.depth
+		return self.lScreen.depth
+
+	def isSeparate(self):
+		return self.separate
 
 	def setScreenSize(self, lDisplay, rDisplay):
 		self.lScreen.setSize(lDisplay[0], lDisplay[1])
@@ -57,30 +60,56 @@ class WorkSpace(Rectangle):
 		setattr(self.lScreen, 'bSetting', lBool)
 		setattr(self.rScreen, 'bSetting', rBool)
 
-	def __init__(self):
-		self.depth = 24
+	def _splitLines(self, string):
+		ptn = re.compile('\n')
+		return ptn.split(string)
 
+	def __init__(self):
 		Rectangle.__init__(self)
 		self.lScreen = Rectangle()
 		self.rScreen = Rectangle()
+		self.lScreen.setSize(0, 0) #Rectangle Method
+		self.rScreen.setSize(0, 0) #Rectangle Method
+		setattr(self.lScreen, 'depth', 24)
+		setattr(self.rScreen, 'depth', 24)
 
 		xdpyinfo='/usr/bin/xdpyinfo'
 		if not os.path.exists(xdpyinfo):
 			raise WorkSpace.WorkSpaceRuntimeError('xdpyinfo not installed [%s]' % xdpyinfo)
-		dimensions = subprocess.Popen(
+		dimensions = self._splitLines(subprocess.Popen(
 			["grep", "dimensions"]
 			, stdin=subprocess.Popen([xdpyinfo], stdout=subprocess.PIPE).stdout
-			, stdout=subprocess.PIPE).communicate()[0].rstrip()
-		depth = subprocess.Popen(
+			, stdout=subprocess.PIPE).communicate()[0].rstrip())
+		depths = self._splitLines(subprocess.Popen(
 			["grep", "depth of root window"]
 			, stdin=subprocess.Popen([xdpyinfo], stdout=subprocess.PIPE).stdout
-			, stdout=subprocess.PIPE).communicate()[0].rstrip()
+			, stdout=subprocess.PIPE).communicate()[0].rstrip())
 
 		#"  dimensions:    3200x1080 pixels (856x292 millimeters)"
-		ptn = re.compile('[\s]+|x')
-		subStr = ptn.split( dimensions )
-		self.setSize(int(subStr[2]), int(subStr[3])) #Rectangle Method
+		for i, dimension in enumerate( dimensions ):
+			ptn = re.compile('[\s]+|x')
+			subStr = ptn.split( dimension )
+			if i == 0:
+				self.lScreen.setSize(int(subStr[2]), int(subStr[3]))
+			else:
+				self.rScreen.setSize(int(subStr[2]), int(subStr[3]))
 
-		ptn = re.compile('[\s]')
-		subStr = ptn.split( depth )
-		self.depth = int(subStr[9])
+		for i, depth in enumerate( depths ):
+			ptn = re.compile('[\s]')
+			subStr = ptn.split( depth )
+			if i == 0:
+				self.lScreen.depth = int(subStr[9])
+			else:
+				self.rScreen.depth = int(subStr[9])
+
+		if len(dimensions) > 1:
+			setattr(self, 'separate', True)
+			# とりあえず左画面サイズをWorkSpaceのサイズに
+			self.setSize(self.lScreen.Size.w, self.lScreen.Size.h) #Rectangle Method
+		else:
+			setattr(self, 'separate', False)
+			if self.lScreen.Size.h > self.rScreen.Size.h:
+				h = self.lScreen.Size.h
+			else:
+				h = self.rScreen.Size.h
+			self.setSize(self.lScreen.Size.w + self.rScreen.Size.w, h) #Rectangle Method
