@@ -61,7 +61,7 @@
 	  <child>
 	    <widget class="GtkLabel" id="lblTopMergin">
 	      <property name="visible">True</property>
-	      <property name="label" translatable="yes">上マージン</property>
+	      <property name="label" translatable="yes">上マージン(px)</property>
 	      <property name="use_underline">False</property>
 	      <property name="use_markup">False</property>
 	      <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -151,7 +151,7 @@
 		<widget class="GtkLabel" id="lblLMergin">
 		  <property name="visible">True</property>
 		  <property name="label" translatable="yes">左
-マージン</property>
+マージン(px)</property>
 		  <property name="use_underline">False</property>
 		  <property name="use_markup">False</property>
 		  <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -698,7 +698,7 @@
 		    <widget class="GtkLabel" id="lblRMergin">
 		      <property name="visible">True</property>
 		      <property name="label" translatable="yes">右
-マージン</property>
+マージン(px)</property>
 		      <property name="use_underline">False</property>
 		      <property name="use_markup">False</property>
 		      <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -796,7 +796,7 @@
 	  <child>
 	    <widget class="GtkLabel" id="lblBtmMergin">
 	      <property name="visible">True</property>
-	      <property name="label" translatable="yes">下マージン</property>
+	      <property name="label" translatable="yes">下マージン(px)</property>
 	      <property name="use_underline">False</property>
 	      <property name="use_markup">False</property>
 	      <property name="justify">GTK_JUSTIFY_LEFT</property>
