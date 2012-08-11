@@ -358,7 +358,7 @@ class Applet(object):
 			self.btnCancelDaemonize.set_sensitive(False)
 		else:
 			self.btnCancelDaemonize.set_sensitive(True)
-		if not self.Ws.isSeparate():
+		if not self.core.Ws.isSeparate():
 			self.radCombine.set_sensitive(boolean)
 		self.radSeparate.set_sensitive(boolean)
 #	  未実装ボタン
