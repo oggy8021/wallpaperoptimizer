@@ -358,9 +358,10 @@ class Applet(object):
 			self.btnCancelDaemonize.set_sensitive(False)
 		else:
 			self.btnCancelDaemonize.set_sensitive(True)
+		if not self.Ws.isSeparate():
+			self.radCombine.set_sensitive(boolean)
+		self.radSeparate.set_sensitive(boolean)
 #	  未実装ボタン
-#		self.radCombine.set_sensitive(boolean)
-#		self.radSeparate.set_sensitive(boolean)
 #		self.btnHelp.set_sensitive(boolean)
 
 #panel control group
@@ -467,12 +468,17 @@ class Applet(object):
 		self.window = self.walkTree.get_widget("WallPosit_MainWindow")
 		self.window.set_icon(self._select_icon(self.bCanceled))
 		self._linkGladeTree()
+		if self.core.Ws.isSeparate():
+			self.option.opts.combine = False
+			self.radSeparate.set_active(True)
+			self.radCombine.set_sensitive(False)
 		self.btnSave.set_sensitive(False)
 		self.btnSetWall.set_sensitive(False)
 		if not self.core.config.lDisplay.getBool():
 			self.btnDaemonize.set_sensitive(False)
 		self.btnCancelDaemonize.set_sensitive(False)
 		self.cid_stat = self.statbar.get_context_id('status')
+
 #	  bindCallbackFunction
 		dic = {
 			"on_tglBtn_pressed" : self.tglBtn_pressed,
@@ -496,8 +502,6 @@ class Applet(object):
 			}
 		self.walkTree.signal_autoconnect(dic)
 #	  未実装ボタン
-		self.radCombine.set_sensitive(False)
-		self.radSeparate.set_sensitive(False)
 		self.btnHelp.set_sensitive(False)
 #	  View
 		self._writeStatusbar(self.statbar, self.cid_stat, 'Running ... applet mode.')

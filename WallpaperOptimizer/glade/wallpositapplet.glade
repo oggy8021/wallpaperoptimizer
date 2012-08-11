@@ -222,7 +222,7 @@
 		      <child>
 			<widget class="GtkRadioButton" id="radCombine">
 			  <property name="visible">True</property>
-			  <property name="tooltip" translatable="yes">TwinView</property>
+			  <property name="tooltip" translatable="yes">Combine</property>
 			  <property name="can_focus">True</property>
 			  <property name="label" translatable="yes">ワークスペース全体</property>
 			  <property name="use_underline">True</property>
@@ -243,9 +243,9 @@
 		      <child>
 			<widget class="GtkRadioButton" id="radSeparate">
 			  <property name="visible">True</property>
-			  <property name="tooltip" translatable="yes">Xinerama</property>
+			  <property name="tooltip" translatable="yes">Separate</property>
 			  <property name="can_focus">True</property>
-			  <property name="label" translatable="yes">左右独立</property>
+			  <property name="label" translatable="yes">ディスプレイごとに分割</property>
 			  <property name="use_underline">True</property>
 			  <property name="relief">GTK_RELIEF_NORMAL</property>
 			  <property name="focus_on_click">True</property>

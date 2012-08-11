@@ -65,20 +65,17 @@
 
 
 7.開発環境
-  微妙な環境ですが、、一応載せておきます。
-
   /etc/redhat-release
-	CentOS release 5.7
+	CentOS release 6.3
   uname -r
-	2.6.18-274.12.1.el5.centos.plus
+	2.6.32-279.1.1.el6.centos.plus.x86_64
   関連してそうなrpm
-	python-imaging-devel-1.1.5-7.el5
-	python-imaging-1.1.5-7.el5
-	gnome-python2-bonobo-2.16.0-1.fc6
-	gnome-python2-extras-2.14.2-7.el5
-	gamin-python-0.1.7-8.el5
-	python-daemon-1.5.2-3.el5
-	gnome-python2-applet-2.16.0-3.el5
+	python-imaging-devel-1.1.6-19.el6.x86_64
+	python-imaging-1.1.6-19.el6.x86_64
+	gnome-python2-bonobo-2.28.0-3.el6.x86_64
+	gnome-python2-extras-2.25.3-20.el6.x86_64
+	gnome-python2-applet-2.28.0-3.el6.x86_64
+	gnome-python2-2.28.0-3.el6.x86_64
 
 8.ライセンス
   GPLv3
@@ -89,7 +86,10 @@ The Python Imaging Library is:
     Copyright © 1995-2005 by Fredrik Lundh
 
 10.変更履歴
-2012.x.x	v0.3.0.0	0.3版リリース
+2012.8.6	v0.4.0.0	0.4版リリース
+						1画面のみの指定時は、各種設定ができずいきなり
+						壁紙化する動作だったのを改善。
+2012.7.9	v0.3.0.0	0.3版リリース無し
 						python2.6下での開発に移行
 						x86_64インストレーションに対応
 2012.2.1	v0.2.0.0	初版(人柱版)リリース

@@ -108,7 +108,7 @@ class Core(object):
 
 		logging.debug('Config Setting To WorkSpace().')
 
-#!		Separate時は、.walloptrcをどう書いても反映されない。
+#		Separate時は、.walloptrcをどう書いても反映されない。
 		if not self.Ws.isSeparate():
 			self.Ws.setScreenSize((self.config.lDisplay.width
 									, self.config.lDisplay.height)
@@ -119,7 +119,7 @@ class Core(object):
 					'** WorkSpace width[%d] < sum(left display size, right display size) [%d, %d].'
 					 % ( self.Ws.Size.w, self.Ws.lScreen.Size.w, self.Ws.rScreen.Size.w ))
 				raise Core.CoreRuntimeError('WorkSpace width over left/right display size summing')
-#!		ただし、妥当性だけは見られる
+#		ただし、妥当性だけは見られる
 		self.Ws.setBool(self.config.lDisplay.getBool(), self.config.rDisplay.getBool())
 
 		if (hasattr(self.Ws.lScreen.Size, 'islessThanWorkSpaceHeight')
@@ -353,12 +353,6 @@ class Core(object):
 		self._mergeWallpaper(Ws, bkImg, Img1)
 		self._mergeWallpaper(Ws, bkImg, Img2)
 		return bkImg
-
-#		if self.Ws.lScreen.bSetting and self.Ws.rScreen.bSetting:
-#		elif self.Ws.lScreen.bSetting and not self.Ws.rScreen.bSetting:
-#			return Img1
-#		elif not self.Ws.lScreen.bSetting and self.Ws.rScreen.bSetting:
-#			return Img2
 
 
 	def _optimizeWallpaper(self, Option, Config, Ws, Img):

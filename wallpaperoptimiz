@@ -79,7 +79,6 @@ def do_main():
 		loglevel = logging.DEBUG
 	else:
 		loglevel = logging.INFO
-#	loglevel = logging.DEBUG
 
 	logging.basicConfig(level=loglevel
 						, format='%(asctime)s %(levelname)5s %(message)s'
