@@ -60,12 +60,10 @@ params = {
 }
 
 import sys
-import os
 import os.path
 from shutil import rmtree
 from distutils.core import setup
-from distutils.sysconfig import PREFIX, EXEC_PREFIX, get_python_lib
-from distutils.debug import DEBUG
+from distutils.sysconfig import PREFIX, get_python_lib
 
 def rmfile(path):
 	if os.path.exists(path):

@@ -10,7 +10,7 @@ class ColorSelectionDialog(DialogBase):
 
 	def openDialog(self, bgcolor):
 		self.Dialog.show_all()
-		gdkColor = gtk.gdk.Color()
+#		gdkColor = gtk.gdk.Color()
 		gdkColor = gtk.color_selection_palette_from_string(bgcolor)
 		self.walkTree.get_widget('color_selection').set_current_color(gdkColor[0])
 		result = self.Dialog.run()

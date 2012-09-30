@@ -16,8 +16,6 @@ wallpaperoptimizer is multi wallpaper changer.
 #	in GNOME panel
 
 import sys
-import os.path
-import time
 import logging
 
 import pygtk

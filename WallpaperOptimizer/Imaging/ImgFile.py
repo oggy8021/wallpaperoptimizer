@@ -2,7 +2,7 @@
 
 import sys
 try:
-	from PIL import Image
+	from PIL import Image #@UnresolvedImport
 except:
 	print 'not installed Python Imaging Library (PIL)'
 	print 'ex) sudo apt-get install python-imaging'
@@ -33,7 +33,7 @@ class ImgFile(Rectangle, Image.Image):
 	def save(self, path):
 		try:
 			self._img.save(path)
-		except IOError, msg:
+		except IOError:
 			raise ImgFile.ImgFileIOError('Cannot save Imgfile [%s]' % path)
 
 	def __init__(self, path='', color='black', w=5, h=5):

@@ -2,8 +2,6 @@
 
 import sys
 import os.path
-import time
-import logging
 
 import pygtk
 pygtk.require("2.0")
@@ -15,7 +13,6 @@ except:
 		import gobject as glibobj
 	except:
 		sys.exit(2)
-import gnomeapplet
 import gnome.ui
 from distutils.sysconfig import PREFIX, get_python_lib
 
@@ -204,7 +201,7 @@ class Applet(object):
 			try:
 				self.core.singlerun()
 			except self.core.CoreRuntimeError, msg:
-				logger.error('** CoreRuntimeError: %s. ' % msg.value)
+				self.logger.error('** CoreRuntimeError: %s. ' % msg.value)
 				self._runErrorDialog(self, '** CoreRuntimeError: %s. ' % msg.value)
 		else:
 			pass

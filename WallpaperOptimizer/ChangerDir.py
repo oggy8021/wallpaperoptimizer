@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import os
 import os.path
 import re
 import random
@@ -27,13 +26,13 @@ class ChangerDir(object):
 		self.fIdx = 0
 		Ext = re.compile(r"\.(gif|jpg|jpeg|bmp|png)$", re.IGNORECASE)
 		srcdir = os.path.abspath(os.path.expanduser(srcdir))
-		files = os.listdir(srcdir)
-		self.imgfiles = []
-		for file in files:
-			x = os.path.join(srcdir,file)
-			if (os.path.isfile(x) and Ext.search(file)):
-				self.imgfiles.append(os.path.abspath(x))
-		self.maxlen = len(self.imgfiles)
+		imgfiles = os.listdir(srcdir)
+		self.fullpathimgfiles = []
+		for imgfile in imgfiles:
+			x = os.path.join(srcdir,imgfile)
+			if (os.path.isfile(x) and Ext.search(imgfile)):
+				self.fullpathimgfiles.append(os.path.abspath(x))
+		self.maxlen = len(self.fullpathimgfiles)
 
 		if (self.maxlen == 0):
 			raise ChangerDir.FileCountZeroError('Directory does not have Imgfile [%s]' % srcdir)

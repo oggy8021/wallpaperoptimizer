@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import pwd
 import os.path
-import os, pwd
 
 import pygtk
 pygtk.require("2.0")
