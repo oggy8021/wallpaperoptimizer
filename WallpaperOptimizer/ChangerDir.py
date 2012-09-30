@@ -15,12 +15,12 @@ class ChangerDir(object):
 	def getImgfileSeq(self):
 		if (self.maxlen <= self.fIdx):
 			self.fIdx = 0
-		imgfile = self.imgfiles[self.fIdx]
+		fullpathimgfile = self.fullpathimgfiles[self.fIdx]
 		self.fIdx += 1
-		return imgfile
+		return fullpathimgfile
 
 	def getImgfileRnd(self):
-		return self.imgfiles[int(random.randint(0,self.maxlen-1))]
+		return self.fullpathimgfiles[int(random.randint(0,self.maxlen-1))]
 
 	def __init__(self, srcdir='.'):
 		self.fIdx = 0
