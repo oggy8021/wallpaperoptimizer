@@ -270,7 +270,7 @@ class Applet(object):
 		icon = gtk.gdk.pixbuf_new_from_file(os.path.abspath(
 			os.path.join(PREFIX,'share','WallpaperOptimizer','wallopt.png')))
 		about = gnome.ui.About("WallpaperOptimizer"
-							,"0.2.0.0"	#version
+							,"0.5.0.0"	#version
 							,"GPLv3"		#copyright
 							,"wallpaperoptimizer is multi wallpaper changer."	#comments
 							,["oggy"]		#**authors
