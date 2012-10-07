@@ -37,7 +37,7 @@
 #			__init__.py
 
 __NAME__='wallpaperoptimizer'
-__VERSION__='0.4.0.1'
+__VERSION__='0.5.0.0'
 
 params = {
 	'name': __NAME__,
