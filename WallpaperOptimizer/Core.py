@@ -32,7 +32,7 @@ class Core(object):
 		config instance set from configfile or instance default.
 		"""
 		# config set from configfile
-		self.configfile = '~/.walloptrc'
+		self.configfile = os.path.join(self.envdir,'.walloptrc')
 		self.configfile = os.path.expanduser(self.configfile)
 		if os.path.exists(self.configfile):
 			try:
@@ -442,7 +442,7 @@ class Core(object):
 			if os.path.exists(removePath):
 				os.remove(removePath)
 				logging.debug('Delete wallpaper [%s].' % removePath)
-			lstCleanFile = glob.glob('/usr/share/backgrounds/wallopt*.jpg')
+			lstCleanFile = glob.glob(os.path.join(self.envdir,'wallopt*.jpg'))
 			if len(lstCleanFile) > 1:
 				lstCleanFile.remove(tmpPath)
 				for x in lstCleanFile:
@@ -452,7 +452,7 @@ class Core(object):
 	def _saveImgfile(self, bkImg, tmpPath):
 		try:
 			if tmpPath == None:
-				tmpPath = '/usr/share/backgrounds/wallopt' + datetime.datetime.now().strftime('%Y%m%d-%H%M%S') + '.jpg'
+				tmpPath = os.path.join(self.envdir,'wallopt' + datetime.datetime.now().strftime('%Y%m%d-%H%M%S') + '.jpg')
 			bkImg.save(tmpPath)
 			logging.info('Save optimized wallpaper [%s].' % tmpPath)
 			return tmpPath
@@ -537,6 +537,7 @@ class Core(object):
 
 
 	def __init__(self, Options):
+		self.envdir = os.path.join(os.environ['HOME'], '.wallpaperoptimizer')
 		self.option = Options
 		self._initializeConfig()
 		self._initializeWorkSpace()

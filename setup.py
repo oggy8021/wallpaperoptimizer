@@ -12,6 +12,7 @@
 #<abort>
 # $ killall wallpaperoptimizer
 
+# <example: CentOS i386>
 #	/usr/bin
 #			wallpaperoptimiz
 #	/usr/share
@@ -35,6 +36,8 @@
 #			OptionBase.py
 #			WorkSpace.py
 #			__init__.py
+#	/etc/logrotate.d
+#			wallopt
 
 __NAME__='wallpaperoptimizer'
 __VERSION__='0.6.0.0'
@@ -62,7 +65,8 @@ params = {
 import sys, platform
 import os.path
 from shutil import rmtree
-from setuptools import setup
+from distutils.core import setup
+#from setuptools import setup
 from distutils.sysconfig import PREFIX, get_python_lib
 
 def rmfile(path):
@@ -82,23 +86,19 @@ def rmdir(path):
 
 if __name__ == "__main__":
 	print "*** %s action." % sys.argv[1]
+	params['data_files'] = [
+		('share/WallpaperOptimizer',
+			['wallopt.png', 'wallopt_off.png']),
+		('/etc/logrotate.d',
+			['wallopt'])]
+
 	if os.uname()[4] == 'x86_64':
-		params['data_files'] = [
-			('share/WallpaperOptimizer',
-				['wallopt.png', 'wallopt_off.png']),
-			('/etc/logrotate.d',
-				['wallopt'])]
 		bonobo = ('lib64/bonobo/servers',	['wallpaperoptimizer.server'])
 	else:
-		params['data_files'] = [
-			('share/WallpaperOptimizer',
-				['wallopt.png', 'wallopt_off.png']),
-			('/etc/logrotate.d',
-				['wallopt'])]
 		bonobo = ('lib/bonobo/servers',	['wallpaperoptimizer.server'])
 
 	if platform.linux_distribution()[0] in ('CentOS','Red Hat Linux'):
-		param['data_files'].append(bonobo)
+		params['data_files'].append(bonobo)
 
 
 	if sys.argv[1] == 'uninstall':

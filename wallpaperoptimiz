@@ -96,6 +96,10 @@ def runConsoleSide(option, logging):
 			sys.exit(2)
 
 def do_main():
+	envdir = os.path.join(os.environ['HOME'], '.wallpaperoptimizer')
+	if os.path.exists(envdir) == False:
+		os.mkdir(envdir)
+
 	try:
 		option = Options()
 	except OptionValueError, msg:
