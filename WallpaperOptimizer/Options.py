@@ -18,6 +18,7 @@ class Options(OptionsBase):
 		return self.opts.fd
 
 	def __init__(self):
+		OptionsBase.__init__(self)
 		class MultiargOption(Option):
 			ACTIONS = Option.ACTIONS + ("multistore", "quatrostore", "doublestore", )
 			STORE_ACTIONS = Option.STORE_ACTIONS + ("multistore", "quatrostore", "doublestore", )
@@ -86,7 +87,7 @@ class Options(OptionsBase):
 		viewgroup.add_option("-f", "--fixed", dest="fixed", action="store_true"
 					, help="fixed imgfile allocation (nothing: Optimize)")
 		viewgroup.add_option("-d", "--display", dest="size", action="doublestore"
-					, metavar="pixel x pixel"
+					, metavar="pixel x pixel,pixel x pixel"
 					, help="left/right Display size")
 		viewgroup.add_option("-b", "--bgcolor", dest="bgcolor", action="store", type="string"
 					, metavar="color, 0xRRGGBB"

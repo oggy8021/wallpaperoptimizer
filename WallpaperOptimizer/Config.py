@@ -81,8 +81,6 @@ class Config(object):
 				for i, cfline in enumerate(cf):
 					subStr = cfline.rstrip().split(',')
 					self.setConfig(subStr[0], subStr[1], subStr[2])
-				self.lDisplay.checkBool()
-				self.rDisplay.checkBool()
 
 			except ValueError:
 				cf.close()
@@ -95,6 +93,7 @@ class Config(object):
 		else:
 			self.lDisplay.setPosit('left')
 			self.rDisplay.setPosit('right')
-			self.lDisplay.checkBool()
-			self.rDisplay.checkBool()
+
+		self.lDisplay.checkBool()
+		self.rDisplay.checkBool()
 

@@ -49,6 +49,11 @@
 5.1.コンソールでの実行例
   $ wallpaperoptimizer 2560x1920.jpg 1500x844.jpg -C
 
+   事前に、~/$HOME/.walloptrcとのファイルを設置してください。
+   例）
+     1920x1080,left,~/Wallpaper/1920/
+     1280x1024,right,~/Wallpaper/1280/
+
 5.2.コンソールからの壁紙チェンジャー実行例
   $ wallpaperoptimizer -D -i 3600 &
 

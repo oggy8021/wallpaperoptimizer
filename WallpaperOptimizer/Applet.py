@@ -13,7 +13,14 @@ except:
 		import gobject as glibobj
 	except:
 		sys.exit(2)
-import gnome.ui
+try:
+	import gnome.ui
+except:
+	print 'not installed Python bindings for the GNOME desktop environment'
+	print 'ex) sudo apt-get install python-gnome2'
+	print 'ex) sudo yum install python-gnome2-gnome'
+	sys.exit(2)
+
 from distutils.sysconfig import PREFIX, get_python_lib
 
 from WallpaperOptimizer.Core import Core
@@ -47,6 +54,7 @@ class AppletOptions(OptionsBase):
 		return True
 
 	def __init__(self):
+		OptionsBase.__init__(self)
 		self.opts = AppletOptions.Opts()
 		self.args = ['','']
 
@@ -270,7 +278,7 @@ class Applet(object):
 		icon = gtk.gdk.pixbuf_new_from_file(os.path.abspath(
 			os.path.join(PREFIX,'share','WallpaperOptimizer','wallopt.png')))
 		about = gnome.ui.About("WallpaperOptimizer"
-							,"0.5.0.0"	#version
+							,"0.6.0.0"	#version
 							,"GPLv3"		#copyright
 							,"wallpaperoptimizer is multi wallpaper changer."	#comments
 							,["oggy"]		#**authors

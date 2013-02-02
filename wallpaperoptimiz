@@ -18,15 +18,18 @@ wallpaperoptimizer is multi wallpaper changer.
 import sys
 import logging
 
+import os
+if os.getenv('DISPLAY', None) == None:
+	print "Please set to DISPLAY system environment."
+	sys.exit(2)
+
 import pygtk
 pygtk.require("2.0")
 import gtk
-import gnomeapplet
 from optparse import OptionValueError
 
 from WallpaperOptimizer.Options import Options
 from WallpaperOptimizer.Core import Core
-from WallpaperOptimizer.Applet import Applet
 
 def _putlogOption(option):
 	"""
@@ -62,8 +65,35 @@ def factory(applet, iid):
 	"""
 	for gnomeapplet factory method.
 	"""
+	from WallpaperOptimizer.Applet import Applet
 	Applet(applet, iid, logging)
 	return gtk.TRUE
+
+def runConsoleSide(option, logging):
+	if option.getVerbose():
+		console = logging.StreamHandler()
+		console.setLevel(logging.DEBUG)
+		formatter = logging.Formatter('%(name)-12s: %(levelname)-8s %(message)s')
+		console.setFormatter(formatter)
+		logging.getLogger('').addHandler(console)
+		_putlogOption(option)
+
+	if option.getDaemonize():
+		core = Core(option)
+		logging.debug('Running ... daemonize mode.')
+		try:
+			core.background()
+		except Core.CoreRuntimeError, msg:
+			logging.error('** CoreRuntimeError: %s. ' % msg.value)
+			sys.exit(2)
+	else:
+		core = Core(option)
+		logging.debug('Running ... singlerun mode.')
+		try:
+			core.singlerun()
+		except Core.CoreRuntimeError, msg:
+			logging.error('** CoreRuntimeError: %s. ' % msg.value)
+			sys.exit(2)
 
 def do_main():
 	try:
@@ -84,57 +114,42 @@ def do_main():
 						, filemode='a')
 	logging.info('Starting ... wallpaperoptimizer.')
 
-	if option.getWindow():
-		logging.debug('Running ... window mode.')
-		main_window = gtk.Window(gtk.WINDOW_TOPLEVEL)
-		main_window.set_title("Wallpaperoptimizer Applet Window")
-		main_window.connect("destroy", gtk.main_quit)
-		app = gnomeapplet.Applet()
-		factory(app, None)
-		app.reparent(main_window)
-		main_window.show_all()
-		wh = main_window.get_size()
-		main_window.resize(wh[0]*2, wh[1])
-		gtk.main()
+	if (option.isRhel()):
+		try:
+			import gnomeapplet
+		except:
+			print "not installed Python bindings for GNOME Panel applets."
+			print "ex)  sudo yum install gnome-python2-applet"
+			sys.exit(2)
 
-	elif (option.getIID() == None and option.getFD() == None):
-		if Verbose:
-			console = logging.StreamHandler()
-			console.setLevel(logging.DEBUG)
-			formatter = logging.Formatter('%(name)-12s: %(levelname)-8s %(message)s')
-			console.setFormatter(formatter)
-			logging.getLogger('').addHandler(console)
-			_putlogOption(option)
-
-		if option.getDaemonize():
-			core = Core(option)
-			logging.debug('Running ... daemonize mode.')
-			try:
-				core.background()
-			except Core.CoreRuntimeError, msg:
-				logging.error('** CoreRuntimeError: %s. ' % msg.value)
-				sys.exit(2)
-
+		if option.getWindow():
+			logging.debug('Running ... window mode.')
+			main_window = gtk.Window(gtk.WINDOW_TOPLEVEL)
+			main_window.set_title("Wallpaperoptimizer Applet Window")
+			main_window.connect("destroy", gtk.main_quit)
+			app = gnomeapplet.Applet()
+			factory(app, None)
+			app.reparent(main_window)
+			main_window.show_all()
+			wh = main_window.get_size()
+			main_window.resize(wh[0]*2, wh[1])
+			gtk.main()
+	
+		elif (option.getIID() == None and option.getFD() == None):
+			runConsoleSide(option, logging)
+	
 		else:
-			core = Core(option)
-			logging.debug('Running ... singlerun mode.')
-			try:
-				core.singlerun()
-			except Core.CoreRuntimeError, msg:
-				logging.error('** CoreRuntimeError: %s. ' % msg.value)
-				sys.exit(2)
-
-	else:
-		logging.debug('Running ... applet mode.')
-		gnomeapplet.bonobo_factory("OAFIID:wallpaperoptimizerApplet_Factory"
-								, gnomeapplet.Applet.__gtype__
-								, "wallpaper changer"
-								, "1.0"
-								, factory)
+			logging.debug('Running ... applet mode.')
+			gnomeapplet.bonobo_factory("OAFIID:wallpaperoptimizerApplet_Factory"
+									, gnomeapplet.Applet.__gtype__
+									, "wallpaper changer"
+									, "1.0"
+									, factory)
+	elif (option.isDebian()):
+		runConsoleSide(option, logging)
 
 	logging.info('Quit ... wallpaperoptimizer.')
 
 if __name__ == "__main__":
 	do_main()
 	sys.exit(0)
-

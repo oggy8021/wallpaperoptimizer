@@ -37,7 +37,7 @@
 #			__init__.py
 
 __NAME__='wallpaperoptimizer'
-__VERSION__='0.5.0.0'
+__VERSION__='0.6.0.0'
 
 params = {
 	'name': __NAME__,
@@ -59,10 +59,9 @@ params = {
 		'Programming Language :: Python']
 }
 
-import sys
+import sys, platform
 import os.path
 from shutil import rmtree
-#from distutils.core import setup
 from setuptools import setup
 from distutils.sysconfig import PREFIX, get_python_lib
 
@@ -85,33 +84,33 @@ if __name__ == "__main__":
 	print "*** %s action." % sys.argv[1]
 	if os.uname()[4] == 'x86_64':
 		params['data_files'] = [
-			('lib64/bonobo/servers',
-				['wallpaperoptimizer.server']),
 			('share/WallpaperOptimizer',
 				['wallopt.png', 'wallopt_off.png']),
 			('/etc/logrotate.d',
 				['wallopt'])]
+		bonobo = ('lib64/bonobo/servers',	['wallpaperoptimizer.server'])
 	else:
 		params['data_files'] = [
-			('lib/bonobo/servers',
-				['wallpaperoptimizer.server']),
 			('share/WallpaperOptimizer',
 				['wallopt.png', 'wallopt_off.png']),
 			('/etc/logrotate.d',
 				['wallopt'])]
+		bonobo = ('lib/bonobo/servers',	['wallpaperoptimizer.server'])
+
+	if platform.linux_distribution()[0] in ('CentOS','Red Hat Linux'):
+		param['data_files'].append(bonobo)
 
 
 	if sys.argv[1] == 'uninstall':
 		rmfile(os.path.join(PREFIX,'bin',params['scripts'][0]))
 		rmdir(os.path.join(get_python_lib(),params['packages'][0]))
-		rmfile(os.path.join(PREFIX,params['data_files'][0][0],params['data_files'][0][1][0]))
-		rmdir(os.path.join(PREFIX,params['data_files'][1][0]))
-		rmfile(os.path.join(params['data_files'][2][0],params['data_files'][2][1][0]))
+		rmdir(os.path.join(PREFIX,params['data_files'][0][0]))
+		rmfile(os.path.join(params['data_files'][1][0],params['data_files'][1][1][0]))
+		rmfile(os.path.join(PREFIX,params['data_files'][2][0],params['data_files'][2][1][0]))
 	else:
 		setup(**params)
 
 
 #	elif sys.argv[1] == 'dump':
 #		print type(params)
-#		print params['data_files'][0][0]
-
+#		print params['data_files']

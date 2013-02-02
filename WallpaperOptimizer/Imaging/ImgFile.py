@@ -24,7 +24,7 @@ class ImgFile(Rectangle, Image.Image):
 
 	def reSize(self, w, h):
 		size = (w, h)
-		self._img = self._img.resize(size)
+		self._img = self._img.resize(size, Image.ANTIALIAS)
 		self.setSize(self._img.size[0], self._img.size[1])
 
 	def paste(self, image, box):

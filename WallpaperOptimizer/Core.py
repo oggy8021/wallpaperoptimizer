@@ -60,7 +60,7 @@ class Core(object):
 			self.config.lDisplay.height == 0 and
 			self.config.rDisplay.width == 0 and 
 			self.config.rDisplay.height == 0 ):
-			logging.error('** Please setting left/right display size.')
+			logging.error('** Please setting left/right display size.(Set --display option or .walloptrc file)')
 			raise Core.CoreRuntimeError('No setting left/right display size.')
 
 		if ( self.option.getDaemonize() and 
@@ -386,11 +386,20 @@ class Core(object):
 		"""
 		Wallpaper Img set to GNOME wallpaper.
 		"""
-		removePath = subprocess.Popen(
-				["gconftool-2"
-				,"--get"
-				,"/desktop/gnome/background/picture_filename"]
-				, stdout=subprocess.PIPE).communicate()[0].rstrip()
+		if (self.option.isRhel()):
+			removePath = subprocess.Popen(
+					["gconftool-2"
+					,"--get"
+					,"/desktop/gnome/background/picture_filename"]
+					, stdout=subprocess.PIPE).communicate()[0].rstrip()
+		elif (self.option.isDebian()):
+			removePath = subprocess.Popen(
+					["gsettings"
+					,"get"
+					,"org.gnome.desktop.background"
+					,"picture-uri"]
+					, stdout=subprocess.PIPE).communicate()[0].rstrip()
+			removePath.replace('file://','')
 		logging.debug('Current wallpaper [%s].' % removePath)
 		if removePath.find('wallopt') < 0:
 			removePath = None
@@ -399,27 +408,41 @@ class Core(object):
 			tmpPath = self._saveImgfile(bkImg, tmpPath)
 
 		tmpPath = os.path.abspath(tmpPath)
-		ret = subprocess.call(
-				["gconftool-2"
-				,"--type"
-				,"string"
-				,"--set"
-				,"/desktop/gnome/background/picture_filename"
-				,tmpPath])
-		retopt = subprocess.call(
-				["gconftool-2"
-				,"--type"
-				,"string"
-				,"--set"
-				,"/desktop/gnome/background/picture_options"
-				,"scaled"])
+		if (self.option.isRhel()):
+			ret = subprocess.call(
+					["gconftool-2"
+					,"--type"
+					,"string"
+					,"--set"
+					,"/desktop/gnome/background/picture_filename"
+					,tmpPath])
+			retopt = subprocess.call(
+					["gconftool-2"
+					,"--type"
+					,"string"
+					,"--set"
+					,"/desktop/gnome/background/picture_options"
+					,"scaled"])
+		elif (self.option.isDebian()):
+			ret = subprocess.call(
+					["gsettings"
+					,"set"
+					,"org.gnome.desktop.background"
+					, "picture-uri"
+					, "file://" + tmpPath])
+			retopt = subprocess.call(
+					["gsettings"
+					,"set"
+					,"org.gnome.desktop.background"
+					,"picture-options"
+					,"spanned"])
 		logging.info('Change wallpaper to current Workspace [%s].' % (tmpPath))
 
 		if removePath <> None:
 			if os.path.exists(removePath):
 				os.remove(removePath)
 				logging.debug('Delete wallpaper [%s].' % removePath)
-			lstCleanFile = glob.glob('/tmp/wallopt*.jpg')
+			lstCleanFile = glob.glob('/usr/share/backgrounds/wallopt*.jpg')
 			if len(lstCleanFile) > 1:
 				lstCleanFile.remove(tmpPath)
 				for x in lstCleanFile:
@@ -429,7 +452,7 @@ class Core(object):
 	def _saveImgfile(self, bkImg, tmpPath):
 		try:
 			if tmpPath == None:
-				tmpPath = '/tmp/wallopt' + datetime.datetime.now().strftime('%Y%m%d-%H%M%S') + '.jpg'
+				tmpPath = '/usr/share/backgrounds/wallopt' + datetime.datetime.now().strftime('%Y%m%d-%H%M%S') + '.jpg'
 			bkImg.save(tmpPath)
 			logging.info('Save optimized wallpaper [%s].' % tmpPath)
 			return tmpPath

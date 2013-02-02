@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from WallpaperOptimizer.Dist import Dist
+
 class OptionsBase(object):
 
 	def getLAlign(self):
@@ -80,6 +82,12 @@ class OptionsBase(object):
 		else:
 			return True
 
+	def isRhel(self):
+		return self.dist.isRhel()
+
+	def isDebian(self):
+		return self.dist.isDebian()
+
 	def __init__(self):
-		pass
+		self.dist = Dist()
 

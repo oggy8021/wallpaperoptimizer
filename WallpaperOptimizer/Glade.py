@@ -1,6 +1,14 @@
 # -*- coding: utf-8 -*-
 
-import gtk.glade
+import sys
+
+try:
+	import gtk.glade
+except:
+	print 'not installed GTK+ bindings: Glade support'
+	print 'ex) sudo apt-get install python-glade2'
+	print 'ex) sudo yum install pygtk2-libglade'
+	sys.exit(2)
 
 class Position(object):
 
