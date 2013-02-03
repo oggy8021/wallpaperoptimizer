@@ -3,8 +3,9 @@ include README.txt
 include setup.py
 include wallopt.png
 include wallopt_off.png
-include wallpaperoptimizer
+include wallpaperoptimiz
 include wallpaperoptimizer.server
 include wallopt
+include WallpaperOptimizer/glade/wallpositapplet.glade
 
 #WallpaperOptimizer

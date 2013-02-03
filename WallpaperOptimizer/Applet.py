@@ -82,6 +82,12 @@ class Applet(object):
 	def _eraseStatusbar(self, bar, cid):
 		bar.pop(cid)
 
+#button group
+	def tglBtn_pressed(self, widget):
+		vsName = Applet.tgldic[widget.get_name()]
+		if (self.walkTree.get_widget(vsName).get_active()):
+			self.walkTree.get_widget(vsName).set_active(False)
+
 	def _setOptionValueFromBtn(self, btnName, lr, val=None):
 		if (btnName.find('PushLeft') > 0 or btnName.find('PushRight') > 0):
 			if val == None:
@@ -91,12 +97,6 @@ class Applet(object):
 			if val == None:
 				val = 'middle'
 			self.option.opts.valign[lr] = val
-
-#button group
-	def tglBtn_pressed(self, widget):
-		vsName = Applet.tgldic[widget.get_name()]
-		if (self.walkTree.get_widget(vsName).get_active()):
-			self.walkTree.get_widget(vsName).set_active(False)
 
 	def tglBtn_toggled(self, widget):
 		if widget.get_active():

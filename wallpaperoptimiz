@@ -22,9 +22,6 @@ import os
 if os.getenv('DISPLAY', None) == None:
 	print "Please set to DISPLAY system environment."
 	sys.exit(2)
-
-import pygtk
-pygtk.require("2.0")
 import gtk
 from optparse import OptionValueError
 
@@ -128,6 +125,8 @@ def do_main():
 
 		if option.getWindow():
 			logging.debug('Running ... window mode.')
+			import pygtk
+			pygtk.require("2.0")
 			main_window = gtk.Window(gtk.WINDOW_TOPLEVEL)
 			main_window.set_title("Wallpaperoptimizer Applet Window")
 			main_window.connect("destroy", gtk.main_quit)
@@ -144,13 +143,24 @@ def do_main():
 	
 		else:
 			logging.debug('Running ... applet mode.')
+			import pygtk
+			pygtk.require("2.0")
 			gnomeapplet.bonobo_factory("OAFIID:wallpaperoptimizerApplet_Factory"
 									, gnomeapplet.Applet.__gtype__
 									, "wallpaper changer"
 									, "1.0"
 									, factory)
 	elif (option.isDebian()):
-		runConsoleSide(option, logging)
+		if option.getSavePath() == None and option.getSetWall() == False and option.getWindow() == False and option.getDaemonize() == False: 
+			import gobject
+			gobject.set_application_name('wallpaperoptimizer')
+			gobject.set_prgname('wallpaperoptimizer')
+
+			from WallpaperOptimizer.AppIndicator import AppIndicator
+			AppIndicator(option, logging)
+			gtk.main()
+		else:
+			runConsoleSide(option, logging)
 
 	logging.info('Quit ... wallpaperoptimizer.')
 
