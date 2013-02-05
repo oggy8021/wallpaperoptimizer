@@ -45,7 +45,7 @@ class SettingDialog(DialogBase):
 			'entSrcdir' + widget.posit.Caps).set_text(self.srcdirs[widget.posit.idx])
 
 	def btnSaveSetting_clicked(self, widget):
-		configfile='~/.walloptrc'
+		configfile = os.path.join(os.environ['HOME'], '.wallpaperoptimizer','.walloptrc')
 		try:
 			cf = csv.writer(file(os.path.abspath(os.path.expanduser(configfile)), 'w'))
 			for lr in ('left', 'right'):

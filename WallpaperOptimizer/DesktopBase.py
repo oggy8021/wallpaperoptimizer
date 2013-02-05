@@ -1,10 +1,32 @@
 # -*- coding: utf-8 -*-
 
-#import pygtk
-#pygtk.require("2.0")
-#import gtk
+import sys
+import os.path
 
-#from WallpaperOptimizer.Glade import Glade
+import gtk
+try:
+    import glib as glibobj
+except:
+    try:
+        import gobject as glibobj
+    except:
+        sys.exit(2)
+try:
+    import gnome.ui
+except:
+    print 'not installed Python bindings for the GNOME desktop environment'
+    print 'ex) sudo apt-get install python-gnome2'
+    print 'ex) sudo yum install python-gnome2-gnome'
+    sys.exit(2)
+
+from distutils.sysconfig import PREFIX, get_python_lib
+
+from WallpaperOptimizer.Glade import Glade
+from WallpaperOptimizer.Widget.ErrorDialog import ErrorDialog
+from WallpaperOptimizer.Widget.ImgOpenDialog import ImgOpenDialog
+from WallpaperOptimizer.Widget.SettingDialog import SettingDialog
+from WallpaperOptimizer.Widget.ColorSelectionDialog import ColorSelectionDialog
+from WallpaperOptimizer.Widget.SaveWallpaperDialog import SaveWallpaperDialog
 
 class DesktopBase(object):
 
@@ -30,7 +52,7 @@ class DesktopBase(object):
 
 #button group
     def tglBtn_pressed(self, widget):
-        vsName = Applet.tgldic[widget.get_name()]
+        vsName = DesktopBase.tgldic[widget.get_name()]
         if (self.walkTree.get_widget(vsName).get_active()):
             self.walkTree.get_widget(vsName).set_active(False)
 
@@ -59,7 +81,7 @@ class DesktopBase(object):
 
     def tglBtn_released(self, widget):
         wName = widget.get_name()
-        vsName = Applet.tgldic[wName]
+        vsName = DesktopBase.tgldic[wName]
         if (widget.get_active() == False and 
                 self.walkTree.get_widget(vsName).get_active() == False):
             self._setOptionValueFromBtn(wName, widget.posit.idx)
@@ -197,33 +219,13 @@ class DesktopBase(object):
             return True
 
     def btnDaemonize_clicked(self, widget):
-        self.window.hide()
-        self.window.set_icon(self._select_icon(self.bCanceled))
-        self.btnOnTooltip.set_text('changer on')
-        self.bCanceled = False
-        self.bVisible = False
-        self._setPanelButton(self.applet, self.bCanceled)
-        self._switchWidget(False)
-        self._presetCore()
-        self.timeoutObject = glibobj.timeout_add(self.option.opts.interval*1000
-                , self._timeout, self)
-        self.logging.debug('%20s' % 
-                'Start Daemonize ... interval [%d].' % self.option.opts.interval)
-        self._runChanger()
+        pass
 
     def btnCancelDaemonize_clicked(self, widget):
-        self.bCanceled = True
-        self._setPanelButton(self.applet, self.bCanceled)
-        self.window.set_icon(self._select_icon(self.bCanceled))
-        self.btnOnTooltip.set_text('changer off')
-        glibobj.source_remove(self.timeoutObject)
-        self.timeoutObject = None
-        self._writeStatusbar(self.statbar, self.cid_stat, 'Cancel ... changer action.')
-        self._switchWidget(True)
+        pass
 
     def btnAbout_clicked(self, widget):
-        icon = gtk.gdk.pixbuf_new_from_file(os.path.abspath(
-            os.path.join(PREFIX,'share','WallpaperOptimizer','wallopt.png')))
+        icon = self._select_icon(self.bCanceled)
         about = gnome.ui.About("WallpaperOptimizer"
                             ,"0.6.0.0"    #version
                             ,"GPLv3"        #copyright
