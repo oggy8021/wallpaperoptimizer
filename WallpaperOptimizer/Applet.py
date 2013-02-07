@@ -6,8 +6,15 @@ import os.path
 import pygtk
 pygtk.require("2.0")
 import gtk
+try:
+    import glib as glibobj
+except:
+    try:
+        import gobject as glibobj
+    except:
+        sys.exit(2)
 
-from distutils.sysconfig import PREFIX, get_python_lib
+import WallpaperOptimizer
 
 from WallpaperOptimizer.DesktopBase import DesktopBase
 from WallpaperOptimizer.Core import Core
@@ -129,9 +136,9 @@ class Applet(DesktopBase):
 
 	def _loadIcon(self):
 		self.dis_icon = gtk.gdk.pixbuf_new_from_file(os.path.abspath(
-				os.path.join(PREFIX,'share','WallpaperOptimizer','wallopt_off.png')))
+				os.path.join(WallpaperOptimizer.ICONDIR,'wallopt_off.png')))
 		self.ena_icon = gtk.gdk.pixbuf_new_from_file(os.path.abspath(
-				os.path.join(PREFIX,'share','WallpaperOptimizer','wallopt.png')))
+				os.path.join(WallpaperOptimizer.ICONDIR,'wallopt.png')))
 
 	def __init__(self, applet, iid, logging):
 		self.applet = applet
@@ -158,9 +165,7 @@ class Applet(DesktopBase):
 		self.core = Core(self.option)
 #	  Initialize Applet
 		self.gladefile = os.path.abspath(
-			os.path.join(get_python_lib(),'WallpaperOptimizer','glade','wallpositapplet.glade'))
-#!		self.gladefile = os.path.abspath(
-#!			os.path.join('.','WallpaperOptimizer','glade','wallpositapplet.glade'))
+			os.path.join(WallpaperOptimizer.LIBRARYDIR,'glade','wallpositapplet.glade'))
 		self.walkTree = Glade(self.gladefile, "WallPosit_MainWindow")
 		self.window = self.walkTree.get_widget("WallPosit_MainWindow")
 		self.window.set_icon(self._select_icon(self.bCanceled))

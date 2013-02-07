@@ -25,6 +25,7 @@ if os.getenv('DISPLAY', None) == None:
 import gtk
 from optparse import OptionValueError
 
+import WallpaperOptimizer
 from WallpaperOptimizer.Options import Options
 from WallpaperOptimizer.Core import Core
 
@@ -93,9 +94,11 @@ def runConsoleSide(option, logging):
 			sys.exit(2)
 
 def do_main():
-	envdir = os.path.join(os.environ['HOME'], '.wallpaperoptimizer')
-	if os.path.exists(envdir) == False:
-		os.mkdir(envdir)
+#!	print os.path.abspath(__file__)
+
+#!	envdir = os.path.join(os.environ['HOME'], '.wallpaperoptimizer')
+#!	if os.path.exists(envdir) == False:
+#!		os.mkdir(envdir)
 
 	try:
 		option = Options()

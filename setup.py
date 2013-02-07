@@ -87,7 +87,7 @@ def rmdir(path):
 if __name__ == "__main__":
 	print "*** %s action." % sys.argv[1]
 	params['data_files'] = [
-		('share/WallpaperOptimizer',
+		('/usr/share/WallpaperOptimizer',
 			['wallopt.png', 'wallopt_off.png']),
 		('/etc/logrotate.d',
 			['wallopt'])]
@@ -106,7 +106,8 @@ if __name__ == "__main__":
 		rmdir(os.path.join(get_python_lib(),params['packages'][0]))
 		rmdir(os.path.join(PREFIX,params['data_files'][0][0]))
 		rmfile(os.path.join(params['data_files'][1][0],params['data_files'][1][1][0]))
-		rmfile(os.path.join(PREFIX,params['data_files'][2][0],params['data_files'][2][1][0]))
+		if platform.linux_distribution()[0] in ('CentOS','Red Hat Linux'):
+			rmfile(os.path.join(PREFIX,params['data_files'][2][0],params['data_files'][2][1][0]))
 	else:
 		setup(**params)
 

@@ -19,8 +19,6 @@ except:
     print 'ex) sudo yum install python-gnome2-gnome'
     sys.exit(2)
 
-from distutils.sysconfig import PREFIX, get_python_lib
-
 from WallpaperOptimizer.Glade import Glade
 from WallpaperOptimizer.Widget.ErrorDialog import ErrorDialog
 from WallpaperOptimizer.Widget.ImgOpenDialog import ImgOpenDialog

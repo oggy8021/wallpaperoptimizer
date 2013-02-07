@@ -28,8 +28,8 @@ except:
     sys.exit(2)
 
 import appindicator
-from distutils.sysconfig import PREFIX, get_python_lib
 
+import WallpaperOptimizer
 from WallpaperOptimizer.DesktopBase import DesktopBase
 from WallpaperOptimizer.Core import Core
 from WallpaperOptimizer.Glade import Glade
@@ -112,7 +112,7 @@ class AppIndicator(DesktopBase):
         self.indicator = appindicator.Indicator('WallpaperOptimzier',
                                                 "wallopt_off",
                                                 appindicator.CATEGORY_APPLICATION_STATUS,
-                                                os.path.join(os.environ['HOME'], '.local','share','icons','wallpaperoptimizer','status','24'))
+                                                WallpaperOptimizer.ICONDIR)
         self.option = option
         self.logging = logging
 
@@ -128,6 +128,9 @@ class AppIndicator(DesktopBase):
         self._create_menu()
         self.indicator.set_menu(self.indicatormenu)
         gtk.window_set_default_icon(self._select_icon(self.bCanceled))
+
+        print "AppIndicator.py " + self.indicator.get_icon_theme_path()
+        self.indicator.set_icon('wallopt')
  
 #      optionInitialize
         self.option.opts.window = True
@@ -135,10 +138,8 @@ class AppIndicator(DesktopBase):
         self.core = Core(self.option)
 
 #      Initialize Applet
-#!        self.gladefile = os.path.abspath(
-#!            os.path.join(get_python_lib(),'WallpaperOptimizer','glade','wallpositapplet.glade'))
         self.gladefile = os.path.abspath(
-            os.path.join('.','WallpaperOptimizer','glade','wallpositapplet.glade'))
+            os.path.join(WallpaperOptimizer.LIBRARYDIR,'glade','wallpositapplet.glade'))
         self.walkTree = Glade(self.gladefile, "WallPosit_MainWindow")
         self.window = self.walkTree.get_widget("WallPosit_MainWindow")
         self.window.set_icon(self._select_icon(self.bCanceled))
