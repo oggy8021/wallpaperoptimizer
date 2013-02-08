@@ -34,7 +34,7 @@ class Core(object):
 		"""
 		# config set from configfile
 		self.configfile = os.path.join(WallpaperOptimizer.USERENVDIR,'.walloptrc')
-		self.configfile = os.path.expanduser(self.configfile)
+#!		self.configfile = os.path.expanduser(self.configfile)
 		if os.path.exists(self.configfile):
 			try:
 				self.config = Config(self.configfile)
@@ -387,13 +387,13 @@ class Core(object):
 		"""
 		Wallpaper Img set to GNOME wallpaper.
 		"""
-		if (self.option.isRhel()):
+		if (WallpaperOptimizer.isRhel()):
 			removePath = subprocess.Popen(
 					["gconftool-2"
 					,"--get"
 					,"/desktop/gnome/background/picture_filename"]
 					, stdout=subprocess.PIPE).communicate()[0].rstrip()
-		elif (self.option.isDebian()):
+		elif (WallpaperOptimizer.isDebian()):
 			removePath = subprocess.Popen(
 					["gsettings"
 					,"get"
@@ -409,7 +409,7 @@ class Core(object):
 			tmpPath = self._saveImgfile(bkImg, tmpPath)
 
 		tmpPath = os.path.abspath(tmpPath)
-		if (self.option.isRhel()):
+		if (WallpaperOptimizer.isRhel()):
 			ret = subprocess.call(
 					["gconftool-2"
 					,"--type"
@@ -424,7 +424,7 @@ class Core(object):
 					,"--set"
 					,"/desktop/gnome/background/picture_options"
 					,"scaled"])
-		elif (self.option.isDebian()):
+		elif (WallpaperOptimizer.isDebian()):
 			ret = subprocess.call(
 					["gsettings"
 					,"set"

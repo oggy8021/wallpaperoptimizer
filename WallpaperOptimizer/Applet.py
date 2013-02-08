@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 
+""" WallpaperOptimizer::Applet
+
+wallpaperoptimizer Applet module.
+"""
 import sys
 import os.path
 
@@ -18,7 +22,7 @@ import WallpaperOptimizer
 
 from WallpaperOptimizer.DesktopBase import DesktopBase
 from WallpaperOptimizer.Core import Core
-from WallpaperOptimizer.Glade import Glade
+#!from WallpaperOptimizer.Glade import Glade
 from WallpaperOptimizer.OptionsBase import OptionsBase
 
 class AppletOptions(OptionsBase):
@@ -129,7 +133,6 @@ class Applet(DesktopBase):
 					icon.get_width() - 4
 					, icon.get_width() - 4
 					, gtk.gdk.INTERP_BILINEAR )
-#!		del icon
 		iconOnPanel = gtk.Image()
 		iconOnPanel.set_from_pixbuf(icon2)
 		self.btnOnPanelBar.set_image(iconOnPanel)
@@ -164,48 +167,4 @@ class Applet(DesktopBase):
 		self.option = AppletOptions()
 		self.core = Core(self.option)
 #	  Initialize Applet
-		self.gladefile = os.path.abspath(
-			os.path.join(WallpaperOptimizer.LIBRARYDIR,'glade','wallpositapplet.glade'))
-		self.walkTree = Glade(self.gladefile, "WallPosit_MainWindow")
-		self.window = self.walkTree.get_widget("WallPosit_MainWindow")
-		self.window.set_icon(self._select_icon(self.bCanceled))
-		self._linkGladeTree()
-		if self.core.Ws.isSeparate():
-			self.option.opts.combine = False
-			self.radSeparate.set_active(True)
-			self.radCombine.set_sensitive(False)
-		self.btnSave.set_sensitive(False)
-		self.btnSetWall.set_sensitive(False)
-		if not self.core.config.lDisplay.getBool():
-			self.btnDaemonize.set_sensitive(False)
-		self.btnCancelDaemonize.set_sensitive(False)
-		self.cid_stat = self.statbar.get_context_id('status')
-
-#	  bindCallbackFunction
-		dic = {
-			"on_tglBtn_pressed" : self.tglBtn_pressed,
-			"on_tglBtn_toggled" : self.tglBtn_toggled,
-			"on_tglBtn_released" : self.tglBtn_released,
-			"on_spnMergin_value_changed" : self.spnMergin_value_changed,
-			"on_radFixed_toggled" : self.radFixed_toggled,
-			"on_radCombine_toggled" : self.radCombine_toggled,
-			"on_btnGetImg_clicked" : self.btnGetImg_clicked,
-			"on_entPath_insert_text" : self.entPath_insert,
-			"on_btnClrPath_clicked" : self.btnGetImg_clicked,
-			"on_btnSetting_clicked" : self.btnSetting_clicked,
-			"on_btnSetColor_clicked" : self.btnSetColor_clicked,
-			"on_btnSave_clicked" : self.btnSave_clicked,
-			"on_btnSetWall_clicked" : self.btnSetWall_clicked,
-			"on_spnInterval_value_changed" : self.spnInterval_value_changed,
-			"on_btnDaemonize_clicked" : self.btnDaemonize_clicked,
-			"on_btnCancelDaemonize_clicked" : self.btnCancelDaemonize_clicked,
-			"on_btnAbout_clicked" : self.btnAbout_clicked,
-			"on_WallPosit_MainWindow_delete_event" : self.btnWindowClose_clicked
-			}
-		self.walkTree.signal_autoconnect(dic)
-#	  未実装ボタン
-		self.btnHelp.set_sensitive(False)
-#	  View
-		self._writeStatusbar(self.statbar, self.cid_stat, 'Running ... applet mode.')
-#	  記憶
-		self.pos = self.window.get_position()
+		self._initializeWindow()

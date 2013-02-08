@@ -47,7 +47,8 @@ class SettingDialog(DialogBase):
 	def btnSaveSetting_clicked(self, widget):
 		configfile = os.path.join(os.environ['HOME'], '.wallpaperoptimizer','.walloptrc')
 		try:
-			cf = csv.writer(file(os.path.abspath(os.path.expanduser(configfile)), 'w'))
+#!			cf = csv.writer(file(os.path.abspath(os.path.expanduser(configfile)), 'w'))
+			cf = csv.writer(os.path.abspath(configfile), 'w')
 			for lr in ('left', 'right'):
 				cf.writerow(self._createCsvRecord(lr))
 		except IOError, msg:

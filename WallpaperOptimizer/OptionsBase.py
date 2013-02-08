@@ -82,12 +82,12 @@ class OptionsBase(object):
 		else:
 			return True
 
-	def isRhel(self):
-		return self.dist.isRhel()
-
-	def isDebian(self):
-		return self.dist.isDebian()
-
-	def __init__(self):
-		self.dist = Dist()
+#!	def isRhel(self):
+#!		return self.dist.isRhel()
+#!
+#!	def isDebian(self):
+#!		return self.dist.isDebian()
+#!
+#!	def __init__(self):
+#!		self.dist = Dist()
 

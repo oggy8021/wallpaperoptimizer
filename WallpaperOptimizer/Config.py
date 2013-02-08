@@ -76,7 +76,8 @@ class Config(object):
 
 		if (configfile <> None):
 			# config set from configfile
-			cf = open(os.path.expanduser(configfile), 'r')
+#!			cf = open(os.path.expanduser(configfile), 'r')
+			cf = open(configfile, 'r')
 			try:
 				for i, cfline in enumerate(cf):
 					subStr = cfline.rstrip().split(',')

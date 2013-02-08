@@ -27,11 +27,22 @@
 #				__init__.py
 #			glade/
 #				wallpositapplet.glade
+#			Widget/
+#				ColorSelectionDialog.py
+#				DialogBase.py
+#				ErrorDialog.py
+#				ImgOpenDialog.py
+#				SaveWallpaperDialog.py
+#				SettingDialog.py
+#				SrcdirDialog.py
+#				__init__.py
+#			AppIndicator.py
 #			Applet.py
 #			AppletUtil.py
 #			ChangerDir.py
 #			Config.py
 #			Core.py
+#			DesktopBase.py
 #			Options.py
 #			OptionBase.py
 #			WorkSpace.py
@@ -66,7 +77,6 @@ import sys, platform
 import os.path
 from shutil import rmtree
 from distutils.core import setup
-#from setuptools import setup
 from distutils.sysconfig import PREFIX, get_python_lib
 
 def rmfile(path):
@@ -102,12 +112,14 @@ if __name__ == "__main__":
 
 
 	if sys.argv[1] == 'uninstall':
-		rmfile(os.path.join(PREFIX,'bin',params['scripts'][0]))
-		rmdir(os.path.join(get_python_lib(),params['packages'][0]))
-		rmdir(os.path.join(PREFIX,params['data_files'][0][0]))
+		import WallpaperOptimizer
+		INSTALLPREFIX = os.path.abspath(os.path.join(WallpaperOptimizer.LIBRARYDIR,'..','..','..','..'))
+		rmfile(os.path.join(INSTALLPREFIX,'bin',params['scripts'][0]))
+		rmdir(os.path.join(WallpaperOptimizer.LIBRARYDIR,params['packages'][0]))
+		rmdir(os.path.join(INSTALLPREFIX,params['data_files'][0][0]))
 		rmfile(os.path.join(params['data_files'][1][0],params['data_files'][1][1][0]))
 		if platform.linux_distribution()[0] in ('CentOS','Red Hat Linux'):
-			rmfile(os.path.join(PREFIX,params['data_files'][2][0],params['data_files'][2][1][0]))
+			rmfile(os.path.join(INSTALLPREFIX,params['data_files'][2][0],params['data_files'][2][1][0]))
 	else:
 		setup(**params)
 
