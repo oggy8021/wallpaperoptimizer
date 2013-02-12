@@ -7,6 +7,7 @@ import pygtk
 pygtk.require("2.0")
 import gtk
 
+import WallpaperOptimizer
 from WallpaperOptimizer.Widget.DialogBase import DialogBase
 from WallpaperOptimizer.Widget.ErrorDialog import ErrorDialog
 from WallpaperOptimizer.Widget.SrcdirDialog import SrcdirDialog
@@ -45,10 +46,9 @@ class SettingDialog(DialogBase):
 			'entSrcdir' + widget.posit.Caps).set_text(self.srcdirs[widget.posit.idx])
 
 	def btnSaveSetting_clicked(self, widget):
-		configfile = os.path.join(os.environ['HOME'], '.wallpaperoptimizer','.walloptrc')
+		configfile = os.path.join(WallpaperOptimizer.USERENVDIR,'.walloptrc')
 		try:
-#!			cf = csv.writer(file(os.path.abspath(os.path.expanduser(configfile)), 'w'))
-			cf = csv.writer(os.path.abspath(configfile), 'w')
+			cf = csv.writer(file(os.path.abspath(configfile), 'w'))
 			for lr in ('left', 'right'):
 				cf.writerow(self._createCsvRecord(lr))
 		except IOError, msg:

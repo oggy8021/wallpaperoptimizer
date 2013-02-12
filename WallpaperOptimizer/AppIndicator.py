@@ -19,15 +19,6 @@ except:
     except:
         sys.exit(2)
 
-#! aboutDialogだけ？
-#try:
-#    import gnome.ui
-#except:
-#    print 'not installed Python bindings for the GNOME desktop environment'
-#    print 'ex) sudo apt-get install python-gnome2'
-#    print 'ex) sudo yum install python-gnome2-gnome'
-#    sys.exit(2)
-
 import appindicator
 
 import WallpaperOptimizer
@@ -131,7 +122,6 @@ class AppIndicator(DesktopBase):
         self.indicator.set_menu(self.indicatormenu)
         gtk.window_set_default_icon(self._select_icon(self.bCanceled))
 
-        print "AppIndicator.py " + self.indicator.get_icon_theme_path()
         self.indicator.set_icon('wallopt')
  
 #      optionInitialize

@@ -154,8 +154,10 @@ class DesktopBase(object):
                     display = self.core.config.rDisplay
                     displaysize = settingArgs[1] #rDisplaySize
                 for wh in (0,1):
-                    display.setWidth(displaysize[wh])
-                    display.setHeight(displaysize[wh])
+                    if wh == 0:
+                        display.setWidth(displaysize[wh])
+                    else:
+                        display.setHeight(displaysize[wh])
                 display.setSrcdir(settingArgs[2][lr])
             self.core.config.lDisplay.checkBool()
             self.core.config.rDisplay.checkBool()

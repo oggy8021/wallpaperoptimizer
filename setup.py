@@ -112,17 +112,22 @@ if __name__ == "__main__":
 
 
 	if sys.argv[1] == 'uninstall':
-		import WallpaperOptimizer
-		INSTALLPREFIX = os.path.abspath(os.path.join(WallpaperOptimizer.LIBRARYDIR,'..','..','..','..'))
+		from commands import getstatusoutput
+		(stat, CMDPATH) = getstatusoutput('which wallpaperoptimiz')
+		if stat != 0:
+			print "not installed wallpaperoptimizer"
+			sys.exit(2)
+		INSTALLPREFIX = os.path.abspath(os.path.join(CMDPATH,'..','..')) 
 		rmfile(os.path.join(INSTALLPREFIX,'bin',params['scripts'][0]))
-		rmdir(os.path.join(WallpaperOptimizer.LIBRARYDIR,params['packages'][0]))
-		rmdir(os.path.join(INSTALLPREFIX,params['data_files'][0][0]))
+		LIBDIR = get_python_lib().replace(PREFIX,'')
+		rmfile(INSTALLPREFIX + LIBDIR + '/' + __NAME__ + '-' + __VERSION__ + '.egg-info')
+		rmdir(os.path.abspath(os.path.join(INSTALLPREFIX + LIBDIR,params['packages'][0])))
+		rmdir(os.path.join(params['data_files'][0][0]))
 		rmfile(os.path.join(params['data_files'][1][0],params['data_files'][1][1][0]))
 		if platform.linux_distribution()[0] in ('CentOS','Red Hat Linux'):
 			rmfile(os.path.join(INSTALLPREFIX,params['data_files'][2][0],params['data_files'][2][1][0]))
 	else:
 		setup(**params)
-
 
 #	elif sys.argv[1] == 'dump':
 #		print type(params)
