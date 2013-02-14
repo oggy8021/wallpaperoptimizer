@@ -20,6 +20,12 @@
 #			wallopt_off.png
 #	/usr/lib/python2.4/site-packages
 #		WallpaperOptimizer/
+#           Command/
+#               Command.py
+#               CommandFactory.py
+#               Gnome2Command.py
+#               Gnome3Command.py
+#				__init__.py
 #			Imaging/
 #				Bounds.py
 #				ImgFile.py
