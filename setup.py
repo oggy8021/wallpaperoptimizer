@@ -48,7 +48,7 @@
 #			ChangerDir.py
 #			Config.py
 #			Core.py
-#			DesktopBase.py
+#			WindowBase.py
 #			Options.py
 #			OptionBase.py
 #			WorkSpace.py
@@ -57,7 +57,7 @@
 #			wallopt
 
 __NAME__='wallpaperoptimizer'
-__VERSION__='0.7.0.0'
+__VERSION__='0.7.0.1'
 
 params = {
 	'name': __NAME__,

@@ -20,7 +20,7 @@ except:
 
 import WallpaperOptimizer
 
-from WallpaperOptimizer.DesktopBase import DesktopBase
+from WallpaperOptimizer.WindowBase import WindowBase
 from WallpaperOptimizer.Core import Core
 #!from WallpaperOptimizer.Glade import Glade
 from WallpaperOptimizer.OptionsBase import OptionsBase

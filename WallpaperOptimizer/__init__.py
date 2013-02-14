@@ -3,7 +3,7 @@
 # module WallpaperOptimizer __init__.py
 __all__ = [
            "Core",
-           "DesktopBase",
+           "WindowBase",
            "Applet",
            "AppIndicator",
            "Glade",
@@ -24,7 +24,7 @@ def _verextract(string):
     (ver, rev1, rev2) = ptn.split(string)[1:4]
     return ver
 
-VERSION = '0.7.0.0'
+VERSION = '0.7.0.1'
 AUTHOR = 'oggy'
 
 import os.path
