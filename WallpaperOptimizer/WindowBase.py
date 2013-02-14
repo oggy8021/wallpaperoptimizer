@@ -28,7 +28,7 @@ from WallpaperOptimizer.Widget.SettingDialog import SettingDialog
 from WallpaperOptimizer.Widget.ColorSelectionDialog import ColorSelectionDialog
 from WallpaperOptimizer.Widget.SaveWallpaperDialog import SaveWallpaperDialog
 
-class DesktopBase(object):
+class WindowBase(object):
 
     tgldic = dict()
     tgldic['tglPushLeftL'] = 'tglPushRightL'

@@ -32,7 +32,7 @@ from WallpaperOptimizer.Widget.SettingDialog import SettingDialog
 from WallpaperOptimizer.Widget.ColorSelectionDialog import ColorSelectionDialog
 from WallpaperOptimizer.Widget.SaveWallpaperDialog import SaveWallpaperDialog
 
-class AppIndicator(DesktopBase):
+class AppIndicator(WindowBase):
 
     def quit(self, widget):
         sys.exit(0)

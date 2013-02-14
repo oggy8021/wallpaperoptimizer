@@ -11,7 +11,11 @@ __all__ = [
            "Config",
            "Options",
            "OptionsBase",
-           "WorkSpace"
+           "WorkSpace",
+           "Starter",
+           "StarterFactory",
+           "Gnome2Starter",
+           "Gnome3Starter"
            ]
 
 #! WorkSpaceに同関数

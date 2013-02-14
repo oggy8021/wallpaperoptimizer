@@ -22,12 +22,11 @@ import os
 if os.getenv('DISPLAY', None) == None:
 	print "Please set to DISPLAY system environment."
 	sys.exit(2)
-import gtk
 from optparse import OptionValueError
 
 import WallpaperOptimizer
 from WallpaperOptimizer.Options import Options
-from WallpaperOptimizer.Core import Core
+from WallpaperOptimizer.StarterFactory import StarterFactory
 
 def _putlogOption(option):
 	"""
@@ -59,40 +58,6 @@ def _putlogOption(option):
 	logging.debug('%20s [%s]'
 		 % ( 'interval', option.getInterval() ))
 
-def factory(applet, iid):
-	"""
-	for gnomeapplet factory method.
-	"""
-	from WallpaperOptimizer.Applet import Applet
-	Applet(applet, iid, logging)
-	return gtk.TRUE
-
-def runConsoleSide(option, logging):
-	if option.getVerbose():
-		console = logging.StreamHandler()
-		console.setLevel(logging.DEBUG)
-		formatter = logging.Formatter('%(name)-12s: %(levelname)-8s %(message)s')
-		console.setFormatter(formatter)
-		logging.getLogger('').addHandler(console)
-		_putlogOption(option)
-
-	if option.getDaemonize():
-		core = Core(option)
-		logging.debug('Running ... daemonize mode.')
-		try:
-			core.background()
-		except Core.CoreRuntimeError, msg:
-			logging.error('** CoreRuntimeError: %s. ' % msg.value)
-			sys.exit(2)
-	else:
-		core = Core(option)
-		logging.debug('Running ... singlerun mode.')
-		try:
-			core.singlerun()
-		except Core.CoreRuntimeError, msg:
-			logging.error('** CoreRuntimeError: %s. ' % msg.value)
-			sys.exit(2)
-
 def do_main():
 	try:
 		option = Options()
@@ -112,52 +77,9 @@ def do_main():
 						, filemode='a')
 	logging.info('Starting ... wallpaperoptimizer.')
 
-	if WallpaperOptimizer.GNOMEVER == '2':
-		try:
-			import gnomeapplet
-		except:
-			print "not installed Python bindings for GNOME Panel applets."
-			print "ex)  sudo yum install gnome-python2-applet"
-			sys.exit(2)
-
-		if option.getWindow():
-			logging.debug('Running ... window mode.')
-			import pygtk
-			pygtk.require("2.0")
-			main_window = gtk.Window(gtk.WINDOW_TOPLEVEL)
-			main_window.set_title("Wallpaperoptimizer Applet Window")
-			main_window.connect("destroy", gtk.main_quit)
-			app = gnomeapplet.Applet()
-			factory(app, None)
-			app.reparent(main_window)
-			main_window.show_all()
-			wh = main_window.get_size()
-			main_window.resize(wh[0]*2, wh[1])
-			gtk.main()
-	
-		elif (option.getIID() == None and option.getFD() == None):
-			runConsoleSide(option, logging)
-	
-		else:
-			logging.debug('Running ... applet mode.')
-			import pygtk
-			pygtk.require("2.0")
-			gnomeapplet.bonobo_factory("OAFIID:wallpaperoptimizerApplet_Factory"
-									, gnomeapplet.Applet.__gtype__
-									, "wallpaper changer"
-									, "1.0"
-									, factory)
-	elif WallpaperOptimizer.GNOMEVER == '3':
-		if option.getSavePath() == None and option.getSetWall() == False and option.getWindow() == False and option.getDaemonize() == False: 
-			import gobject
-			gobject.set_application_name('wallpaperoptimizer')
-			gobject.set_prgname('wallpaperoptimizer')
-
-			from WallpaperOptimizer.AppIndicator import AppIndicator
-			AppIndicator(option, logging)
-			gtk.main()
-		else:
-			runConsoleSide(option, logging)
+	starterfactory = StarterFactory()
+	starter = starterfactory.create(WallpaperOptimizer.GNOMEVER)
+	starter.start(option, logging)
 
 	logging.info('Quit ... wallpaperoptimizer.')
 

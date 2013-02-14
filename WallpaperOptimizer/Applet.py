@@ -52,7 +52,7 @@ class AppletOptions(OptionsBase):
 		self.args = ['','']
 
 
-class Applet(DesktopBase):
+class Applet(WindowBase):
 
 #	override
 	def btnDaemonize_clicked(self, widget):
