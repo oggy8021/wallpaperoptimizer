@@ -229,12 +229,12 @@ class DesktopBase(object):
     def btnAbout_clicked(self, widget):
         icon = self._select_icon(self.bCanceled)
         about = gnome.ui.About("WallpaperOptimizer"
-                            ,"0.6.0.0"    #version
+                            ,WallpaperOptimizer.VERSION    #version
                             ,"GPLv3"        #copyright
                             ,"wallpaperoptimizer is multi wallpaper changer."    #comments
-                            ,["oggy"]        #**authors
-                            ,["oggy"]        #**documenters
-                            ,"oggy"        #*translator_credits
+                            ,["WallpaperOptimizer.AUTHOR"]        #**authors
+                            ,["WallpaperOptimizer.AUTHOR"]        #**documenters
+                            ,"WallpaperOptimizer.AUTHOR"        #*translator_credits
                             ,icon)            #gtk.gdk.Pixbuf
         about.show_all()
 

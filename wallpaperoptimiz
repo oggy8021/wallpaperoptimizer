@@ -112,7 +112,7 @@ def do_main():
 						, filemode='a')
 	logging.info('Starting ... wallpaperoptimizer.')
 
-	if (WallpaperOptimizer.isRhel()):
+	if WallpaperOptimizer.GNOMEVER == '2':
 		try:
 			import gnomeapplet
 		except:
@@ -147,7 +147,7 @@ def do_main():
 									, "wallpaper changer"
 									, "1.0"
 									, factory)
-	elif (WallpaperOptimizer.isDebian()):
+	elif WallpaperOptimizer.GNOMEVER == '3':
 		if option.getSavePath() == None and option.getSetWall() == False and option.getWindow() == False and option.getDaemonize() == False: 
 			import gobject
 			gobject.set_application_name('wallpaperoptimizer')

@@ -19,6 +19,7 @@ from WallpaperOptimizer.Config import Config
 from WallpaperOptimizer.WorkSpace import WorkSpace
 from WallpaperOptimizer.ChangerDir import ChangerDir
 from WallpaperOptimizer.Imaging.ImgFile import ImgFile
+from WallpaperOptimizer.Command.CommandFactory import CommandFactory 
 
 class Core(object):
 
@@ -34,7 +35,6 @@ class Core(object):
 		"""
 		# config set from configfile
 		self.configfile = os.path.join(WallpaperOptimizer.USERENVDIR,'.walloptrc')
-#!		self.configfile = os.path.expanduser(self.configfile)
 		if os.path.exists(self.configfile):
 			try:
 				self.config = Config(self.configfile)
@@ -387,20 +387,10 @@ class Core(object):
 		"""
 		Wallpaper Img set to GNOME wallpaper.
 		"""
-		if (WallpaperOptimizer.isRhel()):
-			removePath = subprocess.Popen(
-					["gconftool-2"
-					,"--get"
-					,"/desktop/gnome/background/picture_filename"]
-					, stdout=subprocess.PIPE).communicate()[0].rstrip()
-		elif (WallpaperOptimizer.isDebian()):
-			removePath = subprocess.Popen(
-					["gsettings"
-					,"get"
-					,"org.gnome.desktop.background"
-					,"picture-uri"]
-					, stdout=subprocess.PIPE).communicate()[0].rstrip()
-			removePath.replace('file://','')
+		factory = CommandFactory()
+		cmd = factory.create(WallpaperOptimizer.GNOMEVER)
+
+		removePath = cmd.getWall()
 		logging.debug('Current wallpaper [%s].' % removePath)
 		if removePath.find('wallopt') < 0:
 			removePath = None
@@ -409,34 +399,8 @@ class Core(object):
 			tmpPath = self._saveImgfile(bkImg, tmpPath)
 
 		tmpPath = os.path.abspath(tmpPath)
-		if (WallpaperOptimizer.isRhel()):
-			ret = subprocess.call(
-					["gconftool-2"
-					,"--type"
-					,"string"
-					,"--set"
-					,"/desktop/gnome/background/picture_filename"
-					,tmpPath])
-			retopt = subprocess.call(
-					["gconftool-2"
-					,"--type"
-					,"string"
-					,"--set"
-					,"/desktop/gnome/background/picture_options"
-					,"scaled"])
-		elif (WallpaperOptimizer.isDebian()):
-			ret = subprocess.call(
-					["gsettings"
-					,"set"
-					,"org.gnome.desktop.background"
-					, "picture-uri"
-					, "file://" + tmpPath])
-			retopt = subprocess.call(
-					["gsettings"
-					,"set"
-					,"org.gnome.desktop.background"
-					,"picture-options"
-					,"spanned"])
+		cmd.setWall(tmpPath)
+		cmd.setView()
 		logging.info('Change wallpaper to current Workspace [%s].' % (tmpPath))
 
 		if removePath <> None:
