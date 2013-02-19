@@ -18,7 +18,7 @@ class Config(object):
 
 	class Display(object):
 
-		def toIntAsSizeString(self, val):
+		def toIntAsSizestring(self, val):
 			wh = val.split('x')
 			self.width = int(wh[0])
 			self.height = int(wh[1])

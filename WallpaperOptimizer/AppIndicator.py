@@ -40,11 +40,11 @@ class AppIndicator(WindowBase):
     def _create_menu(self):
         self.indicatormenu = gtk.Menu()
 
-        self.visible_item = gtk.MenuItem("表示/非表示")
-        self.preference_item = gtk.MenuItem("設定")
-        self.color_item = gtk.MenuItem("色選択")
-        self.about_item = gtk.MenuItem("情報")
-        self.quit_item = gtk.MenuItem("終了")
+        self.visible_item = gtk.MenuItem("Visible/Invisible")
+        self.preference_item = gtk.MenuItem("Settings")
+        self.color_item = gtk.MenuItem("BaseColor")
+        self.about_item = gtk.MenuItem("About")
+        self.quit_item = gtk.MenuItem("Quit")
 
         self.visible_item.connect("activate", self._visibleCtrl)
         self.preference_item.connect("activate", self._preferences)

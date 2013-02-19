@@ -6,7 +6,7 @@ from WallpaperOptimizer.Command.Command import Command
 
 class Gnome3Command(Command):
 
-    def setwall(self, path):
+    def setWall(self, path):
         self.ret = subprocess.call(
                     [self.command
                     ,"set"
@@ -24,7 +24,7 @@ class Gnome3Command(Command):
                     ,"spanned"])
         return self.retopt
 
-    def getwall(self):
+    def getWall(self):
         self.current = subprocess.Popen(
                     [self.command
                     ,"get"

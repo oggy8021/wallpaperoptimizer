@@ -99,6 +99,11 @@ def rmdir(path):
 	else:
 		print "  already removed: %s" % path
 
+#def lsfile(path):
+#	if os.path.exists(path):
+#		print "  exists : %s" % path
+#	else:
+#		print "  no exists: %s" % path
 
 if __name__ == "__main__":
 	print "*** %s action." % sys.argv[1]
@@ -115,6 +120,9 @@ if __name__ == "__main__":
 
 	if platform.linux_distribution()[0] in ('CentOS','Red Hat Linux'):
 		params['data_files'].append(bonobo)
+	else:
+		desktop = ('/usr/share/applications', ['wallpaperoptimiz.desktop'])
+		params['data_files'].append(desktop)
 
 
 	if sys.argv[1] == 'uninstall':
@@ -132,9 +140,7 @@ if __name__ == "__main__":
 		rmfile(os.path.join(params['data_files'][1][0],params['data_files'][1][1][0]))
 		if platform.linux_distribution()[0] in ('CentOS','Red Hat Linux'):
 			rmfile(os.path.join(INSTALLPREFIX,params['data_files'][2][0],params['data_files'][2][1][0]))
+		else:
+			rmfile(os.path.join(INSTALLPREFIX,params['data_files'][2][0],params['data_files'][2][1][0]))
 	else:
 		setup(**params)
-
-#	elif sys.argv[1] == 'dump':
-#		print type(params)
-#		print params['data_files']

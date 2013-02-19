@@ -47,8 +47,8 @@ class Core(object):
 
 		# config set/update from commandline option
 		if (self.option.getLSize() <> None and self.option.getRSize() <> None):
-			self.config.lDisplay.toIntAsSizeString(self.option.getLSize())
-			self.config.rDisplay.toIntAsSizeString(self.option.getRSize())
+			self.config.lDisplay.toIntAsSizestring(self.option.getLSize())
+			self.config.rDisplay.toIntAsSizestring(self.option.getRSize())
 			logging.info('Config "display" update from commandline option.')
 
 		if (self.option.getLSrcdir() <> '' and self.option.getRSrcdir() <> ''):
