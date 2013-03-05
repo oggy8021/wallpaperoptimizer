@@ -253,13 +253,13 @@ class Core(object):
 		logging.debug('%20s [%s]' % ( 'height mergin', tmpMerginH) )
 
 		logging.debug('%20s [%d,]' % ( '---tmpScreen size.w', tmpScreen.Size.w) )
-		if Img.Size.w > tmpScreen.Size.w:
+		if Img.Size.w > (tmpScreen.Size.w - tmpMerginW):
 			Img.setSize( (tmpScreen.Size.w - tmpMerginW), 
 						int(max( Img.Size.h
 								* (tmpScreen.Size.w - tmpMerginW) / Img.Size.w, 1 )) )
 		logging.debug('%20s [%d,%d]' % ( '---set size', Img.Size.w, Img.Size.h) )
 		logging.debug('%20s [,%d]' % ( '---tmpScreen size.h', tmpScreen.Size.h) )
-		if Img.Size.h > tmpScreen.Size.h:
+		if Img.Size.h > (tmpScreen.Size.h - tmpMerginH):
 			Img.setSize( int(max( Img.Size.w
 					 * (tmpScreen.Size.h - tmpMerginH) / Img.Size.h , 1 )), 
 					(tmpScreen.Size.h - tmpMerginH) )
