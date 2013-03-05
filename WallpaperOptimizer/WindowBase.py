@@ -176,7 +176,6 @@ class WindowBase(object):
         savewallpaperDialog = SaveWallpaperDialog(self.gladefile)
         self.core.option.opts.save = savewallpaperDialog.openDialog()
         if self.core.option.getSavePath() <> None:
-#!            self._presetCore()
             try:
                 self.core.singlerun()
             except self.core.CoreRuntimeError, msg:
@@ -186,7 +185,6 @@ class WindowBase(object):
             pass
 
     def btnSetWall_clicked(self, widget):
-#!        self._presetCore()
         self.core.option.opts.setWall = True
         try:
             self.core.singlerun()
