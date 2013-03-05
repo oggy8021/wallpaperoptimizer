@@ -63,7 +63,6 @@ class Applet(WindowBase):
 		self.bVisible = False
 		self._setPanelButton(self.applet, self.bCanceled)
 		self._switchWidget(False)
-		self._presetCore()
 		self.timeoutObject = glibobj.timeout_add(self.option.opts.interval*1000
 				, self._timeout, self)
 		self.logging.debug('%20s' % 

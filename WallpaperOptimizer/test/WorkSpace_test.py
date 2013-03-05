@@ -58,7 +58,7 @@ def WorkSpace_compareToScreen2_test():
 def WorkSpace_setAttrScreenType_test():
 	ws = WorkSpace()
 	ws.setScreenSize([1920, 1080], [1280,1024])
-	ws.setBool(True, True)
+	ws.setAttrScreenBool(True, True)
 	ws.setAttrScreenType()
 	eq_(ws.lScreen.displayType, 'wide')
 	eq_(ws.rScreen.displayType, 'square')
@@ -67,7 +67,7 @@ def WorkSpace_setAttrScreenType_test():
 def WorkSpace_Screen_undefine_test():
 	ws = WorkSpace()
 	ws.setScreenSize([1920, 1080], [0,0])
-	ws.setBool(True, False)
+	ws.setAttrScreenBool(True, False)
 	ws.setAttrScreenType()
 	ok_(hasattr(ws.lScreen, 'displayType'))
 	ok_(not hasattr(ws.rScreen, 'displayType'))

@@ -93,7 +93,7 @@ class Core(object):
 
 	def _initializeWorkSpace(self):
 		"""
-		WorkSpace instance and Screen instance initialize and compared Screen size.
+		WorkSpace instance initialize.
 		"""
 		try:
 			self.Ws = WorkSpace()
@@ -107,8 +107,11 @@ class Core(object):
 		logging.debug('%20s [%s]'
 			 % ( 'WorkSpace depth', self.Ws.getDepth() ))
 
-		logging.debug('Config Setting To WorkSpace().')
-
+	def _initializeScreen(self):
+		"""
+		Screen(Rectangle) instance initialize and compared Screen size in WorkSpace instance.
+		"""
+		logging.debug('Config Setting To Screens.')
 #		Separate時は、.walloptrcをどう書いても反映されない。
 		if not self.Ws.isSeparate():
 			self.Ws.setScreenSize((self.config.lDisplay.width
@@ -120,8 +123,15 @@ class Core(object):
 					'** WorkSpace width[%d] < sum(left display size, right display size) [%d, %d].'
 					 % ( self.Ws.Size.w, self.Ws.lScreen.Size.w, self.Ws.rScreen.Size.w ))
 				raise Core.CoreRuntimeError('WorkSpace width over left/right display size summing')
+
+		logging.debug('Current Screen Size.')
+		logging.debug('%20s [%d,%d]'
+							% ( 'Left  Screen Size', self.Ws.lScreen.Size.w, self.Ws.lScreen.Size.h ))
+		logging.debug('%20s [%d,%d]'
+							% ( 'Right Screen Size', self.Ws.rScreen.Size.w, self.Ws.rScreen.Size.h ))
+
 #		ただし、妥当性だけは見られる
-		self.Ws.setBool(self.config.lDisplay.getBool(), self.config.rDisplay.getBool())
+		self.Ws.setAttrScreenBool(self.config.lDisplay.getBool(), self.config.rDisplay.getBool())
 
 		if (hasattr(self.Ws.lScreen.Size, 'islessThanWorkSpaceHeight')
 		 and self.Ws.lScreen.Size.islessThanWorkSpaceHeight):
@@ -135,7 +145,6 @@ class Core(object):
 				 % (self.Ws.Size.h, self.Ws.rScreen.Size.h ))
 
 		self.Ws.setAttrScreenType()
-
 
 		if (not hasattr(self.Ws.lScreen, 'displayType')):
 			setattr(self.Ws.lScreen, 'displayType', 'undefined')
@@ -243,13 +252,17 @@ class Core(object):
 		tmpMerginH = tmpMergin[2] + tmpMergin[3]
 		logging.debug('%20s [%s]' % ( 'height mergin', tmpMerginH) )
 
-		Img.setSize( (tmpScreen.Size.w - tmpMerginW), 
-				int(max( Img.Size.h
-				 * (tmpScreen.Size.w - tmpMerginW) / Img.Size.w, 1 )) )
+		logging.debug('%20s [%d,]' % ( '---tmpScreen size.w', tmpScreen.Size.w) )
+		if Img.Size.w > tmpScreen.Size.w:
+			Img.setSize( (tmpScreen.Size.w - tmpMerginW), 
+						int(max( Img.Size.h
+								* (tmpScreen.Size.w - tmpMerginW) / Img.Size.w, 1 )) )
 		logging.debug('%20s [%d,%d]' % ( '---set size', Img.Size.w, Img.Size.h) )
-		Img.setSize( int(max( Img.Size.w
-				 * (tmpScreen.Size.h - tmpMerginH) / Img.Size.h , 1 )), 
-				(tmpScreen.Size.h - tmpMerginH) )
+		logging.debug('%20s [,%d]' % ( '---tmpScreen size.h', tmpScreen.Size.h) )
+		if Img.Size.h > tmpScreen.Size.h:
+			Img.setSize( int(max( Img.Size.w
+					 * (tmpScreen.Size.h - tmpMerginH) / Img.Size.h , 1 )), 
+					(tmpScreen.Size.h - tmpMerginH) )
 		logging.debug('%20s [%d,%d]' % ( '---set size', Img.Size.w, Img.Size.h) )
 
 		Img.reSize( Img.Size.w, Img.Size.h)
@@ -326,6 +339,7 @@ class Core(object):
 		2 ImgFile allocate Wallpaper Img.
 		"""
 		logging.info('Optimizing ... wallpapaers.')
+		self._initializeScreen()
 		self._checkImgType(Ws, Img1, 1)
 		self._checkImgType(Ws, Img2, 2)
 
@@ -361,6 +375,7 @@ class Core(object):
 		1 ImgFile allocate Wallpaper Img.
 		"""
 		logging.info('Optimizing ... wallpapaer.')
+		self._initializeScreen()
 		self._checkImgType(Ws, Img, 1)
 
 #代		self._bindingImgToScreen(Option.getFixed(), Img1, Img2)

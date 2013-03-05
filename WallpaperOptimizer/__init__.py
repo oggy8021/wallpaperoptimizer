@@ -28,7 +28,7 @@ def _verextract(string):
     (ver, rev1, rev2) = ptn.split(string)[1:4]
     return ver
 
-VERSION = '0.7.0.1'
+VERSION = '0.7.1.0'
 AUTHOR = 'oggy'
 
 import os.path

@@ -71,7 +71,6 @@ class AppIndicator(WindowBase):
         self.bVisible = False
         self.indicator.set_icon('wallopt')
         self._switchWidget(False)
-        self._presetCore()
         self.timeoutObject = glibobj.timeout_add(self.option.opts.interval*1000
                 , self._timeout, self)
         self.logging.debug('%20s' % 

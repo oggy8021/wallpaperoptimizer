@@ -176,7 +176,7 @@ class WindowBase(object):
         savewallpaperDialog = SaveWallpaperDialog(self.gladefile)
         self.core.option.opts.save = savewallpaperDialog.openDialog()
         if self.core.option.getSavePath() <> None:
-            self._presetCore()
+#!            self._presetCore()
             try:
                 self.core.singlerun()
             except self.core.CoreRuntimeError, msg:
@@ -186,7 +186,7 @@ class WindowBase(object):
             pass
 
     def btnSetWall_clicked(self, widget):
-        self._presetCore()
+#!        self._presetCore()
         self.core.option.opts.setWall = True
         try:
             self.core.singlerun()
@@ -279,10 +279,6 @@ class WindowBase(object):
         self.btnHelp = self.walkTree.get_widget('btnHelp')
         self.btnAbout = self.walkTree.get_widget('btnAbout')
         self.statbar = self.walkTree.get_widget('statusbar')
-
-    def _presetCore(self):
-        self.core.Ws.compareToScreen()
-        self.core.Ws.setAttrScreenType()
 
     def _switchWidget(self, boolean):
         self.tglPushLeftL.set_sensitive(boolean)

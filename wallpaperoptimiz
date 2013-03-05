@@ -28,36 +28,6 @@ import WallpaperOptimizer
 from WallpaperOptimizer.Options import Options
 from WallpaperOptimizer.StarterFactory import StarterFactory
 
-def _putlogOption(option):
-	"""
-	option instance dump.
-	"""
-	logging.debug('Command line option as.')
-	logging.debug('%20s [%s,%s].'
-		 % ( 'align', option.getLAlign(), option.getRAlign() ))
-	logging.debug('%20s [%s,%s].'
-		 % ( 'valign', option.getLValign(), option.getRValign() ))
-	logging.debug('%20s [%d,%d,%d,%d]'
-		 % ( 'mergin'
-		 , option.getLMergin(), option.getRMergin()
-		 , option.getTopMergin(), option.getBtmMergin() ))
-	logging.debug('%20s [%s]'
-		 % ( 'fixed', option.getFixed() ))
-	logging.debug('%20s [%s,%s]'
-		 % ( 'display', option.getLSize(), option.getRSize() ))
-	logging.debug('%20s [%s]'
-		 % ( 'bgcolor', option.getBgcolor() ))
-	logging.debug('%20s [%s,%s]'
-		 % ( 'srcdir', option.getLSrcdir(), option.getRSrcdir() ))
-	logging.debug('%20s [%s]'
-		 % ( 'setWall', option.getSetWall() ))
-	logging.debug('%20s [%s]'
-		 % ( 'savepath', option.getSavePath() ))
-	logging.debug('%20s [%s]'
-		 % ( 'daemon', option.getDaemonize() ))
-	logging.debug('%20s [%s]'
-		 % ( 'interval', option.getInterval() ))
-
 def do_main():
 	try:
 		option = Options()
