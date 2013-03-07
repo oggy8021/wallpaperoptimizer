@@ -144,7 +144,10 @@ class Core(object):
 				'* WorkSpace height [%s] > right display height [%s].'
 				 % (self.Ws.Size.h, self.Ws.rScreen.Size.h ))
 
-		self.Ws.setAttrScreenType()
+		try:
+			self.Ws.setAttrScreenType()
+		except WorkSpace.WorkSpaceRuntimeError, msg:
+			raise Core.CoreRuntimeError(msg.value)
 
 		if (not hasattr(self.Ws.lScreen, 'displayType')):
 			setattr(self.Ws.lScreen, 'displayType', 'undefined')

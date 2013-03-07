@@ -180,7 +180,7 @@ class WindowBase(object):
                 self.core.singlerun()
             except self.core.CoreRuntimeError, msg:
                 self.logger.error('** CoreRuntimeError: %s. ' % msg.value)
-                self._runErrorDialog(self, '** CoreRuntimeError: %s. ' % msg.value)
+                self._runErrorDialog('** CoreRuntimeError: %s. ' % msg.value)
         else:
             pass
 
@@ -190,7 +190,7 @@ class WindowBase(object):
             self.core.singlerun()
         except self.core.CoreRuntimeError, msg:
             self.logging.error('** CoreRuntimeError: %s. ' % msg.value)
-            self._runErrorDialog(self, '** CoreRuntimeError: %s. ' % msg.value)
+            self._runErrorDialog('** CoreRuntimeError: %s. ' % msg.value)
 
     def spnInterval_value_changed(self, widget):
         self.option.opts.interval = self.spnInterval.get_value_as_int()
@@ -204,7 +204,7 @@ class WindowBase(object):
             self.core.timerRun()
         except self.core.CoreRuntimeError, msg:
             self.logging.error('** CoreRuntimeError: %s. ' % msg.value)
-            self._runErrorDialog(self, '** CoreRuntimeError: %s. ' % msg.value)
+            self._runErrorDialog('** CoreRuntimeError: %s. ' % msg.value)
 
     def _timeout(self, applet):
         self.logging.debug('%20s at %d sec.' % ('Timeout', self.option.opts.interval))

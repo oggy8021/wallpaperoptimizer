@@ -6,4 +6,4 @@ __all__ = [
            "CommandFactory",
            "Gnome2Command",
            "Gnome3Command"
-           ]
+		   ]

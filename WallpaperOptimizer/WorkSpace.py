@@ -45,16 +45,16 @@ class WorkSpace(Rectangle):
 		setattr(self.rScreen, 'bSetting', rBool)
 
 	def setAttrScreenType(self):
-		if self.lScreen.bSetting and self.rScreen.bSetting:
-			if self.lScreen.isSquare():
-				setattr(self.lScreen, 'displayType', 'square')
-			if self.lScreen.isWide():
-				setattr(self.lScreen, 'displayType', 'wide')
-			if self.rScreen.isSquare():
-				setattr(self.rScreen, 'displayType', 'square')
-			if self.rScreen.isWide():
-				setattr(self.rScreen, 'displayType', 'wide')
-		else:
+		if self.lScreen.isSquare():
+			setattr(self.lScreen, 'displayType', 'square')
+		if self.lScreen.isWide():
+			setattr(self.lScreen, 'displayType', 'wide')
+		if self.rScreen.isSquare():
+			setattr(self.rScreen, 'displayType', 'square')
+		if self.rScreen.isWide():
+			setattr(self.rScreen, 'displayType', 'wide')
+		if ((not self.separate and not self.lScreen.bSetting and not self.rScreen.bSetting) or
+			 (self.separate and not self.lScreen.bSetting)):
 			raise WorkSpace.WorkSpaceRuntimeError('Screen definition is not valid.')
 
 	def _splitLines(self, string):

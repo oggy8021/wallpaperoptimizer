@@ -22,24 +22,24 @@ import WallpaperOptimizer
 
 from WallpaperOptimizer.WindowBase import WindowBase
 from WallpaperOptimizer.Core import Core
-#!from WallpaperOptimizer.Glade import Glade
+# !from WallpaperOptimizer.Glade import Glade
 from WallpaperOptimizer.OptionsBase import OptionsBase
 
 class AppletOptions(OptionsBase):
 
 	class Opts(object):
 		def __init__(self):
-			self.align = ['center','center']
-			self.valign = ['middle','middle']
-			self.mergin = [0,0,0,0]
+			self.align = ['center', 'center']
+			self.valign = ['middle', 'middle']
+			self.mergin = [0, 0, 0, 0]
 			self.fixed = True
-			self.size = [None,None]
+			self.size = [None, None]
 			self.bgcolor = 'black'
-			self.srcdir = ['','']
+			self.srcdir = ['', '']
 			self.verbose = False
-			self.save=None
-			self.setWall=False
-			self.daemonize=False
+			self.save = None
+			self.setWall = False
+			self.daemonize = False
 			self.interval = 60
 			self.combine = True
 
@@ -49,12 +49,12 @@ class AppletOptions(OptionsBase):
 	def __init__(self):
 		OptionsBase.__init__(self)
 		self.opts = AppletOptions.Opts()
-		self.args = ['','']
+		self.args = ['', '']
 
 
 class Applet(WindowBase):
 
-#	override
+# 	override
 	def btnDaemonize_clicked(self, widget):
 		self.window.hide()
 		self.window.set_icon(self._select_icon(self.bCanceled))
@@ -63,13 +63,13 @@ class Applet(WindowBase):
 		self.bVisible = False
 		self._setPanelButton(self.applet, self.bCanceled)
 		self._switchWidget(False)
-		self.timeoutObject = glibobj.timeout_add(self.option.opts.interval*1000
+		self.timeoutObject = glibobj.timeout_add(self.option.opts.interval * 1000
 				, self._timeout, self)
 		self.logging.debug('%20s' % 
 				'Start Daemonize ... interval [%d].' % self.option.opts.interval)
 		self._runChanger()
 
-#	override
+# 	override
 	def btnCancelDaemonize_clicked(self, widget):
 		self.bCanceled = True
 		self._setPanelButton(self.applet, self.bCanceled)
@@ -80,8 +80,8 @@ class Applet(WindowBase):
 		self._writeStatusbar(self.statbar, self.cid_stat, 'Cancel ... changer action.')
 		self._switchWidget(True)
 
-#panel control group
-	def _select_icon(self,bCanceled):
+# panel control group
+	def _select_icon(self, bCanceled):
 		if bCanceled:
 			icon = self.dis_icon
 		else:
@@ -98,7 +98,7 @@ class Applet(WindowBase):
 		self.btnAbout_clicked(None)
 
 	def _create_menu(self, applet):
-		menuxml="""
+		menuxml = """
 			<popup name="button3">
 				<menuitem name="Item 2" verb="Visible" label="Visible／Invisible" pixtype="stock" pixname="gtk-execute"/>
 				<menuitem name="Item 3" verb="Preferences" label="Settings" pixtype="stock" pixname="gtk-preferences"/>
@@ -106,8 +106,8 @@ class Applet(WindowBase):
 				<menuitem name="Item 5" verb="About" label="About" pixtype="stock" pixname="gtk-about"/>
 			</popup>"""
 #
-		verbs = [  ("Visible", self._visibleCtrl )
-					, ("Preferences", self._preferences )
+		verbs = [  ("Visible", self._visibleCtrl)
+					, ("Preferences", self._preferences)
 					, ("Color", self._selectColor)
 					, ("About", self._about)
 				]
@@ -131,39 +131,39 @@ class Applet(WindowBase):
 		icon2 = icon.scale_simple(
 					icon.get_width() - 4
 					, icon.get_width() - 4
-					, gtk.gdk.INTERP_BILINEAR )
+					, gtk.gdk.INTERP_BILINEAR)
 		iconOnPanel = gtk.Image()
 		iconOnPanel.set_from_pixbuf(icon2)
 		self.btnOnPanelBar.set_image(iconOnPanel)
 
 	def _loadIcon(self):
 		self.dis_icon = gtk.gdk.pixbuf_new_from_file(os.path.abspath(
-				os.path.join(WallpaperOptimizer.ICONDIR,'wallopt_off.png')))
+				os.path.join(WallpaperOptimizer.ICONDIR, 'wallopt_off.png')))
 		self.ena_icon = gtk.gdk.pixbuf_new_from_file(os.path.abspath(
-				os.path.join(WallpaperOptimizer.ICONDIR,'wallopt.png')))
+				os.path.join(WallpaperOptimizer.ICONDIR, 'wallopt.png')))
 
 	def __init__(self, applet, iid, logging):
 		self.applet = applet
 		self.logging = logging
-#	  Initialize Status
+# 	  Initialize Status
 		self.timeoutObject = None
 		self.bVisible = True
 		self.bCanceled = True
-		self.bEntryPath = [False,False]
-#	  Initialize Panel
+		self.bEntryPath = [False, False]
+# 	  Initialize Panel
 		self._loadIcon()
 		self.btnOnPanelBar = gtk.Button()
 		self.btnOnPanelBar.set_relief(gtk.RELIEF_NONE)
 		self._setPanelButton(self.applet, self.bCanceled)
 		self.btnOnPanelBar.connect("button-press-event", self._setMenu, self.applet)
 		self.applet.add(self.btnOnPanelBar)
-#	  add Tooltips
+# 	  add Tooltips
 		self.btnOnTooltip = gtk.Tooltip()
 		self.btnOnTooltip.set_text('changer off')
 		self.applet.show_all()
 		self.applet.connect("destroy", gtk.main_quit)
-#	  AppletOptions extends Options class
+# 	  AppletOptions extends Options class
 		self.option = AppletOptions()
 		self.core = Core(self.option)
-#	  Initialize Applet
+# 	  Initialize Applet
 		self._initializeWindow()
