@@ -5,12 +5,12 @@ from WallpaperOptimizer.Command.Gnome3Command import Gnome3Command
 
 class CommandFactory(object):
 
-    def _createCommand(self, gnomever):
-        if gnomever == '2':
-            return Gnome2Command()
-        elif gnomever == '3':
-            return Gnome3Command() 
+	def _createCommand(self, gnomever):
+		if gnomever == '2':
+			return Gnome2Command()
+		elif gnomever == '3':
+			return Gnome3Command() 
 
-    def create(self, gnomever):
-        cmd = self._createCommand(gnomever)
-        return cmd
+	def create(self, gnomever):
+		cmd = self._createCommand(gnomever)
+		return cmd

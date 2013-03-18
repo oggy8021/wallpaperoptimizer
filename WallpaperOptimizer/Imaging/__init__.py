@@ -2,7 +2,7 @@
 
 # module WallpaperOptimizer.Imaging __init__.py
 __all__ = [
-           "Bounds",
-           "ImgFile",
-           "Rectangle"
-           ]
+			"Bounds",
+			"ImgFile",
+			"Rectangle"
+			]

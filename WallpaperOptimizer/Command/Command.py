@@ -2,11 +2,11 @@
 
 class Command(object):
 
-    def setWall(self, path):
-        pass
+	def setWall(self, path):
+		pass
 
-    def setView(self):
-        pass
-    
-    def getWall(self):
-        pass
+	def setView(self):
+		pass
+	
+	def getWall(self):
+		pass
