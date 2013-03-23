@@ -48,7 +48,7 @@ def do_main():
 	logging.info('Starting ... wallpaperoptimizer.')
 
 	starterfactory = StarterFactory()
-	starter = starterfactory.create(WallpaperOptimizer.GNOMEVER)
+	starter = starterfactory.create(WallpaperOptimizer.WINDOWMANAGER)
 	starter.start(option, logging)
 
 	logging.info('Quit ... wallpaperoptimizer.')

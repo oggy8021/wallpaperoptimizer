@@ -395,7 +395,7 @@ class Core(object):
 		self._allocateCenter(Ws, Img, 1)
 		self._allocateImg(Option, Ws, Img)
 
-		bkImg = ImgFile('', Option.getBgcolor(), Ws.Size.w, Ws.Size.h)
+		bkImg = ImgFile('', Option.getBgcolor(), Ws.lScreen.Size.w, Ws.lScreen.Size.h)
 
 		self._mergeWallpaper(Ws, bkImg, Img)
 		return bkImg
@@ -406,7 +406,7 @@ class Core(object):
 		Wallpaper Img set to GNOME wallpaper.
 		"""
 		factory = CommandFactory()
-		cmd = factory.create(WallpaperOptimizer.GNOMEVER)
+		cmd = factory.create(WallpaperOptimizer.WINDOWMANAGER)
 
 		removePath = cmd.getWall()
 		logging.debug('Current wallpaper [%s].' % removePath)
@@ -453,7 +453,12 @@ class Core(object):
 		Img1 = ImgFile(LChangerDir.getImgfileRnd())
 		Img2 = ImgFile(RChangerDir.getImgfileRnd())
 
-		bkImg = self._optimizeWallpapers(self.option, self.config, self.Ws, Img1, Img2)
+		if WallpaperOptimizer.WINDOWMANAGER == 'Gnome3':
+			bkImg = self._optimizeWallpapers(self.option, self.config, self.Ws, Img1, Img2)
+		elif WallpaperOptimizer.WINDOWMANAGER == 'Gnome2':
+			bkImg = self._optimizeWallpaper(self.option, self.config, self.Ws, Img1)
+		else:
+			pass
 		self._setWall(bkImg)
 
 
@@ -473,7 +478,12 @@ class Core(object):
 				except ImgFile.ImgFileIOError, msg:
 					raise Core.CoreRuntimeError(msg.value)
 
-				bkImg = self._optimizeWallpapers(self.option, self.config, self.Ws, Img1, Img2)
+				if WallpaperOptimizer.WINDOWMANAGER == 'Gnome3':
+					bkImg = self._optimizeWallpapers(self.option, self.config, self.Ws, Img1, Img2)
+				elif WallpaperOptimizer.WINDOWMANAGER == 'Gnome2':
+					bkImg = self._optimizeWallpaper(self.option, self.config, self.Ws, Img1)
+				else:
+					pass
 				self._setWall(bkImg)
 				interval = self.option.getInterval()
 				time.sleep(interval)
@@ -516,7 +526,6 @@ class Core(object):
 			self._saveImgfile(bkImg, tmpPath)
 		if self.option.getSetWall():
 			self._setWall(bkImg, tmpPath)
-
 
 
 	def __init__(self, Options):

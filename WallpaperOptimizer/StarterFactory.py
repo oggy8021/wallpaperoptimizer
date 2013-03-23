@@ -6,9 +6,9 @@ from WallpaperOptimizer.Gnome3Starter import Gnome3Starter
 class StarterFactory(object):
 
 	def _createStarter(self, gnomever):
-		if gnomever == '2':
+		if gnomever == 'Gnome2':
 			return Gnome2Starter()
-		elif gnomever == '3':
+		elif gnomever == 'Gnome3':
 			return Gnome3Starter()
 
 	def create(self, gnomever):

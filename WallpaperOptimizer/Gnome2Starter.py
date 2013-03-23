@@ -26,6 +26,8 @@ class Gnome2Starter(Starter):
 		except:
 			print "not installed Python bindings for GNOME Panel applets."
 			print "ex)  sudo yum install gnome-python2-applet"
+			self.logging.error('not installed Python bindings for GNOME Panel applets.')
+			self.logging.error('ex)  sudo yum install gnome-python2-applet')
 			sys.exit(2)
 
 		if option.getWindow():
