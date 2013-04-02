@@ -48,7 +48,7 @@ import re
 xprop='/usr/bin/xprop'
 if os.path.exists(xprop):
 	window_id = (subprocess.Popen([xprop, '-root', '_NET_SUPPORTING_WM_CHECK'], stdout=subprocess.PIPE).communicate()[0]).split(' ')[4]
-	wm_name = subprocess.Popen([xprop, '-id', window_id, '8s', '_NET_WM_NAME'], stdout=subprocess.PIPE).communicate()[0]
+	wm_name = _wmextract(subprocess.Popen([xprop, '-id', window_id, '8s', '_NET_WM_NAME'], stdout=subprocess.PIPE).communicate()[0])
 
 WINDOWMANAGER = 'Gnome'
 if wm_name == 'Xfwm4':
