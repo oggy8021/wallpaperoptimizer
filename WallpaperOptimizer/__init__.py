@@ -29,7 +29,7 @@ def _wmextract(string):
 	return wm_name
 
 VERSION = '0.8.0.0'
-AUTHOR = 'oggy'
+AUTHOR = 'oggy <oggyist@gmail.com>'
 
 import os.path
 import xdg.BaseDirectory
@@ -41,6 +41,7 @@ LIBRARYDIR = os.path.abspath(os.path.dirname(__file__))
 if os.path.exists(USERENVDIR) == False:
 		os.mkdir(USERENVDIR)
 
+import sys
 import os.path
 import subprocess
 import re
@@ -55,8 +56,6 @@ if wm_name == 'Xfwm4':
 	WINDOWMANAGER="xfce4"
 elif wm_name == 'Openbox':
 	WINDOWMANAGER="lxde"
-elif wm_name == 'KWin':
-	WINDOWMANAGER="kde"
 else:
 	# Metacity, Compiz, GNOME Shell
 	gnomesessions='/usr/bin/gnome-session'

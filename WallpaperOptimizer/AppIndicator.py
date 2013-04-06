@@ -19,7 +19,12 @@ except:
 	except:
 		sys.exit(2)
 
-import appindicator
+try:
+	import appindicator
+except:
+	print 'not installed Python bindings for libappindicator'
+	print 'ex) sudo apt-get install python-appindicator'
+	sys.exit(2)
 
 import WallpaperOptimizer
 
@@ -85,6 +90,35 @@ class AppIndicator(WindowBase):
 		self.timeoutObject = None
 		self._writeStatusbar(self.statbar, self.cid_stat, 'Cancel ... changer action.')
 		self._switchWidget(True)
+
+	def _setEmail(self, email):
+		gtk.show_uri(None, "mailto:%s" % email, gtk.gdk.CURRENT_TIME)
+
+	def _setUrl(self, link):
+		gtk.show_uri(None, link, gtk.gdk.CURRENT_TIME)
+
+	def _aboutDialog_destroy(self, dialog, response):
+		dialog.destroy()
+
+	def btnAbout_clicked(self, widget):
+		icon = self._select_icon(self.bCanceled)
+		about = gtk.AboutDialog()
+		about.set_name('WallpaperOptimizer')
+		about.set_logo(icon) #gtk.gdk.Pixbuf
+#		about.set_license('GPLv3')
+		about.set_copyright('Copyright @ 2012-2013 Katsuhiro Ogikubo')
+		about.set_comments('wallpaperoptimizer is multi wallpaper changer.')
+		about.set_version(WallpaperOptimizer.VERSION)
+		about.set_authors([WallpaperOptimizer.AUTHOR])
+		about.set_documenters([WallpaperOptimizer.AUTHOR])
+		about.set_translator_credits(WallpaperOptimizer.AUTHOR)
+		about.set_website('http://oggy.no-ip.info/blog/software/')
+		about.set_website_label('WallpaperOptimizer page')
+		about.connect("response", self._aboutDialog_destroy)
+		about.show_all()
+
+	gtk.about_dialog_set_email_hook(_setEmail)
+	gtk.about_dialog_set_url_hook(_setUrl)
 
 	def _select_icon(self,bCanceled):
 		if bCanceled:

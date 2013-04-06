@@ -453,7 +453,9 @@ class Core(object):
 		Img1 = ImgFile(LChangerDir.getImgfileRnd())
 		Img2 = ImgFile(RChangerDir.getImgfileRnd())
 
-		if WallpaperOptimizer.WINDOWMANAGER == 'Gnome3':
+		if (WallpaperOptimizer.WINDOWMANAGER == 'Gnome3'
+				 or WallpaperOptimizer.WINDOWMANAGER == 'xfce4' 
+				 or WallpaperOptimizer.WINDOWMANAGER == 'lxde'):
 			bkImg = self._optimizeWallpapers(self.option, self.config, self.Ws, Img1, Img2)
 		elif WallpaperOptimizer.WINDOWMANAGER == 'Gnome2':
 			bkImg = self._optimizeWallpaper(self.option, self.config, self.Ws, Img1)
@@ -478,7 +480,9 @@ class Core(object):
 				except ImgFile.ImgFileIOError, msg:
 					raise Core.CoreRuntimeError(msg.value)
 
-				if WallpaperOptimizer.WINDOWMANAGER == 'Gnome3':
+				if (WallpaperOptimizer.WINDOWMANAGER == 'Gnome3'
+						 or WallpaperOptimizer.WINDOWMANAGER == 'xfce4' 
+						 or WallpaperOptimizer.WINDOWMANAGER == 'lxde'):
 					bkImg = self._optimizeWallpapers(self.option, self.config, self.Ws, Img1, Img2)
 				elif WallpaperOptimizer.WINDOWMANAGER == 'Gnome2':
 					bkImg = self._optimizeWallpaper(self.option, self.config, self.Ws, Img1)

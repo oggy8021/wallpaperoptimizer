@@ -11,14 +11,6 @@ except:
 		import gobject as glibobj
 	except:
 		sys.exit(2)
-try:
-	import gnome.ui
-except:
-	print 'not installed Python bindings for the GNOME desktop environment'
-	print 'ex) sudo apt-get install python-gnome2'
-	print 'ex) sudo yum install python-gnome2-gnome'
-	sys.exit(2)
-
 import WallpaperOptimizer
 
 from WallpaperOptimizer.Glade import Glade
@@ -221,16 +213,7 @@ class WindowBase(object):
 		pass
 
 	def btnAbout_clicked(self, widget):
-		icon = self._select_icon(self.bCanceled)
-		about = gnome.ui.About("WallpaperOptimizer"
-							,WallpaperOptimizer.VERSION	#version
-							,"GPLv3"		#copyright
-							,"wallpaperoptimizer is multi wallpaper changer."	#comments
-							,["WallpaperOptimizer.AUTHOR"]		#**authors
-							,["WallpaperOptimizer.AUTHOR"]		#**documenters
-							,"WallpaperOptimizer.AUTHOR"		#*translator_credits
-							,icon)			#gtk.gdk.Pixbuf
-		about.show_all()
+		pass
 
 	def btnWindowClose_clicked(self, widget, event):
 		self.bVisible = False

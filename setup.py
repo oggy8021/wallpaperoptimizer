@@ -25,6 +25,8 @@
 #               CommandFactory.py
 #               Gnome2Command.py
 #               Gnome3Command.py
+#			    lxdeCommand.py
+#			    Xfce4Command.py
 #				__init__.py
 #			Imaging/
 #				Bounds.py

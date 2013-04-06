@@ -8,7 +8,7 @@ class StarterFactory(object):
 	def _createStarter(self, windowmanager):
 		if windowmanager == 'Gnome2':
 			return Gnome2Starter()
-		elif windowmanager == 'Gnome3' or windowmanager == 'xfce4':
+		elif windowmanager == 'Gnome3' or windowmanager == 'xfce4' or windowmanager == 'lxde':
 			return Gnome3Starter()
 
 	def create(self, windowmanager):

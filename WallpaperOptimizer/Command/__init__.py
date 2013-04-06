@@ -5,5 +5,7 @@ __all__ = [
 			"Command",
 			"CommandFactory",
 			"Gnome2Command",
-			"Gnome3Command"
+			"Gnome3Command",
+			"Xfce4Command",
+			"lxdeCommand"
 			]

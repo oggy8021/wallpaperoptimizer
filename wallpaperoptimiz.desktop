@@ -5,3 +5,4 @@ GenericName=wallpaper changer
 Icon=/usr/share/WallpaperOptimizer/wallopt.png
 Exec=wallpaperoptimiz
 Terminal=false
+Categories=GTK;Utility

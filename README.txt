@@ -10,14 +10,27 @@
   プログラムです。以下の動作モードと機能を備えます。
 
   ＜動作環境＞
-  ・GNOME2とGNOME3に対応します
-  ・確認は、CentOS 6.3とUbuntu12.04 LTSにて試しています
+  ・以下のデスクトップにて試しています
+    GNOME2
+    Unity(GNOME3)
+    GNOME shell(GNOME3)
+    Xfce4
+    LXDE
+    
+  ・以下のディストリビューションにて試しています
+    CentOS 6.3
+    Ubuntu12.04 LTS
+    Ubuntu12.10
+    Linux mint 14
+    Xubuntu(Ubuntu12.10)
+    Lubuntu(Ubuntu12.10)
+    Ubuntu GNOME shell Remix 12.10
 
   ＜動作モード＞
   ・コンソールより各種パラメータを指定して、壁紙を作成・設定
   ・コンソール下にて、指定時間ごとに壁紙を変更
   ・GNOMEパネルに配置するGNOMEアプレットとして動作(GNOME2)
-  ・インジケータアプリとしての動作を追加(GNOME3)
+  ・インジケータアプリとしての動作(GNOME3, Xfce4, LXDE)
 
   ＜機能＞
   ・画像２つを指定し、モニタサイズと画像サイズから最適配置を行います
@@ -85,9 +98,9 @@
 
 7.開発環境
   /etc/redhat-release
-	CentOS release 6.3
+	Linux mint14
   uname -r
-	2.6.32-279.22.1.el6.centos.plus.x86_64
+	3.5.0-17-generic
   関連してそうなrpm
 	python-imaging-devel-1.1.6-19.el6.x86_64
 	python-imaging-1.1.6-19.el6.x86_64
@@ -97,7 +110,6 @@
 	gnome-python2-2.28.0-3.el6.x86_64
   関連してそうなdeb
     python-glade2, libglade2-0
-    python-gnome2
     python-gtk2
 
 8.ライセンス
@@ -109,6 +121,10 @@ The Python Imaging Library is:
     Copyright © 1995-2005 by Fredrik Lundh
 
 10.変更履歴
+2013.04. 6  v0.8.0.0    0.8版リリース
+                        Xfce4,LXDEに対応
+                        アイコンを新規に作成
+                        .desktopファイルを同梱
 2013.02.12  v0.7.0.1    0.7版リリース
                         プログラム構造について内部変更を実施
 2013.02.12  v0.6.0.0    0.6版リリース
