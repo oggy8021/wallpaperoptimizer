@@ -442,16 +442,12 @@ class Core(object):
 		except ImgFile.ImgFileIOError, msg:
 			raise Core.CoreRuntimeError(msg.value)
 
-
-	def timerRun(self):
+	def _createBkImg(self):
 		try:
-			LChangerDir = ChangerDir(self.config.lDisplay.srcdir)
-			RChangerDir = ChangerDir(self.config.rDisplay.srcdir)
-		except ChangerDir.FileCountZeroError, msg:
+			Img1 = ImgFile(LChangerDir.getImgfileRnd())
+			Img2 = ImgFile(RChangerDir.getImgfileRnd())
+		except ImgFile.ImgFileIOError, msg:
 			raise Core.CoreRuntimeError(msg.value)
-
-		Img1 = ImgFile(LChangerDir.getImgfileRnd())
-		Img2 = ImgFile(RChangerDir.getImgfileRnd())
 
 		if (WallpaperOptimizer.WINDOWMANAGER == 'Gnome3'
 				 or WallpaperOptimizer.WINDOWMANAGER == 'xfce4' 
@@ -461,8 +457,16 @@ class Core(object):
 			bkImg = self._optimizeWallpaper(self.option, self.config, self.Ws, Img1)
 		else:
 			pass
+
 		self._setWall(bkImg)
 
+	def timerRun(self):
+		try:
+			LChangerDir = ChangerDir(self.config.lDisplay.srcdir)
+			RChangerDir = ChangerDir(self.config.rDisplay.srcdir)
+		except ChangerDir.FileCountZeroError, msg:
+			raise Core.CoreRuntimeError(msg.value)
+		self._createBkImg(self)
 
 	def background(self):
 		try:
@@ -474,21 +478,7 @@ class Core(object):
 
 		try:
 			while(1):
-				try:
-					Img1 = ImgFile(LChangerDir.getImgfileRnd())
-					Img2 = ImgFile(RChangerDir.getImgfileRnd())
-				except ImgFile.ImgFileIOError, msg:
-					raise Core.CoreRuntimeError(msg.value)
-
-				if (WallpaperOptimizer.WINDOWMANAGER == 'Gnome3'
-						 or WallpaperOptimizer.WINDOWMANAGER == 'xfce4' 
-						 or WallpaperOptimizer.WINDOWMANAGER == 'lxde'):
-					bkImg = self._optimizeWallpapers(self.option, self.config, self.Ws, Img1, Img2)
-				elif WallpaperOptimizer.WINDOWMANAGER == 'Gnome2':
-					bkImg = self._optimizeWallpaper(self.option, self.config, self.Ws, Img1)
-				else:
-					pass
-				self._setWall(bkImg)
+				self._createBkImg(self)
 				interval = self.option.getInterval()
 				time.sleep(interval)
 		except KeyboardInterrupt:
