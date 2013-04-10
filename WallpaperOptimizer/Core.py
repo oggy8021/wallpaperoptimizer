@@ -442,10 +442,10 @@ class Core(object):
 		except ImgFile.ImgFileIOError, msg:
 			raise Core.CoreRuntimeError(msg.value)
 
-	def _createBkImg(self):
+	def _createBkImg(self, LSrcdir, RSrcdir):
 		try:
-			Img1 = ImgFile(LChangerDir.getImgfileRnd())
-			Img2 = ImgFile(RChangerDir.getImgfileRnd())
+			Img1 = ImgFile(LSrcdir.getImgfileRnd())
+			Img2 = ImgFile(RSrcdir.getImgfileRnd())
 		except ImgFile.ImgFileIOError, msg:
 			raise Core.CoreRuntimeError(msg.value)
 
@@ -466,7 +466,7 @@ class Core(object):
 			RChangerDir = ChangerDir(self.config.rDisplay.srcdir)
 		except ChangerDir.FileCountZeroError, msg:
 			raise Core.CoreRuntimeError(msg.value)
-		self._createBkImg(self)
+		self._createBkImg(LChangerDir, RChangerDir)
 
 	def background(self):
 		try:
@@ -478,7 +478,7 @@ class Core(object):
 
 		try:
 			while(1):
-				self._createBkImg(self)
+				self._createBkImg(LChangerDir, RChangerDir)
 				interval = self.option.getInterval()
 				time.sleep(interval)
 		except KeyboardInterrupt:
