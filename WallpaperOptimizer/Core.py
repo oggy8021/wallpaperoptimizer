@@ -442,10 +442,10 @@ class Core(object):
 		except ImgFile.ImgFileIOError, msg:
 			raise Core.CoreRuntimeError(msg.value)
 
-	def _createBkImg(self, LSrcdir, RSrcdir):
+	def _createBkImg(self):
 		try:
-			Img1 = ImgFile(LSrcdir.getImgfileRnd())
-			Img2 = ImgFile(RSrcdir.getImgfileRnd())
+			Img1 = ImgFile(self.LChangerDir.getImgfileRnd())
+			Img2 = ImgFile(self.RChangerDir.getImgfileRnd())
 		except ImgFile.ImgFileIOError, msg:
 			raise Core.CoreRuntimeError(msg.value)
 
@@ -460,25 +460,28 @@ class Core(object):
 
 		self._setWall(bkImg)
 
-	def timerRun(self):
+	def _setSrcdir(self, bRaise):
 		try:
-			LChangerDir = ChangerDir(self.config.lDisplay.srcdir)
-			RChangerDir = ChangerDir(self.config.rDisplay.srcdir)
+			self.LChangerDir = ChangerDir(self.config.lDisplay.srcdir)
+			self.RChangerDir = ChangerDir(self.config.rDisplay.srcdir)
 		except ChangerDir.FileCountZeroError, msg:
-			raise Core.CoreRuntimeError(msg.value)
-		self._createBkImg(LChangerDir, RChangerDir)
+			if bRaise:
+				raise Core.CoreRuntimeError(msg.value)
+			else:
+	 			logging.error('** %s.' % msg)
+	 			sys.exit(2)
+
+
+	def timerRun(self):
+		self._setSrcdir(True)
+		self._createBkImg()
+
 
 	def background(self):
-		try:
-			LChangerDir = ChangerDir(self.config.lDisplay.srcdir)
-			RChangerDir = ChangerDir(self.config.rDisplay.srcdir)
-		except ChangerDir.FileCountZeroError, msg:
-			logging.error('** %s.' % msg)
-			sys.exit(2)
-
+		self._setSrcdir(False)
 		try:
 			while(1):
-				self._createBkImg(LChangerDir, RChangerDir)
+				self._createBkImg()
 				interval = self.option.getInterval()
 				time.sleep(interval)
 		except KeyboardInterrupt:
@@ -526,3 +529,5 @@ class Core(object):
 		self.option = Options
 		self._initializeConfig()
 		self._initializeWorkSpace()
+		self.LChangerDir = None
+		self.RChangerDir = None
