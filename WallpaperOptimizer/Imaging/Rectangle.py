@@ -20,6 +20,8 @@ class Rectangle(Bounds):
 		self.setHeight(h)
 
 	def isSquare(self):
+		if (self.Size.w == 0 and self.Size.h == 0):
+			return False
 		widthAs = 4;
 		heightAs = 3;
 		if not self.checkAspectRatio(widthAs, heightAs):
@@ -30,6 +32,8 @@ class Rectangle(Bounds):
 			return True
 
 	def isWide(self):
+		if (self.Size.w == 0 and self.Size.h == 0):
+			return False
 		widthAs = 16;
 		heightAs = 9;
 		if not self.checkAspectRatio(widthAs, heightAs):
@@ -40,6 +44,8 @@ class Rectangle(Bounds):
 			return True
 
 	def isDual(self):
+		if (self.Size.w == 0 and self.Size.h == 0):
+			return False
 		widthAs = 8;
 		heightAs = 2.7;
 		return self.checkAspectRatio(widthAs, heightAs)
