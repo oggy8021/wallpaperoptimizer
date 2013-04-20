@@ -11,7 +11,7 @@ def ImgFile_init_no_param_test():
 	eq_(Img.getSize().w, 5)
 
 def ImgFile_load_square_test():
-	file = '../2560x1920.jpg' #4:3
+	file = '~/Develop/WallPosit.git/2560x1920.jpg' #4:3
 	Img = ImgFile(os.path.expanduser(file))
 	eq_(Img.getSize().w, 2560)
 	eq_(Img.getSize().h, 1920)
@@ -23,8 +23,8 @@ def ImgFile_load_square_test():
 	eq_(Img.getCenter().y, 960)
 
 def ImgFile_load_wide_test():
-	file = '../1500x844.jpg'	#16:9
-	Img = ImgFile(file)
+	file = '~/Develop/WallPosit.git/1500x844.jpg'	#16:9
+	Img = ImgFile(os.path.expanduser(file))
 	eq_(Img.getSize().w, 1500)
 	eq_(Img.getSize().h, 844)
 	ok_( Img.isWide() )
@@ -32,8 +32,8 @@ def ImgFile_load_wide_test():
 	ok_( not Img.isDual() )
 
 def ImgFile_load_dual_test():
- 	file = '../3200x1080.jpg' #8:2.7
- 	Img = ImgFile(file)
+ 	file = '~/Develop/WallPosit.git/3200x1080.jpg' #8:2.7
+ 	Img = ImgFile(os.path.expanduser(file))
  	eq_(Img.getSize().w, 3200)
  	eq_(Img.getSize().h, 1080)
  	ok_( Img.isDual() )
@@ -41,8 +41,8 @@ def ImgFile_load_dual_test():
  	ok_( not Img.isWide() )
 
 def ImgFile_load_no_match_test():
-	file = '../1000x800.jpg'	#No Match
-	Img = ImgFile(file)
+	file = '~/Develop/WallPosit.git/1000x800.jpg'	#No Match
+	Img = ImgFile(os.path.expanduser(file))
 	eq_(Img.getSize().w, 1000)
 	eq_(Img.getSize().h, 800)
 	ok_( Img.isSquare() )
@@ -50,8 +50,8 @@ def ImgFile_load_no_match_test():
 	ok_( not Img.isDual() )
 
 def ImgFile_reSize_test():
-	file = '../1000x800.jpg'	#No Match
-	Img = ImgFile(file)
+	file = '~/Develop/WallPosit.git/1000x800.jpg'	#No Match
+	Img = ImgFile(os.path.expanduser(file))
 	Img.reSize( 500,400 )
 	eq_(Img.getSize().w, 500)
 	eq_(Img.getSize().h, 400)
