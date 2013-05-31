@@ -31,11 +31,11 @@ import WallpaperOptimizer
 from WallpaperOptimizer.WindowBase import WindowBase
 from WallpaperOptimizer.Core import Core
 #!from WallpaperOptimizer.Glade import Glade
-from WallpaperOptimizer.Widget.ErrorDialog import ErrorDialog
-from WallpaperOptimizer.Widget.ImgOpenDialog import ImgOpenDialog
-from WallpaperOptimizer.Widget.SettingDialog import SettingDialog
-from WallpaperOptimizer.Widget.ColorSelectionDialog import ColorSelectionDialog
-from WallpaperOptimizer.Widget.SaveWallpaperDialog import SaveWallpaperDialog
+#from WallpaperOptimizer.Widget.ErrorDialog import ErrorDialog	#元で呼んでいるはず
+#from WallpaperOptimizer.Widget.ImgOpenDialog import ImgOpenDialog	#元で呼んでいるはず
+#from WallpaperOptimizer.Widget.SettingDialog import SettingDialog	#元で呼んでいるはず
+#from WallpaperOptimizer.Widget.ColorSelectionDialog import ColorSelectionDialog	#元で呼んでいるはず
+#from WallpaperOptimizer.Widget.SaveWallpaperDialog import SaveWallpaperDialog	#元で呼んでいるはず
 
 class AppIndicator(WindowBase):
 

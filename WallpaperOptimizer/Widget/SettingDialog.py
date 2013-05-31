@@ -85,11 +85,11 @@ class SettingDialog(DialogBase):
 		if result == gtk.RESPONSE_OK:
 			self.lDisplaySize = self._setSize('L')
 			self.rDisplaySize = self._setSize('R')
-			self.srcdirs = [
+			self.srcdirs = (
 				self.entSrcdirL.get_text()
 				 ,
 				self.entSrcdirR.get_text()
-				 ]
+				 )
 			self.Dialog.destroy()
 			return (self.lDisplaySize, self.rDisplaySize, self.srcdirs)
 		else:

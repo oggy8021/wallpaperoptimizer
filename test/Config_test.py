@@ -4,7 +4,8 @@ from nose.tools import ok_, eq_
 
 from WallpaperOptimizer.Config import Config
 
-def Config_settigFile_test():
+def Config_setConfigFile_test():
+#	Testing ... setWidth, setHeight, setPosit, setSrcdir, checkBool
 	wConfig = Config('/home/katsu/.local/share/wallpaperoptimizer/.walloptrc')
 #	wConfig = Config('~/.walloptrc_')
 	eq_(wConfig.lDisplay.width, 1920)
@@ -23,6 +24,7 @@ def Config_settigFile_test():
 
 
 def Config_initialize_test():
+#	Testing ... setWidth, setHeight, setPosit, setSrcdir, checkBool
 	wConfig = Config()
 	eq_(wConfig.lDisplay.width, 0)
 	eq_(wConfig.lDisplay.height, 0)
@@ -38,11 +40,8 @@ def Config_initialize_test():
 	eq_(wConfig.lDisplay.getBool(), False)
 	eq_(wConfig.rDisplay.getBool(), False)
 
-def Config_writeConfig_test():
+def Config_toIntAsSizestring_test():
 	wConfig = Config()
-	wConfig.lDisplay.setSrcdir('/tmp')
-	eq_(wConfig.lDisplay.srcdir, '/tmp')
-
 	wConfig.lDisplay.toIntAsSizestring('1920x1080')
 	eq_(wConfig.lDisplay.width, 1920)
 	eq_(wConfig.lDisplay.height, 1080)

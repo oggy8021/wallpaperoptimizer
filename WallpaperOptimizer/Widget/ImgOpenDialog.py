@@ -37,7 +37,7 @@ class ImgOpenDialog(DialogBase):
 	def __init__(self, gladefile):
 		(self.walkTree, self.Dialog) = self.loadGladeTree(gladefile, "ImgOpenDialog")
 		imgFilter = gtk.FileFilter()
-		imgFilter.set_name("画像")
+		imgFilter.set_name(u"画像")
 # Changer的には、この４つ
 		imgFilter.add_mime_type("image/png")
 		imgFilter.add_mime_type("image/jpeg")
@@ -50,7 +50,7 @@ class ImgOpenDialog(DialogBase):
 		imgFilter.add_pattern("*.gif")
 		self.Dialog.add_filter(imgFilter)
 		allFile = gtk.FileFilter()
-		allFile.set_name("全て")
+		allFile.set_name(u"全て")
 		allFile.add_pattern("*")
 		self.Dialog.add_filter(allFile)
 

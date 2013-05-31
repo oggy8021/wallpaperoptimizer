@@ -41,10 +41,12 @@ def do_main():
 	else:
 		loglevel = logging.INFO
 
+	logfile = '/tmp/wallopt.log'
 	logging.basicConfig(level=loglevel
 						, format='%(asctime)s %(levelname)5s %(message)s'
-						, filename='/tmp/wallopt.log'
+						, filename=logfile
 						, filemode='a')
+	os.chmod(logfile, 0777)
 	logging.info('Starting ... wallpaperoptimizer.')
 
 	starterfactory = StarterFactory()

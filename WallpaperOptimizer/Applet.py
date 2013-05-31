@@ -29,7 +29,6 @@ import WallpaperOptimizer
 
 from WallpaperOptimizer.WindowBase import WindowBase
 from WallpaperOptimizer.Core import Core
-# !from WallpaperOptimizer.Glade import Glade
 from WallpaperOptimizer.OptionsBase import OptionsBase
 
 class AppletOptions(OptionsBase):
@@ -93,8 +92,8 @@ class Applet(WindowBase):
  							,WallpaperOptimizer.VERSION	#version
  							,"GPLv3"		#copyright
  							,"wallpaperoptimizer is multi wallpaper changer."	#comments
- 							,WallpaperOptimizer.AUTHOR		#**authors
- 							,WallpaperOptimizer.AUTHOR		#**documenters
+ 							,[WallpaperOptimizer.AUTHOR]		#**authors
+ 							,[WallpaperOptimizer.AUTHOR]		#**documenters
  							,WallpaperOptimizer.AUTHOR		#*translator_credits
  							,icon)			#gtk.gdk.Pixbuf
 		about.show_all()

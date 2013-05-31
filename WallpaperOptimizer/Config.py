@@ -35,7 +35,7 @@ class Config(object):
 		def setSrcdir(self, val):
 			self.srcdir = val
 
-		def setConfig(self, w, h, p, s):
+		def _setConfig(self, w, h, p, s):
 			self.width = w
 			self.height = h
 			self.posit = p
@@ -55,7 +55,7 @@ class Config(object):
 			self.srcdir = ''
 			self.bSetting = False
 
-	def setConfig(self, size, p, s):
+	def _setConfig(self, size, p, s):
 		if p == 'left':
 			display = self.lDisplay
 		elif p == 'right':
@@ -63,7 +63,7 @@ class Config(object):
 		else:
 			raise Config.FormatError("position setting is left or right")
 		subStr = size.split('x')
-		display.setConfig(int(subStr[0]), int(subStr[1]), p, s)
+		display._setConfig(int(subStr[0]), int(subStr[1]), p, s)
 
 	def __init__(self
 						, configfile=None
@@ -81,7 +81,7 @@ class Config(object):
 			try:
 				for i, cfline in enumerate(cf):
 					subStr = cfline.rstrip().split(',')
-					self.setConfig(subStr[0], subStr[1], subStr[2])
+					self._setConfig(subStr[0], subStr[1], subStr[2])
 
 			except ValueError:
 				cf.close()

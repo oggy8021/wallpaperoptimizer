@@ -9,6 +9,7 @@ import os.path
 def ImgFile_init_no_param_test():
 	Img = ImgFile()
 	eq_(Img.getSize().w, 5)
+	eq_(Img.getSize().h, 5)
 
 def ImgFile_load_square_test():
 	file = '~/Develop/WallPosit.git/2560x1920.jpg' #4:3
@@ -68,5 +69,6 @@ def ImgFile_paste_test():
 	box2 = (Img3.start.x, Img3.start.y, Img3.end.x, Img3.end.y)
 	Img1.paste(Img3, box1)
 	Img2.paste(Img3, box2)
+#	毎回保存しちゃうから止めてある
 #	Img1.save('walltest1.jpg')
 #	Img2.save('walltest2.jpg')
