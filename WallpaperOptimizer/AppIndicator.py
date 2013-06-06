@@ -30,12 +30,6 @@ import WallpaperOptimizer
 
 from WallpaperOptimizer.WindowBase import WindowBase
 from WallpaperOptimizer.Core import Core
-#!from WallpaperOptimizer.Glade import Glade
-#from WallpaperOptimizer.Widget.ErrorDialog import ErrorDialog	#元で呼んでいるはず
-#from WallpaperOptimizer.Widget.ImgOpenDialog import ImgOpenDialog	#元で呼んでいるはず
-#from WallpaperOptimizer.Widget.SettingDialog import SettingDialog	#元で呼んでいるはず
-#from WallpaperOptimizer.Widget.ColorSelectionDialog import ColorSelectionDialog	#元で呼んでいるはず
-#from WallpaperOptimizer.Widget.SaveWallpaperDialog import SaveWallpaperDialog	#元で呼んでいるはず
 
 class AppIndicator(WindowBase):
 
@@ -120,7 +114,7 @@ class AppIndicator(WindowBase):
 	gtk.about_dialog_set_email_hook(_setEmail)
 	gtk.about_dialog_set_url_hook(_setUrl)
 
-	def _select_icon(self,bCanceled):
+	def _select_icon(self, bCanceled):
 		if bCanceled:
 			icon = self.dis_icon
 		else:
@@ -146,7 +140,7 @@ class AppIndicator(WindowBase):
 		self.timeoutObject = None
 		self.bVisible = True
 		self.bCanceled = True
-		self.bEntryPath = [False,False]
+		self.bEntryPath = [False, False]
 
 #	  Initialize AppIndicator
 		self._loadIcon()
@@ -159,7 +153,7 @@ class AppIndicator(WindowBase):
  
 #	  optionInitialize
 		self.option.opts.window = True
-		self.option.args = ['','']
+		self.option.args = ['', '']
 		self.core = Core(self.option)
 
 #	  Initialize Applet

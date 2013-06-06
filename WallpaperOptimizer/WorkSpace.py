@@ -57,10 +57,6 @@ class WorkSpace(Rectangle):
 			 (self.separate and not self.lScreen.bSetting)):
 			raise WorkSpace.WorkSpaceRuntimeError('Screen definition is not valid.')
 
-	def _splitLines(self, string):
-		ptn = re.compile('\n')
-		return ptn.split(string)
-
 	def __init__(self):
 		Rectangle.__init__(self)
 		self.lScreen = Rectangle()
@@ -70,17 +66,17 @@ class WorkSpace(Rectangle):
 		setattr(self.lScreen, 'depth', 24)
 		setattr(self.rScreen, 'depth', 24)
 
-		xdpyinfo='/usr/bin/xdpyinfo'
+		xdpyinfo = '/usr/bin/xdpyinfo'
 		if not os.path.exists(xdpyinfo):
 			raise WorkSpace.WorkSpaceRuntimeError('xdpyinfo not installed [%s]' % xdpyinfo)
-		dimensions = self._splitLines(subprocess.Popen(
+		dimensions = (subprocess.Popen(
 			["grep", "dimensions"]
 			, stdin=subprocess.Popen([xdpyinfo], stdout=subprocess.PIPE).stdout
-			, stdout=subprocess.PIPE).communicate()[0].rstrip())
-		depths = self._splitLines(subprocess.Popen(
+			, stdout=subprocess.PIPE).communicate()[0].rstrip()).splitlines()
+		depths = (subprocess.Popen(
 			["grep", "depth of root window"]
 			, stdin=subprocess.Popen([xdpyinfo], stdout=subprocess.PIPE).stdout
-			, stdout=subprocess.PIPE).communicate()[0].rstrip())
+			, stdout=subprocess.PIPE).communicate()[0].rstrip()).splitlines()
 
 		#"  dimensions:    3200x1080 pixels (856x292 millimeters)"
 		for i, dimension in enumerate( dimensions ):

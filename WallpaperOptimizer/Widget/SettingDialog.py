@@ -32,7 +32,6 @@ class SettingDialog(DialogBase):
 			strlr = 'L'
 		elif pos == 'right':
 			strlr = 'R'
-		# cf.writenow
 		return [str(self._setSize(strlr)[0]) + 'x' + str(self._setSize(strlr)[1])
 				 , pos
 				 , self.walkTree.get_widget('entSrcdir' + strlr).get_text()]
@@ -55,17 +54,17 @@ class SettingDialog(DialogBase):
 			self._runErrorDialog('** CoreRuntimeError: %s. ' % msg)
 
 	def btnClear_clicked(self, widget):
-		self._setSettingDialogWidget((0,0), (0,0), ('',''))
+		self._setSettingDialogWidget((0, 0), (0, 0), ('', ''))
 
 	def _setSettingDialogWidget(self, lDisplaySize, rDisplaySize, srcdirs):
-		for lr in (0,1):
+		for lr in (0, 1):
 			if lr == 0:
 				strlr = 'L'
 				displaySize = lDisplaySize
 			else:
 				strlr = 'R'
 				displaySize = rDisplaySize
-			for wh in (0,1):
+			for wh in (0, 1):
 				if wh == 0:
 					strwh = 'W'
 				else:

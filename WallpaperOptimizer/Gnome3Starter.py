@@ -2,9 +2,6 @@
 
 import gtk
 
-import WallpaperOptimizer
-from WallpaperOptimizer.Options import Options
-#from WallpaperOptimizer.Core import Core
 from WallpaperOptimizer.Starter import Starter
 
 class Gnome3Starter(Starter):
@@ -13,7 +10,10 @@ class Gnome3Starter(Starter):
 		self.option = option
 		self.logging = logging
 
-		if option.getSavePath() == None and option.getSetWall() == False and option.getWindow() == False and option.getDaemonize() == False: 
+		if (option.getSavePath() == None
+				 and option.getSetWall() == False
+				 and option.getWindow() == False
+				 and option.getDaemonize() == False): 
 			import gobject
 			gobject.set_application_name('wallpaperoptimizer')
 			gobject.set_prgname('wallpaperoptimizer')

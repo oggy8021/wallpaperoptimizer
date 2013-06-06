@@ -27,7 +27,7 @@ class Options(OptionsBase):
 
 			def take_action(self, action, dest, opt, value, values, parser):
 				def exchangeValue(lvalue, dest, values):
-					for idx,m in enumerate(lvalue):
+					for idx, m in enumerate(lvalue):
 						if m <> "":
 							vals = getattr(values, dest)
 							vals[idx] = lvalue[idx]
@@ -54,23 +54,23 @@ class Options(OptionsBase):
 				else:
 					Option.take_action(self, action, dest, opt, value, values, parser)
 
-		parser = OptionParser(usage="%prog [options] imgfile1 imgfile2"
-					, version="%prog 0.1.0.0"
-					, option_class=MultiargOption)
+		parser = OptionParser(usage = "%prog [options] imgfile1 imgfile2"
+					, version = "%prog 0.1.0.0"
+					, option_class = MultiargOption)
 		parser.set_defaults(
-					align=["center","center"]
-					, valign=["middle","middle"]
-					, mergin=[0,0,0,0]
-					, fixed=False
-					, size=[None, None]
-					, bgcolor="black"
-					, srcdir=['','']
-					, verbose=False
-					, window=False
-					, save=None
-					, setWall=False
-					, daemonize=False
-					, interval=60
+					align = ["center", "center"]
+					, valign = ["middle", "middle"]
+					, mergin = [0, 0, 0, 0]
+					, fixed = False
+					, size = [None, None]
+					, bgcolor = "black"
+					, srcdir = ['', '']
+					, verbose = False
+					, window = False
+					, save = None
+					, setWall = False
+					, daemonize = False
+					, interval = 60
 					, iid = None
 					, fd = None)
 
@@ -137,7 +137,7 @@ class Options(OptionsBase):
 				raise OptionValueError("valign invalid")
 
 			if (self.opts.srcdir[0] <> '' and self.opts.srcdir[1] <> ''):
-				for i in range(0,1):
+				for i in range(0, 1):
 					if not os.path.exists(self.opts.srcdir[i]):
 						raise OptionValueError('No such srcdir [%s]' % self.opts.srcdir[i])
 

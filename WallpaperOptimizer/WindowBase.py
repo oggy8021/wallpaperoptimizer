@@ -3,14 +3,6 @@
 import sys
 import os.path
 
-import gtk
-try:
-	import glib as glibobj
-except:
-	try:
-		import gobject as glibobj
-	except:
-		sys.exit(2)
 import WallpaperOptimizer
 
 from WallpaperOptimizer.Glade import Glade
@@ -44,7 +36,7 @@ class WindowBase(object):
 
 #button group
 	def tglBtn_pressed(self, widget):
-		vsName = DesktopBase.tgldic[widget.get_name()]
+		vsName = WindowBase.tgldic[widget.get_name()]
 		if (self.walkTree.get_widget(vsName).get_active()):
 			self.walkTree.get_widget(vsName).set_active(False)
 
@@ -134,14 +126,14 @@ class WindowBase(object):
 					, self.core.config.rDisplay.srcdir
 					])
 		if not settingArgs == (False, False, False):
-			for lr in (0,1):
+			for lr in (0, 1):
 				if lr == 0:
 					display = self.core.config.lDisplay
 					displaysize = settingArgs[0] #lDisplaySize
 				else:
 					display = self.core.config.rDisplay
 					displaysize = settingArgs[1] #rDisplaySize
-				for wh in (0,1):
+				for wh in (0, 1):
 					if wh == 0:
 						display.setWidth(displaysize[wh])
 					else:
@@ -315,9 +307,6 @@ class WindowBase(object):
 		pass
 
 	def _setPanelButton(self):
-		pass
-
-	def _setMenu(self):
 		pass
 
 	def _loadIcon(self):

@@ -64,7 +64,7 @@ class Rectangle(Bounds):
 		else:
 			return False
 
-	def containsPlusMergin(self, other, mergin=(0,0,0,0)):
+	def containsPlusMergin(self, other, mergin = (0, 0, 0, 0)):
 		# mergin(left/right/top/bottom)
 		if ( self.Size.w >= (other.Size.w + mergin[0] + mergin[1])
 			 and self.Size.h >= (other.Size.h  + mergin[2] + mergin[3])):

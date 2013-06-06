@@ -8,7 +8,7 @@ wallpaperoptimizer core module.
 import sys
 import os.path
 import logging
-import subprocess
+#import subprocess
 import time
 import datetime
 import glob

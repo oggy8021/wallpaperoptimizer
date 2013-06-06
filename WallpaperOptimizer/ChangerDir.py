@@ -20,7 +20,7 @@ class ChangerDir(object):
 		return fullpathimgfile
 
 	def getImgfileRnd(self):
-		return self.fullpathimgfiles[int(random.randint(0,self.maxlen-1))]
+		return self.fullpathimgfiles[int(random.randint(0, self.maxlen - 1))]
 
 	def __init__(self, srcdir='.'):
 		self.fIdx = 0
@@ -29,19 +29,10 @@ class ChangerDir(object):
 		imgfiles = os.listdir(srcdir)
 		self.fullpathimgfiles = []
 		for imgfile in imgfiles:
-			x = os.path.join(srcdir,imgfile)
+			x = os.path.join(srcdir, imgfile)
 			if (os.path.isfile(x) and Ext.search(imgfile)):
 				self.fullpathimgfiles.append(os.path.abspath(x))
 		self.maxlen = len(self.fullpathimgfiles)
 
 		if (self.maxlen == 0):
 			raise ChangerDir.FileCountZeroError('Directory does not have Imgfile [%s]' % srcdir)
-
-if __name__ == "__main__":
-	import sys
-	wChg = ChangerDir(sys.argv[1])
-	for i in range (0,int(sys.argv[2])):
-		print i, wChg.getImgfileSeq()
-	print '---'
-	for i in range (0,int(sys.argv[2])):
-		print i, wChg.getImgfileRnd()

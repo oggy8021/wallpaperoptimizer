@@ -6,8 +6,6 @@
 
 # console版では、.walloptrcは上書きしない
 
-import os.path
-
 class Config(object):
 
 	class FormatError(Exception):
@@ -76,13 +74,12 @@ class Config(object):
 
 		if (configfile <> None):
 			# config set from configfile
-#!			cf = open(os.path.expanduser(configfile), 'r')
 			cf = open(configfile, 'r')
 			try:
+				i = 0
 				for i, cfline in enumerate(cf):
 					subStr = cfline.rstrip().split(',')
 					self._setConfig(subStr[0], subStr[1], subStr[2])
-
 			except ValueError:
 				cf.close()
 				raise Config.FormatError("configfile written not expected Value")
@@ -97,4 +94,3 @@ class Config(object):
 
 		self.lDisplay.checkBool()
 		self.rDisplay.checkBool()
-

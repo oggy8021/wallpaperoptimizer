@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import sys
 from WallpaperOptimizer.Core import Core
 
 class Starter(object):

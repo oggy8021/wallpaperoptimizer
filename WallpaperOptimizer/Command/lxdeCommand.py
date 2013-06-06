@@ -27,7 +27,7 @@ class lxdeCommand(Command):
 		for (root, dirs, files) in os.walk(WallpaperOptimizer.USERENVDIR):
 			for f in files:
 				if f[-4:] == ".jpg":
-					return os.path.join(root,f)
+					return os.path.join(root, f)
 		return retpath
 
 	def __init__(self):

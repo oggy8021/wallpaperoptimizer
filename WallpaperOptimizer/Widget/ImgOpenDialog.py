@@ -38,7 +38,7 @@ class ImgOpenDialog(DialogBase):
 		(self.walkTree, self.Dialog) = self.loadGladeTree(gladefile, "ImgOpenDialog")
 		imgFilter = gtk.FileFilter()
 		imgFilter.set_name(u"画像")
-# Changer的には、この４つ
+		# Changer的には、この４つ
 		imgFilter.add_mime_type("image/png")
 		imgFilter.add_mime_type("image/jpeg")
 		imgFilter.add_mime_type("image/bmp")

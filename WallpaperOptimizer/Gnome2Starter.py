@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
 
+import sys
 import gtk
 
-import WallpaperOptimizer
-from WallpaperOptimizer.Options import Options
-#from WallpaperOptimizer.Core import Core
 from WallpaperOptimizer.Starter import Starter
 
 class Gnome2Starter(Starter):
