@@ -12,26 +12,22 @@ except:
 
 class Position(object):
 
-	def __init__(self, idx, label=False):
+	def __init__(self, idx):
 		if idx == 0:
 			self.idx = idx
 			self.Caps = 'L'
-			if label:
-				self.Kanji = u'左'
 		elif idx == 1:
 			self.idx = idx
 			self.Caps = 'R'
-			if label:
-				self.Kanji = u'右'
 
 class Glade(gtk.glade.XML):
 
-	def addPos(self, wName, label=False):
+	def addPos(self, wName):
 		retNode = self.get_widget(wName)
 		if (wName.endswith('L')):
-			pos = Position(0, label)
+			pos = Position(0)
 		elif(wName.endswith('R')):
-			pos = Position(1, label)
+			pos = Position(1)
 		else:
 			return retNode
 		setattr(retNode, 'posit', pos)

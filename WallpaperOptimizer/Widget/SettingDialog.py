@@ -38,7 +38,7 @@ class SettingDialog(DialogBase):
 
 	def btnOpenSrcdir_clicked(self, widget):
 		srcdirDialog = SrcdirDialog(self.gladefile)
-		retdir = srcdirDialog.openDialog(self.srcdirs[widget.posit.idx], widget.posit.Kanji)
+		retdir = srcdirDialog.openDialog(self.srcdirs[widget.posit.idx], widget.posit.Caps)
 		if not retdir == False:
 			self.srcdirs[widget.posit.idx] = retdir
 			self.walkTree.get_widget(
@@ -97,9 +97,9 @@ class SettingDialog(DialogBase):
 
 	def _linkGladeTree(self):
 		self.entSrcdirL = self.walkTree.get_widget('entSrcdirL')
-		self.btnOpenSrcdirL = self.walkTree.addPos('btnOpenSrcdirL', True)
+		self.btnOpenSrcdirL = self.walkTree.addPos('btnOpenSrcdirL')
 		self.entSrcdirR = self.walkTree.get_widget('entSrcdirR')
-		self.btnOpenSrcdirR = self.walkTree.addPos('btnOpenSrcdirR', True)
+		self.btnOpenSrcdirR = self.walkTree.addPos('btnOpenSrcdirR')
 
 	def __init__(self, gladefile):
 		self.gladefile = gladefile

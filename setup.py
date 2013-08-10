@@ -10,7 +10,7 @@
 #<reinstall>
 #	$ sudo python setup.py uninstall ; sudo python setup.py install
 #<abort>
-# $ killall wallpaperoptimizer
+#	$ killall wallpaperoptimizer
 
 # <example: CentOS i386>
 #	/usr/bin
@@ -64,16 +64,16 @@ __VERSION__ = '0.8.1.0'
 params = {
 	'name': __NAME__,
 	'version': __VERSION__,
-	'description': 'wallpaperoptimizer is multi wallpaper changer.',
+	'description': 'wallpaperoptimizer is wallpaper changer for multi screen.',
 	'author': 'Katsuhiro Ogikubo',
 	'author_email': 'oggyist@gmail.com',
-	'url': 'http://oggy.no-ip.info/blog/',
+	'url': 'http://sourceforge.jp/users/oggy8021/pf/wallpaperoptimizer/wiki/FrontPage',
 	'scripts': ['wallpaperoptimiz'],
 	'packages': ['WallpaperOptimizer', 'WallpaperOptimizer/Imaging', 'WallpaperOptimizer/Widget', 'WallpaperOptimizer/Command'],
 	'package_dir': {'WallpaperOptimizer': 'WallpaperOptimizer'},
 	'package_data': {'WallpaperOptimizer': ['glade/wallpositapplet.glade']},
 	'license': 'GPL3',
-#	'download_url': 'http://oggy.no-ip.info/blog/wallpaperoptimizer-%s.tar.gz' % (__VERSION__),
+	'download_url': 'http://sourceforge.jp/downloads/users/2/2449/wallpaperoptimizer-%s.tar.gz' % (__VERSION__),
 	'classifiers': [
 		'Intended Audience :: End Users/Desktop',
 		'License :: OSI Approved :: GNU General Public License (GPL)',
@@ -108,12 +108,14 @@ def rmdir(path):
 #		print "  no exists: %s" % path
 
 if __name__ == "__main__":
-	print "*** %s action." % sys.argv[1]
+#	print "*** %s action." % sys.argv[1]
+
 	params['data_files'] = [
 		('/usr/share/WallpaperOptimizer',
 			['wallopt.png', 'wallopt_off.png']),
 		('/etc/logrotate.d',
 			['wallopt'])]
+	params['long_description'] = open('README.rst').read()
 
 	if os.uname()[4] == 'x86_64':
 		bonobo = ('lib64/bonobo/servers',	['wallpaperoptimizer.server'])

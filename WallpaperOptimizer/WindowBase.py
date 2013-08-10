@@ -96,7 +96,7 @@ class WindowBase(object):
 			path = ''
 		else:
 			imgopenDialog = ImgOpenDialog(self.gladefile)
-			path = imgopenDialog.openDialog(self.core.option.args[widget.posit.idx], widget.posit.Kanji)
+			path = imgopenDialog.openDialog(self.core.option.args[widget.posit.idx], widget.posit.Caps)
 		if path <> False:
 			self.core.option.args[widget.posit.idx] = path
 			entPath.set_text(os.path.basename(path))
@@ -217,7 +217,7 @@ class WindowBase(object):
 		self.tglPushRightL = self.walkTree.addPos('tglPushRightL')
 		self.tglUpperL = self.walkTree.addPos('tglUpperL')
 		self.tglLowerL = self.walkTree.addPos('tglLowerL')
-		self.btnGetImgL = self.walkTree.addPos('btnGetImgL', True)
+		self.btnGetImgL = self.walkTree.addPos('btnGetImgL')
 		self.entPathL = self.walkTree.addPos('entPathL')
 		self.btnClrPathL = self.walkTree.addPos('btnClrPathL')
 #
@@ -225,7 +225,7 @@ class WindowBase(object):
 		self.tglPushRightR = self.walkTree.addPos('tglPushRightR')
 		self.tglUpperR = self.walkTree.addPos('tglUpperR')
 		self.tglLowerR = self.walkTree.addPos('tglLowerR')
-		self.btnGetImgR = self.walkTree.addPos('btnGetImgR', True)
+		self.btnGetImgR = self.walkTree.addPos('btnGetImgR')
 		self.entPathR = self.walkTree.addPos('entPathR')
 		self.btnClrPathR = self.walkTree.addPos('btnClrPathR')
 #
