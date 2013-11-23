@@ -20,41 +20,45 @@ import logging
 
 import os
 import os.path
-if os.getenv('DISPLAY', None) == None:
-	print "Please set to DISPLAY system environment."
-	sys.exit(2)
+
+if os.getenv('DISPLAY', None) is None:
+    print "Please set to DISPLAY system environment."
+    sys.exit(2)
 from optparse import OptionValueError
 
 import WallpaperOptimizer
 from WallpaperOptimizer.Options import Options
 from WallpaperOptimizer.StarterFactory import StarterFactory
 
+
 def do_main():
-	try:
-		option = Options()
-	except OptionValueError, msg:
-		logging.error('** OptionValueError: %s. ' % msg)
-		sys.exit(2)
+    try:
+        option = Options()
+    except OptionValueError, msg:
+        logging.error('** OptionValueError: %s. ' % msg)
+        sys.exit(2)
 
-	Verbose = option.getVerbose()
-	if Verbose:
-		loglevel = logging.DEBUG
-	else:
-		loglevel = logging.INFO
+    Verbose = option.getVerbose()
+    if Verbose:
+        loglevel = logging.DEBUG
+    else:
+        loglevel = logging.INFO
 
-	logfile = os.path.join(WallpaperOptimizer.USERENVDIR,'wallopt.log')
-	logging.basicConfig(level=loglevel
-						, format='%(asctime)s %(levelname)5s %(message)s'
-						, filename=logfile
-						, filemode='a')
-	logging.info('Starting ... wallpaperoptimizer.')
+    logfile = os.path.join(WallpaperOptimizer.USERENVDIR, 'wallopt.log')
+    logging.basicConfig(
+        level=loglevel,
+        format='%(asctime)s %(levelname)5s %(message)s',
+        filename=logfile,
+        filemode='a')
+    logging.info('Starting ... wallpaperoptimizer.')
 
-	starterfactory = StarterFactory()
-	starter = starterfactory.create(WallpaperOptimizer.WINDOWMANAGER)
-	starter.start(option, logging)
+    starterfactory = StarterFactory()
+    starter = starterfactory.create(WallpaperOptimizer.WINDOWMANAGER)
+    starter.start(option, logging)
 
-	logging.info('Quit ... wallpaperoptimizer.')
+    logging.info('Quit ... wallpaperoptimizer.')
+
 
 if __name__ == "__main__":
-	do_main()
-	sys.exit(0)
+    do_main()
+    sys.exit(0)

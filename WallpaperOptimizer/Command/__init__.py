@@ -3,10 +3,10 @@
 # module Command __init__.py
 
 __all__ = [
-			"Command",
-			"CommandFactory",
-			"Gnome2Command",
-			"Gnome3Command",
-			"Xfce4Command",
-			"lxdeCommand"
-			]
+    "Command",
+    "CommandFactory",
+    "Gnome2Command",
+    "Gnome3Command",
+    "Xfce4Command",
+    "lxdeCommand"
+]

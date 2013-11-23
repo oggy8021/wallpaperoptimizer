@@ -62,14 +62,14 @@ Features
 ===============
 ::
 
-  $ Sudo python setup.py install
+  $ sudo pip install wallpaperoptimzer
 
 
 3. Uninstall
 ============
 ::
 
-  $ Sudo python setup.py uninstall
+  $ sudo pip uninstall wallpaperoptimzer
 
 
 4. Deployment directory
@@ -89,11 +89,12 @@ Features
 
 ::
 
-  $ Wallpaperoptimizer 2560x1920.jpg 1500x844.jpg -C
+  $ wallpaperoptimizer 2560x1920.jpg 1500x844.jpg -C
 
 Example)
 ~~~~~~~~
 ::
+
   1920x1080, left, ~/Wallpaper/1920/
   1280x1024, right, ~/Wallpaper/1280/
 
@@ -102,7 +103,7 @@ Example)
 ----------------------------------------------
 ::
 
-  $ Wallpaperoptimizer -D -i 3600 &
+  $ wallpaperoptimizer -D -i 3600 &
 
 5.3 Running as GNOME applet
 ---------------------------
@@ -115,13 +116,13 @@ Example)
 
 ::
 
-  $ / Usr / local / bin / wallpaperoptimiz & 
+  $ /usr/local/bin/wallpaperoptimiz & 
 
   or
 
 ::
 
-  $ / Usr / bin / wallpaperoptimiz &
+  $ /usr/bin/wallpaperoptimiz &
 
 
 6. How to use

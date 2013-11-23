@@ -45,11 +45,11 @@
 
 
 2.インストール
-  $ sudo python setup.py install
+  $ sudo pip install wallpaperoptimzer
 
 
 3.アンインストール
-  $ sudo python setup.py uninstall
+  $ sudo pip uninstall wallpaperoptimzer
 
 
 4.展開ディレクトリ
