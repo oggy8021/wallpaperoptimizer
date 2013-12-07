@@ -11,7 +11,7 @@ Wallpaperoptimizer is wallpaper changer for multi screen.
   oggyist@gmail.com
 
 :Version:
-  0.8.0.0
+  0.8.1.2
 
 1.Introduction
 ==============
