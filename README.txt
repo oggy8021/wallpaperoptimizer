@@ -21,6 +21,7 @@
     CentOS 6.3
     Ubuntu12.04 LTS
     Ubuntu12.10
+    Ubuntu13.04
     Linux mint 14
     Xubuntu(Ubuntu12.10)
     Lubuntu(Ubuntu12.10)
