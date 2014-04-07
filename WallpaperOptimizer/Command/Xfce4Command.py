@@ -27,9 +27,9 @@ class Xfce4Command(Command):
                 "-c",
                 "xfce4-desktop",
                 "-p",
-                "/backdrop/screen0/xinarama-stretch",
+                "/backdrop/screen0/xinerama-stretch",
                 "-t",
-                "boot",
+                "bool",
                 "-s",
                 "true"]
         )

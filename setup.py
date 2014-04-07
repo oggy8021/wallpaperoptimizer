@@ -59,7 +59,7 @@
 #			wallopt
 
 __NAME__ = 'wallpaperoptimizer'
-__VERSION__ = '0.8.1.2'
+__VERSION__ = '0.8.2.0'
 
 params = {
     'name': __NAME__,

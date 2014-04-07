@@ -11,7 +11,7 @@ Wallpaperoptimizer is wallpaper changer for multi screen.
   oggyist@gmail.com
 
 :Version:
-  0.8.1.2
+  0.8.2.0
 
 1.Introduction
 ==============
@@ -176,6 +176,14 @@ The Python Imaging Library is:
 
 10. Change history
 ==================
+v0.8.2.0 (2014.04.07) 0.8 release
+--------------------------------
+ - Fixed a bug xfconf-query setting Xinerama-stretch
+
+v0.8.1.0 (2013.08.10) 0.8 release
+--------------------------------
+ - registerd PyPI
+
 v0.8.0.0 (2013.04.6) 0.8 release
 --------------------------------
  - Support for Xfce4, LXDE

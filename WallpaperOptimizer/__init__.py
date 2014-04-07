@@ -28,7 +28,7 @@ def _wmextract(string):
 	net_wm_name = ptn.split(string)[1]
 	return net_wm_name
 
-VERSION = '0.8.1.2'
+VERSION = '0.8.2.0'
 AUTHOR = 'oggy <oggyist@gmail.com>'
 
 import os.path
