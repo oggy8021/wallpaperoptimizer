@@ -472,26 +472,29 @@ class Core(object):
         self._mergeWallpaper(Ws, bkImg, Img)
         return bkImg
 
-    def _setWall(self, bkImg, tmpPath=None):
+    def _setWall(self, bkImg, savePath=None):
         """
         Wallpaper Img set to GNOME wallpaper.
         """
         factory = CommandFactory()
         cmd = factory.create(WallpaperOptimizer.WINDOWMANAGER)
 
+        # use Xfce4(4.10.1 later) only
+        cmd.setOption(self.option)
+
         removePath = cmd.getWall()
         logging.debug('Current wallpaper [%s].' % removePath)
         if removePath.find('wallopt') < 0:
             removePath = None
 
-        if tmpPath is None:
-            tmpPath = self._saveImgfile(bkImg, tmpPath)
+        if savePath is None:
+            savedPath = self._saveImgfile(bkImg, savePath)
 
-        tmpPath = os.path.abspath(tmpPath)
-        cmd.setWall(tmpPath)
+        savedPath = os.path.abspath(savedPath)
+        cmd.setWall(savedPath)
         cmd.setView()
         logging.info(
-            'Change wallpaper to current Workspace [%s].' % (tmpPath))
+            'Change wallpaper to current Workspace [%s].' % (savedPath))
 
         if removePath is not None:
             if os.path.exists(removePath):
@@ -502,22 +505,22 @@ class Core(object):
                     WallpaperOptimizer.USERENVDIR,
                     'wallopt*.jpg'))
             if len(lstCleanFile) > 1:
-                lstCleanFile.remove(tmpPath)
+                lstCleanFile.remove(savedPath)
                 for x in lstCleanFile:
                     os.remove(x)
                     logging.debug('Cleanup old wallpapaer [%s].' % x)
 
-    def _saveImgfile(self, bkImg, tmpPath):
+    def _saveImgfile(self, bkImg, savePath):
         try:
-            if tmpPath is None:
-                tmpPath = os.path.join(
+            if savePath is None:
+                savePath = os.path.join(
                     WallpaperOptimizer.USERENVDIR,
                     'wallopt' +
                     datetime.datetime.now().strftime('%Y%m%d-%H%M%S') +
                     '.jpg')
-            bkImg.save(tmpPath)
-            logging.info('Save optimized wallpaper [%s].' % tmpPath)
-            return tmpPath
+            bkImg.save(savePath)
+            logging.info('Save optimized wallpaper [%s].' % savePath)
+            return savePath
         except ImgFile.ImgFileIOError, msg:
             raise Core.CoreRuntimeError(msg.value)
 
@@ -530,7 +533,8 @@ class Core(object):
 
         if (
             WallpaperOptimizer.WINDOWMANAGER == 'Gnome3' or
-            WallpaperOptimizer.WINDOWMANAGER == 'xfce4' or
+            WallpaperOptimizer.WINDOWMANAGER == 'xfce40' or
+            WallpaperOptimizer.WINDOWMANAGER == 'xfce41' or
             WallpaperOptimizer.WINDOWMANAGER == 'lxde'
         ):
             bkImg = self._optimizeWallpapers(
@@ -619,11 +623,11 @@ class Core(object):
                 self.Ws,
                 Img)
 
-        tmpPath = self.option.getSavePath()
-        if tmpPath is not None:
-            self._saveImgfile(bkImg, tmpPath)
+        savePath = self.option.getSavePath()
+        if savePath is not None:
+            self._saveImgfile(bkImg, savePath)
         if self.option.getSetWall():
-            self._setWall(bkImg, tmpPath)
+            self._setWall(bkImg, savePath)
 
     def __init__(self, Options):
         self.option = Options

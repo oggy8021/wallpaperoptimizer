@@ -2,6 +2,7 @@
 
 
 class Command(object):
+
     def setWall(self, path):
         pass
 
@@ -9,4 +10,7 @@ class Command(object):
         pass
 
     def getWall(self):
+        pass
+
+    def setOption(self, option):
         pass

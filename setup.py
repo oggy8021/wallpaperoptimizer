@@ -26,7 +26,8 @@
 #               Gnome2Command.py
 #               Gnome3Command.py
 #			    lxdeCommand.py
-#			    Xfce4Command.py
+#			    Xfce40Command.py
+#               Xfce41Command.py
 #				__init__.py
 #			Imaging/
 #				Bounds.py
@@ -59,7 +60,7 @@
 #			wallopt
 
 __NAME__ = 'wallpaperoptimizer'
-__VERSION__ = '0.8.2.0'
+__VERSION__ = '0.9.0.0'
 
 params = {
     'name': __NAME__,

@@ -28,7 +28,12 @@ def _wmextract(string):
 	net_wm_name = ptn.split(string)[1]
 	return net_wm_name
 
-VERSION = '0.8.2.0'
+def _xfceextract(string):
+	ptn = re.compile('^.+\s(\d+).(\d+).(\d+)\s.*$')
+	(ver, rev1, rev2) = ptn.split(string)[1:4]
+	return rev2
+
+VERSION = '0.9.0.0'
 AUTHOR = 'oggy <oggyist@gmail.com>'
 
 import os.path
@@ -53,6 +58,10 @@ if os.path.exists(xprop):
 WINDOWMANAGER = 'Gnome'
 if wm_name == 'Xfwm4':
 	WINDOWMANAGER = "xfce4"
+	xfce4sessions='/usr/bin/xfce4-session'
+	if os.path.exists(xfce4sessions):
+		XFCESUBREV = _xfceextract(subprocess.Popen([xfce4sessions,'--version'], stdout=subprocess.PIPE).communicate()[0].rstrip().splitlines()[0])
+		WINDOWMANAGER = WINDOWMANAGER + XFCESUBREV
 elif wm_name == 'Openbox':
 	WINDOWMANAGER = "lxde"
 else:

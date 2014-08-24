@@ -10,7 +10,8 @@ class StarterFactory(object):
             return Gnome2Starter()
         elif (
             windowmanager == 'Gnome3' or
-            windowmanager == 'xfce4' or
+            windowmanager == 'xfce40' or
+            windowmanager == 'xfce41' or
             windowmanager == 'lxde'
         ):
             return Gnome3Starter()

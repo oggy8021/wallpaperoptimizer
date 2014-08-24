@@ -23,6 +23,7 @@
     Ubuntu12.10
     Ubuntu13.04
     Linux mint 14
+    Linux mint 17
     Xubuntu(Ubuntu12.10)
     Lubuntu(Ubuntu12.10)
     Ubuntu GNOME shell Remix 12.10
@@ -99,18 +100,13 @@
 
 7.開発環境
   /etc/redhat-release
-	Linux mint14
+	Linux mint17
   uname -r
-	3.5.0-17-generic
-  関連してそうなrpm
-	python-imaging-devel-1.1.6-19.el6.x86_64
-	python-imaging-1.1.6-19.el6.x86_64
-	gnome-python2-bonobo-2.28.0-3.el6.x86_64
-	gnome-python2-extras-2.25.3-20.el6.x86_64
-	gnome-python2-applet-2.28.0-3.el6.x86_64
-	gnome-python2-2.28.0-3.el6.x86_64
+	3.13.0-24-generic
   関連してそうなdeb
-    python-glade2, libglade2-0
+    python-imaging
+    python-glade2,
+    libglade2-0
     python-gtk2
 
 8.ライセンス
@@ -123,6 +119,9 @@ The Python Imaging Library is:
     プログラム中でマルチバイト文字列を使っている箇所を取りやめ
 
 10.変更履歴
+v0.9.0.0 (2014.09.xx) 0.9.0版リリース
+ Linux mint 17への開発環境の変更およびXfce4(4.10.1)の仕様変更に対応
+
 v0.8.2.0 (2014.04.07) 0.8.2版リリース
  xfconf-query xinerama-stretchの設定方法に誤りがあったのを修正
 

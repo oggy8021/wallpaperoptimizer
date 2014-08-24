@@ -5,7 +5,7 @@ import subprocess
 from WallpaperOptimizer.Command.Command import Command
 
 
-class Xfce4Command(Command):
+class Xfce40Command(Command):
     def setWall(self, path):
         self.ret = subprocess.call(
             [self.command,
