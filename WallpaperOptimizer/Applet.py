@@ -125,10 +125,30 @@ class Applet(WindowBase):
     def _create_menu(self, applet):
         menuxml = """
             <popup name="button3">
-                 <menuitem name="Item 2" verb="Visible" label="Visible／Invisible" pixtype="stock" pixname="gtk-execute"/>
-                 <menuitem name="Item 3" verb="Preferences" label="Settings" pixtype="stock" pixname="gtk-preferences"/>
-                 <menuitem name="Item 4" verb="Color" label="BaseColor" pixtype="stock" pixname="gtk-select-color"/>
-                 <menuitem name="Item 5" verb="About" label="About" pixtype="stock" pixname="gtk-about"/>
+                 <menuitem
+                    name="Item 2"
+                    verb="Visible"
+                    label="Visible／Invisible"
+                    pixtype="stock"
+                    pixname="gtk-execute"/>
+                 <menuitem
+                    name="Item 3"
+                    verb="Preferences"
+                    label="Settings"
+                    pixtype="stock"
+                    pixname="gtk-preferences"/>
+                 <menuitem
+                    name="Item 4"
+                    verb="Color"
+                    label="BaseColor"
+                    pixtype="stock"
+                    pixname="gtk-select-color"/>
+                 <menuitem
+                    name="Item 5"
+                    verb="About"
+                    label="About"
+                    pixtype="stock"
+                    pixname="gtk-about"/>
             </popup>"""
         #
         verbs = [("Visible", self._visibleCtrl),

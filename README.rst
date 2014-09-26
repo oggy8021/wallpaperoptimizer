@@ -85,7 +85,7 @@ Features
 5. Starting
 ===========
 5.1 Execution example from Console
------------------------------------
+----------------------------------
   In advance, please install the file with $HOME/.local/share/wallpaperoptimzer/.walloptrc.
   If you do not plan to install, argument - designation of "1920x1080, 1280x1024 display" is required.
 
@@ -171,7 +171,7 @@ The Python Imaging Library is:
 
 10. Change history
 ==================
-v0.9.0.0 (2014.08.xx) 0.9 release
+v0.9.0.0 (2014.09.26) 0.9 release
 ---------------------------------
  - Support for Xfce4(4.10.1)
 
@@ -204,7 +204,7 @@ v0.5.0.0 (2012.10.7) 0.5 release
  - Reduction in consideration of the case margin of the same size is not carried out, I fix the problem impossible to make margin
 
 v0.4.0.0 (2012.8.6) 0.4 release
---------------------------------
+-------------------------------
  - When specifying only one screen, the improvement was the action to be suddenly wallpaper of various settings can not be.
 
 v0.3.0.0 (2012.7.9) 0.3 No release

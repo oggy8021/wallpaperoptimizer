@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-import subprocess, re
+import subprocess
+import re
 
 from WallpaperOptimizer.Command.Command import Command
 
@@ -31,7 +32,9 @@ class Xfce41Command(Command):
                 "-c",
                 "xfce4-desktop",
                 "-p",
-                "/backdrop/screen0/monitor" + self.monitor0.mid + "/workspace0/last-image",
+                "/backdrop/screen0/monitor" +
+                self.monitor0.mid +
+                "/workspace0/last-image",
                 "-t",
                 "string",
                 "-s",
@@ -42,7 +45,7 @@ class Xfce41Command(Command):
     def setView(self):
         self.ret = None
 
-        if self.wspMode == False:
+        if self.wspMode is False:
             self.ret = subprocess.call(
                 [self.command,
                     "-c",
@@ -60,20 +63,24 @@ class Xfce41Command(Command):
                     "-c",
                     "xfce4-desktop",
                     "-p",
-                    "/backdrop/screen0/monitor" + self.monitor0.mid + "/workspace0/image-style",
+                    "/backdrop/screen0/monitor" +
+                    self.monitor0.mid +
+                    "/workspace0/image-style",
                     "-t",
                     "int",
                     "-s",
                     "6"]
             )
 
-        if self.monitor0.CycleEnable == False:
+        if self.monitor0.CycleEnable is False:
             self.ret = subprocess.call(
                 [self.command,
                     "-c",
                     "xfce4-desktop",
                     "-p",
-                    "/backdrop/screen0/monitor" + self.monitor0.mid + "/workspace0/backdrop-cycle-enable",
+                    "/backdrop/screen0/monitor" +
+                    self.monitor0.mid +
+                    "/workspace0/backdrop-cycle-enable",
                     "-t",
                     "Boolean",
                     "-T"]
@@ -84,7 +91,9 @@ class Xfce41Command(Command):
                     "-c",
                     "xfce4-desktop",
                     "-p",
-                    "/backdrop/screen0/monitor" + self.monitor0.mid + "/workspace0/backdrop-cycle-period",
+                    "/backdrop/screen0/monitor" +
+                    self.monitor0.mid +
+                    "/workspace0/backdrop-cycle-period",
                     "-t",
                     "int",
                     "-s",
@@ -96,19 +105,23 @@ class Xfce41Command(Command):
                     "-c",
                     "xfce4-desktop",
                     "-p",
-                    "/backdrop/screen0/monitor" + self.monitor0.mid + "/workspace0/backdrop-cycle-timer",
+                    "/backdrop/screen0/monitor" +
+                    self.monitor0.mid +
+                    "/workspace0/backdrop-cycle-timer",
                     "-t",
                     "Integer",
                     self.monitor0.CycleTimer]
             )
 
-            if self.monitor0.CycleRandom == True:
+            if self.monitor0.CycleRandom is True:
                 self.ret = subprocess.call(
                     [self.command,
                         "-c",
                         "xfce4-desktop",
                         "-p",
-                        "/backdrop/screen0/monitor" + self.monitor0.mid + "/workspace0/backdrop-cycle-random-order",
+                        "/backdrop/screen0/monitor" +
+                        self.monitor0.mid +
+                        "/workspace0/backdrop-cycle-random-order",
                         "-t",
                         "Boolean",
                         "-T"]
@@ -122,7 +135,9 @@ class Xfce41Command(Command):
                 "-c",
                 "xfce4-desktop",
                 "-p",
-                "/backdrop/screen0/monitor" + self.monitor0.mid + "/workspace0/last-image"],
+                "/backdrop/screen0/monitor" +
+                self.monitor0.mid +
+                "/workspace0/last-image"],
             stdout=subprocess.PIPE
         ).communicate()[0].rstrip()
         return self.current
@@ -153,7 +168,7 @@ class Xfce41Command(Command):
         ).communicate()[0].rstrip().splitlines()
 
         for display in displays:
-            (ppath, mid) = display.rsplit("/",1)
+            (ppath, mid) = display.rsplit("/", 1)
             prisec = subprocess.Popen(
                 [self.command,
                     "-c",

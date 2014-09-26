@@ -78,7 +78,8 @@ params = {
     'package_dir': {'WallpaperOptimizer': 'WallpaperOptimizer'},
     'package_data': {'WallpaperOptimizer': ['glade/wallpositapplet.glade']},
     'license': 'GPL3',
-    'download_url': 'http://sourceforge.jp/downloads/users/2/2449/wallpaperoptimizer-%s.tar.gz' % (__VERSION__),
+    'download_url':
+    'http://sourceforge.jp/downloads/users/2/2449/wallpaperoptimizer-%s.tar.gz' % __VERSION__,
     'classifiers': [
         'Intended Audience :: End Users/Desktop',
         'License :: OSI Approved :: GNU General Public License (GPL)',

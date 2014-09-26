@@ -6,6 +6,7 @@
 
 # console版では、.walloptrcは上書きしない
 
+
 class Config(object):
     class FormatError(Exception):
         def __init__(self, value):
@@ -40,7 +41,7 @@ class Config(object):
             self.srcdir = s
 
         def checkBool(self):
-            if (self.width <> 0 and self.height <> 0 and self.srcdir <> ''):
+            if (self.width != 0 and self.height != 0 and self.srcdir != ''):
                 self.bSetting = True
 
         def getBool(self):
@@ -63,16 +64,16 @@ class Config(object):
         subStr = size.split('x')
         display._setConfig(int(subStr[0]), int(subStr[1]), p, s)
 
-    def __init__(self
-                 , configfile=None
-                 , lsize=None
-                 , rsize=None
-                 , srcdir=['', '']):
+    def __init__(self,
+                 configfile=None,
+                 lsize=None,
+                 rsize=None,
+                 srcdir=['', '']):
         self.lDisplay = Config.Display()
         self.rDisplay = Config.Display()
         self.bSetting = False
 
-        if (configfile <> None):
+        if (configfile is not None):
             # config set from configfile
             cf = open(configfile, 'r')
             try:
@@ -82,7 +83,8 @@ class Config(object):
                     self._setConfig(subStr[0], subStr[1], subStr[2])
             except ValueError:
                 cf.close()
-                raise Config.FormatError("configfile written not expected Value")
+                raise Config.FormatError(
+                    "configfile written not expected Value")
 
             cf.close()
             if i < 1:
