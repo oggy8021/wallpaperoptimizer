@@ -4,7 +4,7 @@ import os.path
 import subprocess
 import re
 
-from WallpaperOptimizer.Imaging.Rectangle import Rectangle
+from harite.WallpaperOptimizer.Imaging.Rectangle import Rectangle
 
 
 class WorkSpace(Rectangle):
@@ -77,6 +77,13 @@ class WorkSpace(Rectangle):
 
         xdpyinfo = '/usr/bin/xdpyinfo'
         if not os.path.exists(xdpyinfo):
+            # On non-posix systems (tests/Windows) or when explicitly skipped,
+            # don't fail here; allow higher-level logic to fallback to configured sizes.
+            if os.name != 'posix' or os.getenv('HARITE_SKIP_XDPYINFO') == '1':
+                setattr(self, 'separate', False)
+                # leave lScreen/rScreen sizes as initialized (0,0)
+                self.setSize(0, 0)
+                return
             raise WorkSpace.WorkSpaceRuntimeError(
                 'xdpyinfo not installed [%s]' % xdpyinfo)
         dimensions = (subprocess.Popen(

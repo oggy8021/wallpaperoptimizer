@@ -4,8 +4,8 @@ import subprocess
 import os
 import os.path
 
-import WallpaperOptimizer
-from WallpaperOptimizer.Command.Command import Command
+import harite.WallpaperOptimizer as WallpaperOptimizer
+from harite.WallpaperOptimizer.Command.Command import Command
 
 
 class lxdeCommand(Command):

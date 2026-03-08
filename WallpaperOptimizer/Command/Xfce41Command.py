@@ -3,7 +3,7 @@
 import subprocess
 import re
 
-from WallpaperOptimizer.Command.Command import Command
+from harite.WallpaperOptimizer.Command.Command import Command
 
 
 class Xfce41Command(Command):

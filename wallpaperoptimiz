@@ -20,21 +20,17 @@ import logging
 
 import os
 import os.path
-
-if os.getenv('DISPLAY', None) is None:
-    print "Please set to DISPLAY system environment."
-    sys.exit(2)
 from optparse import OptionValueError
 
-import WallpaperOptimizer
-from WallpaperOptimizer.Options import Options
-from WallpaperOptimizer.StarterFactory import StarterFactory
+import harite.WallpaperOptimizer as WallpaperOptimizer
+from harite.WallpaperOptimizer.Options import Options
+from harite.WallpaperOptimizer.Core import Core
 
 
 def do_main():
     try:
         option = Options()
-    except OptionValueError, msg:
+    except OptionValueError as msg:
         logging.error('** OptionValueError: %s. ' % msg)
         sys.exit(2)
 
@@ -52,9 +48,68 @@ def do_main():
         filemode='a')
     logging.info('Starting ... wallpaperoptimizer.')
 
-    starterfactory = StarterFactory()
-    starter = starterfactory.create(WallpaperOptimizer.WINDOWMANAGER)
-    starter.start(option, logging)
+    # CLI-first execution: avoid importing GUI/Starter unless window mode requested
+    if option.getWindow():
+        # window mode requires GUI support; delay importing StarterFactory
+        try:
+            from harite.WallpaperOptimizer.StarterFactory import StarterFactory
+        except Exception as e:
+            logging.error('GUI not available: %s' % e)
+            sys.exit(2)
+        starterfactory = StarterFactory()
+        starter = starterfactory.create(WallpaperOptimizer.WINDOWMANAGER)
+        # ensure DISPLAY is set for GUI
+        if os.getenv('DISPLAY', None) is None:
+            print("Please set DISPLAY environment for window mode.")
+            sys.exit(2)
+        starter.start(option, logging)
+    else:
+        # non-window CLI flow: call Core directly
+        # If display size not provided, infer from input images so Core can run in CLI-only mode
+        if not option.getWindow():
+            try:
+                from harite.WallpaperOptimizer.Imaging.ImgFile import ImgFile
+                # infer sizes from args if not provided
+                try:
+                    larg = option.getLArg()
+                except Exception:
+                    larg = None
+                try:
+                    rarg = option.getRArg()
+                except Exception:
+                    rarg = None
+
+                if option.getLSize() is None and larg:
+                    try:
+                        li = ImgFile(larg)
+                        option.opts.size[0] = f"{li.Size.w}x{li.Size.h}"
+                    except Exception:
+                        option.opts.size[0] = '1x1'
+                if option.getRSize() is None:
+                    if rarg:
+                        try:
+                            ri = ImgFile(rarg)
+                            option.opts.size[1] = f"{ri.Size.w}x{ri.Size.h}"
+                        except Exception:
+                            option.opts.size[1] = option.opts.size[0]
+                    else:
+                        option.opts.size[1] = option.opts.size[0] or '1x1'
+            except Exception:
+                # best-effort: fall back to minimal 1x1 sizes
+                if option.getLSize() is None:
+                    option.opts.size[0] = '1x1'
+                if option.getRSize() is None:
+                    option.opts.size[1] = '1x1'
+
+        core = Core(option)
+        try:
+            if option.getDaemonize():
+                core.background()
+            else:
+                core.singlerun()
+        except Core.CoreRuntimeError as msg:
+            logging.error('** CoreRuntimeError: %s. ' % msg.value)
+            sys.exit(2)
 
     logging.info('Quit ... wallpaperoptimizer.')
 

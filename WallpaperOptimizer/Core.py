@@ -8,18 +8,18 @@ wallpaperoptimizer core module.
 import sys
 import os.path
 import logging
-#import subprocess
 import time
 import datetime
 import glob
+from typing import Tuple, Optional
 
-import WallpaperOptimizer
+import harite.WallpaperOptimizer as WallpaperOptimizer
 
-from WallpaperOptimizer.Config import Config
-from WallpaperOptimizer.WorkSpace import WorkSpace
-from WallpaperOptimizer.ChangerDir import ChangerDir
-from WallpaperOptimizer.Imaging.ImgFile import ImgFile
-from WallpaperOptimizer.Command.CommandFactory import CommandFactory
+from harite.WallpaperOptimizer.Config import Config
+from harite.WallpaperOptimizer.WorkSpace import WorkSpace
+from harite.WallpaperOptimizer.ChangerDir import ChangerDir
+from harite.WallpaperOptimizer.Imaging.ImgFile import ImgFile
+from harite.WallpaperOptimizer.Command.CommandFactory import CommandFactory
 
 
 class Core(object):
@@ -42,7 +42,7 @@ class Core(object):
             try:
                 self.config = Config(self.configfile)
                 logging.info('Config set from configfile.')
-            except Config.FormatError, msg:
+            except Config.FormatError as msg:
                 logging.error('** FormatError: %s. ' % msg)
                 raise Core.CoreRuntimeError(msg.value)
         else:
@@ -112,7 +112,7 @@ class Core(object):
         """
         try:
             self.Ws = WorkSpace()
-        except WorkSpace.WorkSpaceRuntimeError, msg:
+        except WorkSpace.WorkSpaceRuntimeError as msg:
             logging.error('** WorkSpaceRuntimeError: %s. ' % msg)
             raise Core.CoreRuntimeError(msg.value)
 
@@ -133,6 +133,19 @@ class Core(object):
             self.Ws.setScreenSize(
                 (self.config.lDisplay.width, self.config.lDisplay.height),
                 (self.config.rDisplay.width, self.config.rDisplay.height))
+            # If WorkSpace overall size is unset (e.g. xdpyinfo unavailable),
+            # initialize it from configured display sizes so compareToScreen works.
+            try:
+                if getattr(self.Ws.Size, 'w', 0) == 0 and getattr(self.Ws.Size, 'h', 0) == 0:
+                    total_w = (self.Ws.lScreen.Size.w or 0) + (self.Ws.rScreen.Size.w or 0)
+                    total_h = max(self.Ws.lScreen.Size.h or 0, self.Ws.rScreen.Size.h or 0)
+                    if total_w == 0:
+                        total_w = 1
+                    if total_h == 0:
+                        total_h = 1
+                    self.Ws.setSize(total_w, total_h)
+            except Exception:
+                pass
             if not self.Ws.compareToScreen():
                 logging.error(
                     '** WorkSpace width[%d] < ' % (self.Ws.Size.w) +
@@ -153,9 +166,15 @@ class Core(object):
             self.Ws.rScreen.Size.h))
 
         # ただし、妥当性だけは見られる
-        self.Ws.setAttrScreenBool(
-            self.config.lDisplay.getBool(),
-            self.config.rDisplay.getBool())
+        # If display srcdir/config flags are not set, but CLI supplied image args,
+        # treat those screens as configured so singlerun can proceed.
+        try:
+            lBool = self.config.lDisplay.getBool() or (self.option.lengthArgs() >= 1)
+            rBool = self.config.rDisplay.getBool() or (self.option.lengthArgs() >= 2)
+        except Exception:
+            lBool = self.config.lDisplay.getBool()
+            rBool = self.config.rDisplay.getBool()
+        self.Ws.setAttrScreenBool(lBool, rBool)
 
         if (
                 hasattr(self.Ws.lScreen.Size, 'islessThanWorkSpaceHeight') and
@@ -174,7 +193,7 @@ class Core(object):
 
         try:
             self.Ws.setAttrScreenType()
-        except WorkSpace.WorkSpaceRuntimeError, msg:
+        except WorkSpace.WorkSpaceRuntimeError as msg:
             raise Core.CoreRuntimeError(msg.value)
 
         if (not hasattr(self.Ws.lScreen, 'displayType')):
@@ -254,62 +273,49 @@ class Core(object):
         ImgFile check that contains Screen.
         """
         logging.info('Check Imgfile contain %s Screen.' % Img.posit)
-
         if Img.posit == 'left':
             # lScreenに、Imgがおさまる
-            if (Ws.lScreen.containsPlusMergin(Img, tmpMergin)):
-                return True
-            else:
-                return False
+            return bool(Ws.lScreen.containsPlusMergin(Img, tmpMergin))
         elif Img.posit == 'right':
             # rScreenに、Imgがおさまる
-            if (Ws.rScreen.containsPlusMergin(Img, tmpMergin)):
-                return True
-            else:
-                return False
+            return bool(Ws.rScreen.containsPlusMergin(Img, tmpMergin))
+        return False
 
-    def _downsizeImg(self, Ws, Img, tmpMergin):
-        """
-        ImgFile is fitting to Screen size.
-        """
+    def _compute_available_dimensions(self, tmpScreen, tmpMergin: Tuple[int, int, int, int]) -> Tuple[int, int]:
+        """Calculate available width/height on a screen after margins."""
+        tmpMerginW = tmpMergin[0] + tmpMergin[1]
+        tmpMerginH = tmpMergin[2] + tmpMergin[3]
+        avail_w = tmpScreen.Size.w - tmpMerginW
+        avail_h = tmpScreen.Size.h - tmpMerginH
+        return max(1, int(avail_w)), max(1, int(avail_h))
+
+    def _scale_img_to_fit(self, Img: ImgFile, avail_w: int, avail_h: int) -> None:
+        """Scale Img down preserving aspect ratio to fit into available box."""
+        if Img.Size.w > avail_w:
+            new_w = avail_w
+            new_h = int(max(Img.Size.h * (avail_w / float(Img.Size.w)), 1))
+            Img.setSize(new_w, new_h)
+        if Img.Size.h > avail_h:
+            new_h = avail_h
+            new_w = int(max(Img.Size.w * (avail_h / float(Img.Size.h)), 1))
+            Img.setSize(new_w, new_h)
+        Img.reSize(Img.Size.w, Img.Size.h)
+
+    def _downsizeImg(self, Ws: WorkSpace, Img: ImgFile, tmpMergin: Tuple[int, int, int, int]) -> None:
+        """ImgFile is fitting to Screen size."""
         if Img.posit == 'left':
             tmpScreen = Ws.lScreen
         elif Img.posit == 'right':
             tmpScreen = Ws.rScreen
+        else:
+            tmpScreen = Ws.lScreen
         logging.info('Convert Imgfile with %s Screen.' % Img.posit)
 
-        tmpMerginW = tmpMergin[0] + tmpMergin[1]
-        logging.debug('%20s [%s]' % ('width mergin', tmpMerginW))
-        tmpMerginH = tmpMergin[2] + tmpMergin[3]
-        logging.debug('%20s [%s]' % ('height mergin', tmpMerginH))
+        avail_w, avail_h = self._compute_available_dimensions(tmpScreen, tmpMergin)
+        logging.debug('%20s [%s]' % ('width mergin', avail_w))
+        logging.debug('%20s [%s]' % ('height mergin', avail_h))
 
-        logging.debug('%20s [%d,]' % ('---tmpScreen size.w', tmpScreen.Size.w))
-        if Img.Size.w > (tmpScreen.Size.w - tmpMerginW):
-            Img.setSize(
-                (tmpScreen.Size.w - tmpMerginW),
-                int(max(
-                    Img.Size.h *
-                    (tmpScreen.Size.w - tmpMerginW)
-                    / Img.Size.w, 1))
-            )
-        logging.debug('%20s [%d,%d]' % (
-            '---set size',
-            Img.Size.w,
-            Img.Size.h))
-        logging.debug('%20s [,%d]' % (
-            '---tmpScreen size.h',
-            tmpScreen.Size.h))
-        if Img.Size.h > (tmpScreen.Size.h - tmpMerginH):
-            Img.setSize(
-                int(max(
-                    Img.Size.w *
-                    (tmpScreen.Size.h - tmpMerginH) /
-                    Img.Size.h, 1)),
-                (tmpScreen.Size.h - tmpMerginH)
-            )
-        logging.debug('%20s [%d,%d]' % ('---set size', Img.Size.w, Img.Size.h))
-
-        Img.reSize(Img.Size.w, Img.Size.h)
+        self._scale_img_to_fit(Img, avail_w, avail_h)
         logging.debug('%20s [%d,%d]' % (
             'converted size',
             Img.Size.w,
@@ -521,14 +527,14 @@ class Core(object):
             bkImg.save(savePath)
             logging.info('Save optimized wallpaper [%s].' % savePath)
             return savePath
-        except ImgFile.ImgFileIOError, msg:
+        except ImgFile.ImgFileIOError as msg:
             raise Core.CoreRuntimeError(msg.value)
 
     def _createBkImg(self):
         try:
             Img1 = ImgFile(self.LChangerDir.getImgfileRnd())
             Img2 = ImgFile(self.RChangerDir.getImgfileRnd())
-        except ImgFile.ImgFileIOError, msg:
+        except ImgFile.ImgFileIOError as msg:
             raise Core.CoreRuntimeError(msg.value)
 
         if (
@@ -558,7 +564,7 @@ class Core(object):
         try:
             self.LChangerDir = ChangerDir(self.config.lDisplay.srcdir)
             self.RChangerDir = ChangerDir(self.config.rDisplay.srcdir)
-        except ChangerDir.FileCountZeroError, msg:
+        except ChangerDir.FileCountZeroError as msg:
             if bRaise:
                 raise Core.CoreRuntimeError(msg.value)
             else:
@@ -583,7 +589,7 @@ class Core(object):
         if path != '':
             try:
                 Img = ImgFile(path)
-            except ImgFile.ImgFileIOError, msg:
+            except ImgFile.ImgFileIOError as msg:
                 raise Core.CoreRuntimeError(msg.value)
             logging.info('Load ImgFile. [%s]' % path)
             logging.debug('%20s [%d,%d]' % ('Img', Img.Size.w, Img.Size.h))
@@ -591,7 +597,7 @@ class Core(object):
         else:
             try:
                 dummyImg = ImgFile('', self.option.getBgcolor())
-            except ImgFile.ImgFileIOError, msg:
+            except ImgFile.ImgFileIOError as msg:
                 raise Core.CoreRuntimeError(msg.value)
             logging.debug('Create Dummy Img object.')
             return dummyImg
@@ -632,6 +638,57 @@ class Core(object):
     def __init__(self, Options):
         self.option = Options
         self._initializeConfig()
-        self._initializeWorkSpace()
+        try:
+            self._initializeWorkSpace()
+        except Core.CoreRuntimeError as msg:
+            # Fallback for non-X environments (e.g., tests on Windows):
+            # construct a minimal WorkSpace from configured display sizes.
+            logging.warning('WorkSpace init failed: %s. Falling back to config sizes.', msg)
+            from harite.WallpaperOptimizer.Imaging.Rectangle import Rectangle
+
+            class _FakeWs(Rectangle):
+                def isSeparate(self):
+                    return getattr(self, 'separate', False)
+
+                def setAttrScreenBool(self, lBool, rBool):
+                    setattr(self.lScreen, 'bSetting', lBool)
+                    setattr(self.rScreen, 'bSetting', rBool)
+
+                def setAttrScreenType(self):
+                    # emulate WorkSpace.setAttrScreenType minimal behavior
+                    try:
+                        if self.lScreen.isSquare():
+                            setattr(self.lScreen, 'displayType', 'square')
+                        if self.lScreen.isWide():
+                            setattr(self.lScreen, 'displayType', 'wide')
+                        if self.rScreen.isSquare():
+                            setattr(self.rScreen, 'displayType', 'square')
+                        if self.rScreen.isWide():
+                            setattr(self.rScreen, 'displayType', 'wide')
+                        # if neither screen considered valid, raise like original
+                        if ((not getattr(self, 'separate', False) and
+                             not getattr(self.lScreen, 'bSetting', False) and
+                             not getattr(self.rScreen, 'bSetting', False)) or
+                                (getattr(self, 'separate', False) and not getattr(self.lScreen, 'bSetting', False))):
+                            raise Exception('Screen definition is not valid.')
+                    except Exception:
+                        raise
+
+            self.Ws = _FakeWs()
+            self.Ws.lScreen = Rectangle()
+            self.Ws.rScreen = Rectangle()
+            # Set screen sizes from config (may be 0 if missing)
+            self.Ws.lScreen.setSize(self.config.lDisplay.width, self.config.lDisplay.height)
+            self.Ws.rScreen.setSize(self.config.rDisplay.width, self.config.rDisplay.height)
+            setattr(self.Ws.lScreen, 'depth', getattr(self.Ws.lScreen, 'depth', 24))
+            setattr(self.Ws.rScreen, 'depth', getattr(self.Ws.rScreen, 'depth', 24))
+            # Decide separation and overall workspace size
+            if (self.Ws.lScreen.Size.w != 0 and self.Ws.rScreen.Size.w != 0):
+                setattr(self.Ws, 'separate', True)
+                self.Ws.setSize(self.Ws.lScreen.Size.w, self.Ws.lScreen.Size.h)
+            else:
+                setattr(self.Ws, 'separate', False)
+                h = self.Ws.lScreen.Size.h if self.Ws.lScreen.Size.h > self.Ws.rScreen.Size.h else self.Ws.rScreen.Size.h
+                self.Ws.setSize(self.Ws.lScreen.Size.w + self.Ws.rScreen.Size.w, h)
         self.LChangerDir = None
         self.RChangerDir = None

@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from WallpaperOptimizer.Command.Gnome2Command import Gnome2Command
-from WallpaperOptimizer.Command.Gnome3Command import Gnome3Command
-from WallpaperOptimizer.Command.Xfce40Command import Xfce40Command
-from WallpaperOptimizer.Command.Xfce41Command import Xfce41Command
-from WallpaperOptimizer.Command.lxdeCommand import lxdeCommand
+from harite.WallpaperOptimizer.Command.Gnome2Command import Gnome2Command
+from harite.WallpaperOptimizer.Command.Gnome3Command import Gnome3Command
+from harite.WallpaperOptimizer.Command.Xfce40Command import Xfce40Command
+from harite.WallpaperOptimizer.Command.Xfce41Command import Xfce41Command
+from harite.WallpaperOptimizer.Command.lxdeCommand import lxdeCommand
 
 
 class CommandFactory(object):

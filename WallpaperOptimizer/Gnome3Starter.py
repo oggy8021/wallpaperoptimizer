@@ -2,7 +2,7 @@
 
 import gtk
 
-from WallpaperOptimizer.Starter import Starter
+from harite.WallpaperOptimizer.Starter import Starter
 
 
 class Gnome3Starter(Starter):
@@ -21,7 +21,7 @@ class Gnome3Starter(Starter):
             gobject.set_application_name('wallpaperoptimizer')
             gobject.set_prgname('wallpaperoptimizer')
 
-            from WallpaperOptimizer.AppIndicator import AppIndicator
+            from harite.WallpaperOptimizer.AppIndicator import AppIndicator
 
             AppIndicator(self.option, self.logging)
             gtk.main()

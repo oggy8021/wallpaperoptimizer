@@ -7,7 +7,7 @@ import pygtk
 pygtk.require("2.0")
 import gtk
 
-from WallpaperOptimizer.Widget.DialogBase import DialogBase
+from harite.WallpaperOptimizer.Widget.DialogBase import DialogBase
 
 
 class SrcdirDialog(DialogBase):

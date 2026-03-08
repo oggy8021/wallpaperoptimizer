@@ -2,7 +2,7 @@
 
 from nose.tools import ok_, eq_
 
-from WallpaperOptimizer.Imaging.Rectangle import Rectangle
+from harite.WallpaperOptimizer.Imaging.Rectangle import Rectangle
 
 
 def Rectangle_init_test():

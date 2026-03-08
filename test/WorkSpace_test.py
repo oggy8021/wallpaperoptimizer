@@ -2,7 +2,7 @@
 
 from nose.tools import ok_, eq_
 
-from WallpaperOptimizer.WorkSpace import WorkSpace
+from harite.WallpaperOptimizer.WorkSpace import WorkSpace
 
 
 def WorkSpace_default_test():

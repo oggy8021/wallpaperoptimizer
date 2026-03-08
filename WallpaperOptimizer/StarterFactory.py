@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from WallpaperOptimizer.Gnome2Starter import Gnome2Starter
-from WallpaperOptimizer.Gnome3Starter import Gnome3Starter
+from harite.WallpaperOptimizer.Gnome2Starter import Gnome2Starter
+from harite.WallpaperOptimizer.Gnome3Starter import Gnome3Starter
 
 
 class StarterFactory(object):

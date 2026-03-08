@@ -2,7 +2,7 @@
 
 from nose.tools import ok_, eq_
 
-from WallpaperOptimizer.Imaging.ImgFile import ImgFile
+from harite.WallpaperOptimizer.Imaging.ImgFile import ImgFile
 
 import os.path
 

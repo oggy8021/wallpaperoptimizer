@@ -2,7 +2,7 @@
 
 from nose.tools import eq_
 
-from WallpaperOptimizer.Config import Config
+from harite.WallpaperOptimizer.Config import Config
 
 
 def Config_setConfigFile_test():

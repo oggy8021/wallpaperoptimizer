@@ -2,7 +2,7 @@
 
 import subprocess
 
-from WallpaperOptimizer.Command.Command import Command
+from harite.WallpaperOptimizer.Command.Command import Command
 
 
 class Xfce40Command(Command):

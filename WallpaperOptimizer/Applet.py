@@ -22,16 +22,16 @@ except:
 try:
     import gnome.ui
 except:
-    print 'not installed Python bindings for the GNOME desktop environment'
-    print 'ex) sudo apt-get install python-gnome2'
-    print 'ex) sudo yum install python-gnome2-gnome'
+    print('not installed Python bindings for the GNOME desktop environment')
+    print('ex) sudo apt-get install python-gnome2')
+    print('ex) sudo yum install python-gnome2-gnome')
     sys.exit(2)
 
-import WallpaperOptimizer
+import harite.WallpaperOptimizer as WallpaperOptimizer
 
-from WallpaperOptimizer.WindowBase import WindowBase
-from WallpaperOptimizer.Core import Core
-from WallpaperOptimizer.OptionsBase import OptionsBase
+from harite.WallpaperOptimizer.WindowBase import WindowBase
+from harite.WallpaperOptimizer.Core import Core
+from harite.WallpaperOptimizer.OptionsBase import OptionsBase
 
 
 class AppletOptions(OptionsBase):

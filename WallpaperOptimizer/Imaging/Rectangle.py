@@ -2,7 +2,7 @@
 
 from math import floor
 
-from WallpaperOptimizer.Imaging.Bounds import Bounds
+from harite.WallpaperOptimizer.Imaging.Bounds import Bounds
 
 
 class Rectangle(Bounds):

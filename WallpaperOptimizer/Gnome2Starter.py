@@ -3,7 +3,7 @@
 import sys
 import gtk
 
-from WallpaperOptimizer.Starter import Starter
+from harite.WallpaperOptimizer.Starter import Starter
 
 
 class Gnome2Starter(Starter):
@@ -11,7 +11,7 @@ class Gnome2Starter(Starter):
         """
         for gnomeapplet factory method.
         """
-        from WallpaperOptimizer.Applet import Applet
+        from harite.WallpaperOptimizer.Applet import Applet
 
         Applet(applet, iid, self.logging)
         return gtk.TRUE

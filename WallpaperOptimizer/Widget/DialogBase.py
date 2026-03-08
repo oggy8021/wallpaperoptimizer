@@ -5,7 +5,7 @@ import pygtk
 pygtk.require("2.0")
 import gtk
 
-from WallpaperOptimizer.Glade import Glade
+from harite.WallpaperOptimizer.Glade import Glade
 
 
 class DialogBase(object):

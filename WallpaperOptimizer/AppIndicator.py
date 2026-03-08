@@ -24,14 +24,14 @@ except:
 try:
     import appindicator
 except:
-    print 'not installed Python bindings for libappindicator'
-    print 'ex) sudo apt-get install python-appindicator'
+    print('not installed Python bindings for libappindicator')
+    print('ex) sudo apt-get install python-appindicator')
     sys.exit(2)
 
-import WallpaperOptimizer
+import harite.WallpaperOptimizer as WallpaperOptimizer
 
-from WallpaperOptimizer.WindowBase import WindowBase
-from WallpaperOptimizer.Core import Core
+from harite.WallpaperOptimizer.WindowBase import WindowBase
+from harite.WallpaperOptimizer.Core import Core
 
 
 class AppIndicator(WindowBase):

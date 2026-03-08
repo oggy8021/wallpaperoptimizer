@@ -2,9 +2,9 @@
 
 import os.path
 
-import WallpaperOptimizer
+import harite.WallpaperOptimizer as WallpaperOptimizer
 
-from WallpaperOptimizer.Widget.SettingDialog import SettingDialog
+from harite.WallpaperOptimizer.Widget.SettingDialog import SettingDialog
 
 from nose.tools import eq_
 

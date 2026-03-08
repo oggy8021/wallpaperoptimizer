@@ -2,14 +2,14 @@
 
 import os.path
 
-import WallpaperOptimizer
+import harite.WallpaperOptimizer as WallpaperOptimizer
 
-from WallpaperOptimizer.Glade import Glade
-from WallpaperOptimizer.Widget.ErrorDialog import ErrorDialog
-from WallpaperOptimizer.Widget.ImgOpenDialog import ImgOpenDialog
-from WallpaperOptimizer.Widget.SettingDialog import SettingDialog
-from WallpaperOptimizer.Widget.ColorSelectionDialog import ColorSelectionDialog
-from WallpaperOptimizer.Widget.SaveWallpaperDialog import SaveWallpaperDialog
+from harite.WallpaperOptimizer.Glade import Glade
+from harite.WallpaperOptimizer.Widget.ErrorDialog import ErrorDialog
+from harite.WallpaperOptimizer.Widget.ImgOpenDialog import ImgOpenDialog
+from harite.WallpaperOptimizer.Widget.SettingDialog import SettingDialog
+from harite.WallpaperOptimizer.Widget.ColorSelectionDialog import ColorSelectionDialog
+from harite.WallpaperOptimizer.Widget.SaveWallpaperDialog import SaveWallpaperDialog
 
 
 class WindowBase(object):
@@ -164,7 +164,7 @@ class WindowBase(object):
         if self.core.option.getSavePath() is not None:
             try:
                 self.core.singlerun()
-            except self.core.CoreRuntimeError, msg:
+            except self.core.CoreRuntimeError as msg:
                 self.logger.error('** CoreRuntimeError: %s. ' % msg.value)
                 self._runErrorDialog('** CoreRuntimeError: %s. ' % msg.value)
         else:
@@ -174,7 +174,7 @@ class WindowBase(object):
         self.core.option.opts.setWall = True
         try:
             self.core.singlerun()
-        except self.core.CoreRuntimeError, msg:
+        except self.core.CoreRuntimeError as msg:
             self.logging.error('** CoreRuntimeError: %s. ' % msg.value)
             self._runErrorDialog('** CoreRuntimeError: %s. ' % msg.value)
 
@@ -189,7 +189,7 @@ class WindowBase(object):
     def _runChanger(self):
         try:
             self.core.timerRun()
-        except self.core.CoreRuntimeError, msg:
+        except self.core.CoreRuntimeError as msg:
             self.logging.error('** CoreRuntimeError: %s. ' % msg.value)
             self._runErrorDialog('** CoreRuntimeError: %s. ' % msg.value)
 

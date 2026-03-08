@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import os.path
-import WallpaperOptimizer
+import harite.WallpaperOptimizer as WallpaperOptimizer
 
-from WallpaperOptimizer.Widget.ColorSelectionDialog import ColorSelectionDialog
+from harite.WallpaperOptimizer.Widget.ColorSelectionDialog import ColorSelectionDialog
 
 from nose.tools import eq_
 

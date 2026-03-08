@@ -41,10 +41,14 @@ AUTHOR = 'oggy <oggyist@gmail.com>'
 
 
 import os.path
-import xdg.BaseDirectory
 
-USERENVDIR = os.path.join(
-    xdg.BaseDirectory.save_data_path('wallpaperoptimizer'))
+# xdg may not be available in test environments (Windows); fall back to
+# a user-home based path when it's missing.
+try:
+    import xdg.BaseDirectory as _xdg
+    USERENVDIR = os.path.join(_xdg.save_data_path('wallpaperoptimizer'))
+except Exception:
+    USERENVDIR = os.path.join(os.path.expanduser('~'), '.wallpaperoptimizer')
 ICONDIR = "/usr/share/WallpaperOptimizer"
 LIBRARYDIR = os.path.abspath(os.path.dirname(__file__))
 
@@ -54,45 +58,49 @@ if os.path.exists(USERENVDIR) is False:
 import subprocess
 import re
 
-xprop = '/usr/bin/xprop'
-if os.path.exists(xprop):
-    window_id = (
-        subprocess.Popen(
-            [xprop,
-             '-root',
-             '_NET_SUPPORTING_WM_CHECK'],
-            stdout=subprocess.PIPE).communicate()[0]
-        ).split(' ')[4]
-    wm_name = _wmextract(
-        subprocess.Popen(
-            [xprop,
-             '-id',
-             window_id,
-             '8s',
-             '_NET_WM_NAME'],
-            stdout=subprocess.PIPE).communicate()[0])
-
-
-WINDOWMANAGER = 'Gnome'
-if wm_name == 'Xfwm4':
-    WINDOWMANAGER = "xfce4"
-    xfce4sessions = '/usr/bin/xfce4-session'
-    if os.path.exists(xfce4sessions):
-        XFCESUBREV = _xfceextract(
+try:
+    xprop = '/usr/bin/xprop'
+    wm_name = ''
+    if os.path.exists(xprop):
+        window_id = (
             subprocess.Popen(
-                [xfce4sessions, '--version'],
-                stdout=subprocess.PIPE
-            ).communicate()[0].rstrip().splitlines()[0])
-        WINDOWMANAGER = WINDOWMANAGER + XFCESUBREV
-elif wm_name == 'Openbox':
-    WINDOWMANAGER = "lxde"
-else:
-    # Metacity, Compiz, GNOME Shell
-    gnomesessions = '/usr/bin/gnome-session'
-    if os.path.exists(gnomesessions):
-        GNOMEVER = _verextract(
+                [xprop,
+                 '-root',
+                 '_NET_SUPPORTING_WM_CHECK'],
+                stdout=subprocess.PIPE).communicate()[0]
+            ).split(' ')[4]
+        wm_name = _wmextract(
             subprocess.Popen(
-                [gnomesessions, '--version'],
-                stdout=subprocess.PIPE
-            ).communicate()[0])
-        WINDOWMANAGER = WINDOWMANAGER + GNOMEVER
+                [xprop,
+                 '-id',
+                 window_id,
+                 '8s',
+                 '_NET_WM_NAME'],
+                stdout=subprocess.PIPE).communicate()[0])
+
+    WINDOWMANAGER = 'Gnome'
+    if wm_name == 'Xfwm4':
+        WINDOWMANAGER = "xfce4"
+        xfce4sessions = '/usr/bin/xfce4-session'
+        if os.path.exists(xfce4sessions):
+            XFCESUBREV = _xfceextract(
+                subprocess.Popen(
+                    [xfce4sessions, '--version'],
+                    stdout=subprocess.PIPE
+                ).communicate()[0].rstrip().splitlines()[0])
+            WINDOWMANAGER = WINDOWMANAGER + XFCESUBREV
+    elif wm_name == 'Openbox':
+        WINDOWMANAGER = "lxde"
+    else:
+        # Metacity, Compiz, GNOME Shell
+        gnomesessions = '/usr/bin/gnome-session'
+        if os.path.exists(gnomesessions):
+            GNOMEVER = _verextract(
+                subprocess.Popen(
+                    [gnomesessions, '--version'],
+                    stdout=subprocess.PIPE
+                ).communicate()[0])
+            WINDOWMANAGER = WINDOWMANAGER + GNOMEVER
+except Exception:
+    # In non-Linux or headless test environments, keep sensible defaults
+    WINDOWMANAGER = 'Gnome'

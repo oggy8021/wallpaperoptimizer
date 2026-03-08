@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import sys
-from WallpaperOptimizer.Core import Core
+from harite.WallpaperOptimizer.Core import Core
 
 
 class Starter(object):
@@ -50,7 +50,7 @@ class Starter(object):
             logging.debug('Running ... daemonize mode.')
             try:
                 core.background()
-            except Core.CoreRuntimeError, msg:
+            except Core.CoreRuntimeError as msg:
                 logging.error('** CoreRuntimeError: %s. ' % msg.value)
                 sys.exit(2)
         else:
@@ -58,7 +58,7 @@ class Starter(object):
             logging.debug('Running ... singlerun mode.')
             try:
                 core.singlerun()
-            except Core.CoreRuntimeError, msg:
+            except Core.CoreRuntimeError as msg:
                 logging.error('** CoreRuntimeError: %s. ' % msg.value)
                 sys.exit(2)
 

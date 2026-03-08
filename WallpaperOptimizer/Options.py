@@ -4,7 +4,7 @@ import os.path
 import re
 
 from optparse import Option, OptionGroup, OptionParser, OptionValueError
-from WallpaperOptimizer.OptionsBase import OptionsBase
+from harite.WallpaperOptimizer.OptionsBase import OptionsBase
 
 
 class Options(OptionsBase):

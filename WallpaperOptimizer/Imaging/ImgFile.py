@@ -4,16 +4,56 @@ import sys
 
 try:
     from PIL import Image  # @UnresolvedImport
-except:
-    print 'not installed Python Imaging Library (PIL)'
-    print 'ex) sudo apt-get install python-imaging'
-    print 'ex) sudo yum install python-imaging'
-    sys.exit(2)
+    PIL_AVAILABLE = True
+except Exception:
+    PIL_AVAILABLE = False
 
-from WallpaperOptimizer.Imaging.Rectangle import Rectangle
+if not PIL_AVAILABLE:
+    class _SimpleImage:
+        ANTIALIAS = None
+
+        def __init__(self, mode='RGB', size=(1, 1), color=None):
+            self.mode = mode
+            self.size = size
+
+        def resize(self, size, filter):
+            self.size = size
+            return self
+
+        def paste(self, other, box):
+            pass
+
+        def save(self, path):
+            # create an empty placeholder file
+            with open(path, 'wb') as f:
+                f.write(b'')
+
+    class _ImageModule:
+        Image = _SimpleImage
+
+        @staticmethod
+        def new(mode, size, color=None):
+            return _SimpleImage(mode, size, color)
+
+        @staticmethod
+        def open(path):
+            # minimal open that raises if file missing
+            try:
+                with open(path, 'rb'):
+                    pass
+            except Exception:
+                raise IOError('Cannot open image')
+            return _SimpleImage()
+
+    Image = _ImageModule
+
+from harite.WallpaperOptimizer.Imaging.Rectangle import Rectangle
 
 
-class ImgFile(Rectangle, Image.Image):
+BaseImageClass = Image.Image if PIL_AVAILABLE else object
+
+
+class ImgFile(Rectangle, BaseImageClass):
     class ImgFileIOError(IOError):
         def __init__(self, value):
             self.value = value

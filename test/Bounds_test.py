@@ -2,7 +2,7 @@
 
 from nose.tools import eq_
 
-from WallpaperOptimizer.Imaging.Bounds import Point
+from harite.WallpaperOptimizer.Imaging.Bounds import Point
 
 
 def point_init_test():
@@ -21,7 +21,7 @@ def point_distance_test():
     eq_(point1.distanceY(point2), 0)
 
 
-from WallpaperOptimizer.Imaging.Bounds import Bounds
+from harite.WallpaperOptimizer.Imaging.Bounds import Bounds
 
 
 def Bounds_init_test():

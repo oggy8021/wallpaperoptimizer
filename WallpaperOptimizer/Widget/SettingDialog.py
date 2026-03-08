@@ -8,10 +8,10 @@ import pygtk
 pygtk.require("2.0")
 import gtk
 
-import WallpaperOptimizer
-from WallpaperOptimizer.Widget.DialogBase import DialogBase
-from WallpaperOptimizer.Widget.ErrorDialog import ErrorDialog
-from WallpaperOptimizer.Widget.SrcdirDialog import SrcdirDialog
+import harite.WallpaperOptimizer as WallpaperOptimizer
+from harite.WallpaperOptimizer.Widget.DialogBase import DialogBase
+from harite.WallpaperOptimizer.Widget.ErrorDialog import ErrorDialog
+from harite.WallpaperOptimizer.Widget.SrcdirDialog import SrcdirDialog
 
 
 class SettingDialog(DialogBase):
@@ -54,7 +54,7 @@ class SettingDialog(DialogBase):
             cf = csv.writer(file(os.path.abspath(configfile), 'w'))
             for lr in ('left', 'right'):
                 cf.writerow(self._createCsvRecord(lr))
-        except IOError, msg:
+        except IOError as msg:
             self._runErrorDialog('** CoreRuntimeError: %s. ' % msg)
 
     def btnClear_clicked(self, widget):
